@@ -103,16 +103,23 @@ export default {
             },
             {
               path: '/welcome',
-              name: 'welcome',
+              name: 'Welcome',
               icon: 'smile',
-              component: './Welcome',
+              routes: [
+                {
+                  path: '/welcome',
+                  name: 'Hello Word',
+                  icon: 'home',
+                  component: './Welcome',
+                }
+              ]
             },
             {
               path: '/admin',
-              name: 'admin',
+              name: 'Admin',
               icon: 'crown',
               component: './Admin',
-              authority: ['admin'],
+              // authority: ['admin'],
             },
             {
               component: './404',
