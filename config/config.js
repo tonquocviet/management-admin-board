@@ -30,11 +30,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -103,21 +103,19 @@ export default {
               component: './Welcome',
             },
             {
-              path: '/user-managerment',
-              name: 'Quản lý tài khoản',
-              icon: 'smile',
+              path: '/staff-managerment',
+              name: 'Quản lý nhân viên',
+              icon: 'idcard',
               routes: [
                 {
-                  path: '/user-managerment/list-user',
-                  name: 'Danh sách tài khoản',
-                  icon: 'user',
-                  component: './user-managerment/list-user',
+                  path: '/staff-managerment/staff-current',
+                  name: 'Nhân viên hiện tại',
+                  component: './staff-managerment/staff-current',
                 },
                 {
-                  path: '/user-managerment/role-user',
-                  name: 'Quản lý quyền',
-                  icon:'usergroup-delete',
-                  component: './user-managerment/role-user',
+                  path: '/staff-managerment/staff-leave',
+                  name: 'Nhân viên đã rời công ty',
+                  component: './staff-managerment/staff-leave',
                 },
                 {
                   component: './404',
@@ -125,12 +123,112 @@ export default {
               ]
             },
             {
-              path: '/admin',
-              name: 'Admin',
-              icon: 'crown',
-              component: './Admin',
-              // authority: ['admin'],
+              path: '/dayoff-managerment',
+              name: 'Quản lý ngày vắng',
+              icon: 'rocket',
+              routes: [
+                {
+                  path: '/dayoff-managerment/staff-dayoff',
+                  name: 'Quản lý ngày vắng nhân viên',
+                  component: './dayoff-managerment/staff-dayoff',
+                },
+                {
+                  path: '/dayoff-managerment/internship-dayoff',
+                  name: 'Quản lý ngày vắng thực tập sinh',
+                  component: './dayoff-managerment/internship-dayoff',
+                },
+                {
+                  component: './404',
+                },
+              ]
             },
+            {
+              path: '/statistic-dayoff-by-month',
+              name: 'Thống kê ngày vắng theo tháng',
+              icon: 'line-chart',
+              routes: [
+                {
+                  path: '/statistic-dayoff-by-month/list',
+                  name: 'Danh sách vắng theo tháng',
+                  component: './statistic-dayoff-by-month/list',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
+              path: '/salary-managerment',
+              name: 'Quản lý lương nhân viên',
+              icon: 'euro',
+              routes: [
+                {
+                  path: '/salary-managerment/list',
+                  name: 'Danh sách lương nhân viên',
+                  component: './salary-managerment/list',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
+              path: '/internship-managerment',
+              name: 'Quản lý thực tập sinh',
+              icon: 'share-alt',
+              routes: [
+                {
+                  path: '/internship-managerment/internship-current',
+                  name: 'Thực tập sinh hiện tại',
+                  component: './internship-managerment/internship-current',
+                },
+                {
+                  path: '/internship-managerment/internship-leave',
+                  name: 'Thực tập sinh đã rời công ty',
+                  component: './internship-managerment/internship-leave',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
+              path: '/cv-managerment',
+              name: 'Quản lý CV',
+              icon: 'file-protect',
+              routes: [
+                {
+                  path: '/cv-managerment/list-cv',
+                  name: 'Danh sách CV',
+                  component: './cv-managerment/list-cv',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
+              path: '/money-managerment',
+              name: 'Quản lý tiền thu chi',
+              icon: 'area-chart',
+              routes: [
+                {
+                  path: '/money-managerment/list-money-payment',
+                  name: 'Danh sách tiền thu chi',
+                  component: './money-managerment/list-money-payment',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            // {
+            //   path: '/admin',
+            //   name: 'Admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            // },
             {
               component: './404',
             },

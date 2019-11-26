@@ -146,7 +146,7 @@ const BasicLayout = props => {
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: '首页',
+          breadcrumbName: 'Trang chủ',
         },
         ...routers,
       ]}
