@@ -99,19 +99,29 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '',
+              component: './Welcome',
             },
             {
-              path: '/welcome',
-              name: 'Welcome',
+              path: '/user-managerment',
+              name: 'Quản lý tài khoản',
               icon: 'smile',
               routes: [
                 {
-                  path: '/welcome',
-                  name: 'Hello Word',
-                  icon: 'home',
-                  component: './Welcome',
-                }
+                  path: '/user-managerment/list-user',
+                  name: 'Danh sách tài khoản',
+                  icon: 'user',
+                  component: './user-managerment/list-user',
+                },
+                {
+                  path: '/user-managerment/role-user',
+                  name: 'Quản lý quyền',
+                  icon:'usergroup-delete',
+                  component: './user-managerment/role-user',
+                },
+                {
+                  component: './404',
+                },
               ]
             },
             {
