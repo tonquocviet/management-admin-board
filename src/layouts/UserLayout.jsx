@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import Link from 'umi/link';
 import React from 'react';
 import { connect } from 'dva';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import styles from './UserLayout.less';
 
 const UserLayout = props => {
@@ -40,14 +40,13 @@ const UserLayout = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
               </Link>
             </div>
             <div className={styles.desc}>Đăng nhập tài khoản</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter links={[]} copyright="2019 HT ACTIVE SOFTWARE" />
       </div>
     </>
   );

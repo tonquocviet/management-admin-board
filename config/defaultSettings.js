@@ -10,7 +10,7 @@ export default {
   menu: {
     locale: false,
   },
-  title: 'Ant Design Pro',
+  title: 'HT Active Board',
   pwa: false,
   iconfontUrl: '',
 };
