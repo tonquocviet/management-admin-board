@@ -37,20 +37,20 @@ class AvatarDropdown extends React.Component {
         {menu && (
           <Menu.Item key="center">
             <Icon type="user" />
-            个人中心
+            Thông tin tài khoản
           </Menu.Item>
         )}
         {menu && (
           <Menu.Item key="settings">
             <Icon type="setting" />
-            个人设置
+            Cài đặt tài khoản
           </Menu.Item>
         )}
         {menu && <Menu.Divider />}
 
         <Menu.Item key="logout">
           <Icon type="logout" />
-          退出登录
+          Đăng xuất
         </Menu.Item>
       </Menu>
     );

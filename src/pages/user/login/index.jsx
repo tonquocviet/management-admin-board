@@ -93,28 +93,28 @@ class Login extends Component {
             this.loginForm = form;
           }}
         >
-          <Tab key="account" tab="账户密码登录">
+          <Tab key="account" tab="Đăng nhập bằng tài khoản">
             {status === 'error' &&
               loginType === 'account' &&
               !submitting &&
-              this.renderMessage('账户或密码错误（admin/ant.design）')}
+              this.renderMessage('Lỗi tài khoản hoặc mật khẩu sai（admin/ant.design）')}
             <UserName
               name="userName"
-              placeholder={`${'用户名'}: admin or user`}
+              placeholder="Tên đăng nhập"
               rules={[
                 {
                   required: true,
-                  message: '请输入用户名!',
+                  message: 'Vui lòng nhập tên tài khoản',
                 },
               ]}
             />
             <Password
               name="password"
-              placeholder={`${'密码'}: ant.design`}
+              placeholder="Mật khẩu"
               rules={[
                 {
                   required: true,
-                  message: '请输入密码！',
+                  message: 'Vui lòng nhập mật khẩu',
                 },
               ]}
               onPressEnter={e => {
@@ -126,31 +126,31 @@ class Login extends Component {
               }}
             />
           </Tab>
-          <Tab key="mobile" tab="手机号登录">
+          <Tab key="mobile" tab="Đăng nhập bằng số điện thoại">
             {status === 'error' &&
               loginType === 'mobile' &&
               !submitting &&
-              this.renderMessage('验证码错误')}
+              this.renderMessage('Lỗi mã xác minh')}
             <Mobile
               name="mobile"
-              placeholder="手机号"
+              placeholder="Số điện thoại"
               rules={[
                 {
                   required: true,
-                  message: '请输入手机号！',
+                  message: 'Vui lòng nhập số điện thoại của bạn !',
                 },
                 {
                   pattern: /^1\d{10}$/,
-                  message: '手机号格式错误！',
+                  message: 'Lỗi định dạng số điện thoại !',
                 },
               ]}
             />
             <Captcha
               name="captcha"
-              placeholder="验证码"
+              placeholder="Mã xác minh"
               countDown={120}
               onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText="获取验证码"
+              getCaptchaButtonText="Nhận mã"
               getCaptchaSecondText="秒"
               rules={[
                 {
@@ -162,7 +162,7 @@ class Login extends Component {
           </Tab>
           <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
-              自动登录
+              Ghi nhớ đăng nhập
             </Checkbox>
             <a
               style={{
@@ -170,17 +170,17 @@ class Login extends Component {
               }}
               href=""
             >
-              忘记密码
+              Quên mật khẩu
             </a>
           </div>
-          <Submit loading={submitting}>登录</Submit>
+          <Submit loading={submitting}>Đăng nhập</Submit>
           <div className={styles.other}>
-            其他登录方式
+            Phương thức đăng nhập khác
             <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
             <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
             <Icon type="weibo-circle" className={styles.icon} theme="outlined" />
             <Link className={styles.register} to="/user/register">
-              注册账户
+              Đăng kí tài khoản
             </Link>
           </div>
         </LoginComponents>

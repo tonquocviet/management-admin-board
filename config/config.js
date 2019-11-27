@@ -19,7 +19,7 @@ const plugins = [
         // default false
         enable: true,
         // default zh-CN
-        default: 'zh-CN',
+        default: 'vi-VN',
         // default true, when it is true, will use `navigator.language` overwrite default
         baseNavigator: true,
       },
@@ -103,19 +103,39 @@ export default {
               component: './Welcome',
             },
             {
-              path: '/staff-managerment',
+              path: '/account-management',
+              name: 'Quản lý tài khoản',
+              icon: 'user',
+              routes: [
+                {
+                  path: '/account-management/account-list',
+                  name: 'Danh sách tài khoản',
+                  component: './account-management/account-list',
+                },
+                {
+                  path: '/account-management/account-role',
+                  name: 'Quản lý quyền tài khoản',
+                  component: './account-management/account-role',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
+              path: '/staff-management',
               name: 'Quản lý nhân viên',
               icon: 'idcard',
               routes: [
                 {
-                  path: '/staff-managerment/staff-current',
+                  path: '/staff-management/staff-current',
                   name: 'Nhân viên hiện tại',
-                  component: './staff-managerment/staff-current',
+                  component: './staff-management/staff-current',
                 },
                 {
-                  path: '/staff-managerment/staff-leave',
+                  path: '/staff-management/staff-leave',
                   name: 'Nhân viên đã rời công ty',
-                  component: './staff-managerment/staff-leave',
+                  component: './staff-management/staff-leave',
                 },
                 {
                   component: './404',
@@ -123,19 +143,19 @@ export default {
               ]
             },
             {
-              path: '/dayoff-managerment',
+              path: '/dayoff-management',
               name: 'Quản lý ngày vắng',
               icon: 'rocket',
               routes: [
                 {
-                  path: '/dayoff-managerment/staff-dayoff',
+                  path: '/dayoff-management/staff-dayoff',
                   name: 'Quản lý ngày vắng nhân viên',
-                  component: './dayoff-managerment/staff-dayoff',
+                  component: './dayoff-management/staff-dayoff',
                 },
                 {
-                  path: '/dayoff-managerment/internship-dayoff',
+                  path: '/dayoff-management/internship-dayoff',
                   name: 'Quản lý ngày vắng thực tập sinh',
-                  component: './dayoff-managerment/internship-dayoff',
+                  component: './dayoff-management/internship-dayoff',
                 },
                 {
                   component: './404',
@@ -143,14 +163,19 @@ export default {
               ]
             },
             {
-              path: '/statistic-dayoff-by-month',
-              name: 'Thống kê ngày vắng theo tháng',
+              path: '/statistic-dayoff',
+              name: 'Thống kê ngày vắng',
               icon: 'line-chart',
               routes: [
                 {
-                  path: '/statistic-dayoff-by-month/list',
-                  name: 'Danh sách vắng theo tháng',
-                  component: './statistic-dayoff-by-month/list',
+                  path: '/statistic-dayoff/by-month',
+                  name: 'Thống kê ngày vắng theo tháng',
+                  component: './statistic-dayoff/by-month',
+                },
+                {
+                  path: '/statistic-dayoff/by-year',
+                  name: 'Thống kê ngày vắng theo năm',
+                  component: './statistic-dayoff/by-year',
                 },
                 {
                   component: './404',
@@ -158,14 +183,14 @@ export default {
               ]
             },
             {
-              path: '/salary-managerment',
+              path: '/salary-management',
               name: 'Quản lý lương nhân viên',
               icon: 'euro',
               routes: [
                 {
-                  path: '/salary-managerment/list',
+                  path: '/salary-management/list',
                   name: 'Danh sách lương nhân viên',
-                  component: './salary-managerment/list',
+                  component: './salary-management/list',
                 },
                 {
                   component: './404',
@@ -173,19 +198,19 @@ export default {
               ]
             },
             {
-              path: '/internship-managerment',
+              path: '/internship-management',
               name: 'Quản lý thực tập sinh',
               icon: 'share-alt',
               routes: [
                 {
-                  path: '/internship-managerment/internship-current',
+                  path: '/internship-management/internship-current',
                   name: 'Thực tập sinh hiện tại',
-                  component: './internship-managerment/internship-current',
+                  component: './internship-management/internship-current',
                 },
                 {
-                  path: '/internship-managerment/internship-leave',
+                  path: '/internship-management/internship-leave',
                   name: 'Thực tập sinh đã rời công ty',
-                  component: './internship-managerment/internship-leave',
+                  component: './internship-management/internship-leave',
                 },
                 {
                   component: './404',
@@ -193,14 +218,14 @@ export default {
               ]
             },
             {
-              path: '/cv-managerment',
+              path: '/cv-management',
               name: 'Quản lý CV',
               icon: 'file-protect',
               routes: [
                 {
-                  path: '/cv-managerment/list-cv',
+                  path: '/cv-management/list-cv',
                   name: 'Danh sách CV',
-                  component: './cv-managerment/list-cv',
+                  component: './cv-management/list-cv',
                 },
                 {
                   component: './404',
@@ -208,14 +233,14 @@ export default {
               ]
             },
             {
-              path: '/money-managerment',
+              path: '/money-management',
               name: 'Quản lý tiền thu chi',
               icon: 'area-chart',
               routes: [
                 {
-                  path: '/money-managerment/list-money-payment',
+                  path: '/money-management/list-money-payment',
                   name: 'Danh sách tiền thu chi',
-                  component: './money-managerment/list-money-payment',
+                  component: './money-management/list-money-payment',
                 },
                 {
                   component: './404',

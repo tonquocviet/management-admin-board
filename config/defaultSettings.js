@@ -8,9 +8,9 @@ export default {
   fixSiderbar: false,
   colorWeak: false,
   menu: {
-    locale: true,
+    locale: false,
   },
-  title: 'HT Active Manager',
+  title: 'Ant Design Pro',
   pwa: false,
   iconfontUrl: '',
 };
