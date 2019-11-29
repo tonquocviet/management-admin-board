@@ -1,7 +1,8 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
+import { setAuthority } from '../utils/utils';
 
 const UserModel = {
-  namespace: 'user',
+  namespace: 'getMe',
   state: {
     currentUser: {},
   },
@@ -13,7 +14,8 @@ const UserModel = {
         payload: response,
       });
     },
-
+    // eslint-disable-next-line spaced-comment
+    //lấy user đang login vào
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
@@ -24,7 +26,8 @@ const UserModel = {
   },
   reducers: {
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
+      setAuthority(action.payload.authority);
+      return { ...state, currentUser: action.payload };
     },
 
     changeNotifyCount(

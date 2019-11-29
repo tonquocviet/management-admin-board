@@ -1,54 +1,75 @@
-/**
- * request 网络请求工具
- * 更详细的 api 文档: https://github.com/umijs/umi-request
- */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { getAccessToken } from './utils';
+import errorMessageHandler from './errorMessageHandler';
 
-const codeMessage = {
-  200: 'Yêu cầu xử lí thành công.',
-  201: 'Tạo yêu cầu thành công.',
-  202: 'Yêu cầu đã nhập hàng đợi.',
-  204: 'Không có dữ liệu.',
-  400: 'Yêu cầu gửi sai định dạng.',
-  401: 'Yêu cầu không được phép truy cập.',
-  403: 'Không có quyên truy cập dữ liệu.',
-  404: 'Không tìm thấy dữ liệu.',
-  406: 'Yêu cầu không được chấp nhận.',
-  410: 'Tài nguyên không toàn vẹn.',
-  422: 'Không xử lí dữ liệu.',
-  500: 'Lỗi máy chủ.',
-  502: 'Không thể kết nối máy chủ.',
-  503: 'Yêu cầu quá hạn.',
+const handle401 = () => {
+  window.location = '/user/login';
+  return null;
 };
-/**
- * 异常处理程序
- */
+
+const handle403 = () => {
+  window.location = '/403';
+  return null;
+};
+
+const handle500 = () => {
+  window.location = '/500';
+  return null;
+};
 
 const errorHandler = error => {
   const { response } = error;
 
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-    notification.error({
-      message: `Lỗi lấy dữ liệu ${status}: ${url}`,
-      description: errorText,
+    if (response.status === 401) {
+      return handle401(error);
+    }
+    if (response.status === 403) {
+      return handle403();
+    }
+    if (response.status === 500) {
+      return handle500();
+    }
+    response.json().then(res => {
+      errorMessageHandler(response.status, res.message);
     });
   }
+  return null;
 };
-/**
- * 配置request请求时的默认参数
- */
 
 const request = extend({
   errorHandler,
-  // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
 });
+
+// request.use(refreshTokenMiddleware);
+
+request.interceptors.request.use((url, options) => {
+  const newOptions = {
+    ...options,
+    headers: {
+      ...options.headers,
+      ...{
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+    },
+  };
+  return { url, options: newOptions };
+});
+
+request.interceptors.response.use((res, options) => {
+  if (options.statusCallBack) {
+    options.statusCallBack(res.status);
+  }
+  return res;
+});
+
 request.use(async (ctx, next) => {
-  if (ctx.req.url.startsWith('/api/devices')) {
-    ctx.req.url = `https://gas-device-service.herokuapp.com${ctx.req.url}`;
+  const realApis = [
+    '/api/auth',
+    '/api/user',
+  ];
+  if (realApis.some(r => ctx.req.url.startsWith(r))) {
+    ctx.req.url = `https://admin-htactive.herokuapp.com${ctx.req.url}`;
   }
   await next();
 });
