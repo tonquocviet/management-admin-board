@@ -20,6 +20,7 @@ const getValue = obj =>
 class AccountList extends Component {
   state = {
     searchValue: '',
+    visible: false,
   };
 
   timer = null;
@@ -211,6 +212,12 @@ class AccountList extends Component {
     return <Icon type="search" />;
   };
 
+  handleModalVisible = () => {
+    this.setState({
+      visible: true,
+    })
+  }
+
   render() {
     const {
       accountManagement: { data },
@@ -257,6 +264,14 @@ class AccountList extends Component {
               onChange={this.handleStandardTableChange}
             />
           </div>
+          <Modal
+            title="Thêm tài khoản quản trị"
+            visible={this.state.visible}
+          >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+        </Modal>
         </Card>
       </PageHeaderWrapper>
     );
