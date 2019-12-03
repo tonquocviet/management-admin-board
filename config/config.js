@@ -108,9 +108,14 @@ export default {
               icon: 'user',
               routes: [
                 {
-                  path: '/account-management/account-list',
-                  name: 'Danh sách tài khoản',
-                  component: './account-management/account-list',
+                  path: '/account-management/account-active-list',
+                  name: 'Tài khoản đang hoạt động',
+                  component: './account-management/account-active-list',
+                },
+                {
+                  path: '/account-management/account-blocked-list',
+                  name: 'Tài khoản đang bị khóa',
+                  component: './account-management/account-blocked-list',
                 },
                 {
                   path: '/account-management/account-role',

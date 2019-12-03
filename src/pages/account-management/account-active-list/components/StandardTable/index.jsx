@@ -11,22 +11,17 @@ class StandardTable extends Component {
     }
   };
 
-  cleanSelectedKeys = () => {
-    if (this.handleRowSelectChange) {
-      this.handleRowSelectChange([], []);
-    }
-  };
-
   render() {
     const { data, rowKey, ...rest } = this.props;
     const { list = [], pagination = false } = data || {};
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
+      pageSizeOptions: ['10', '20', '30', '40', '50'],
       ...pagination,
     };
     return (
-      <div className={styles.standardTable}>
+      <div className={styles.staffGroupList}>
         <Table
           rowKey="id"
           dataSource={list}

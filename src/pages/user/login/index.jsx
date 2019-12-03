@@ -109,8 +109,11 @@ class Login extends Component {
             }}
           />
           <Submit loading={submitting}>Đăng nhập</Submit>
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'left' }}>
             <a href="">Quên mật khẩu?</a>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <a href="">Đăng ký tài khoản</a>
           </div>
         </LoginComponents>
       </div>
