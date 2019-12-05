@@ -1,4 +1,4 @@
-import { Alert } from 'antd';
+import { Alert, Checkbox } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
@@ -109,11 +109,23 @@ class Login extends Component {
             }}
           />
           <Submit loading={submitting}>Đăng nhập</Submit>
-          <div style={{ textAlign: 'left' }}>
-            <a href="">Quên mật khẩu?</a>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <a href="">Đăng ký tài khoản</a>
+          <div>
+          <a
+              style={{
+                float: 'left',
+              }}
+              href=""
+            >
+              Đăng kí tài khoản
+            </a>
+            <a
+              style={{
+                float: 'right',
+              }}
+              href=""
+            >
+              Quên mật khẩu?
+            </a>
           </div>
         </LoginComponents>
       </div>

@@ -1,12 +1,10 @@
 import request from '@/utils/request';
-import { async } from 'q';
-import { func } from 'prop-types';
 
 export async function queryList(params = {}) {
   const requestParams = params && {
     page: params.currentPage || 1,
     pageSize: params.pageSize || 10,
-    blocked: false,
+    blocked: true,
     // full_name: params.sorter || 'asc',
     // SEARCH
     // eslint-disable-next-line no-dupe-keys
@@ -44,41 +42,12 @@ export async function queryRoleList() {
 }
 export async function toggleStatus(params) {
   const dataParams = {
-    blocked: true,
+    blocked: false,
   }
   let result = {};
   const res = await request(`/api/user/block-account/${params.id}`, {
     method: 'PUT',
     data: dataParams,
-  });
-  if (res.status) {
-    result = { ...res }
-  }
-  return result;
-}
-export async function queryDetail(params) {
-  let result = {}
-  const res = await request(`/api/user/${params}`);
-  if (res.status) {
-    result = { ...res.result }
-  }
-  return result;
-}
-export async function addAccount(params) {
-  let result = {}
-  const res = await request('/api/user/create-account', {
-    method: 'POST',
-    data: params,
-  });
-  if (res.status) {
-    result = { ...res }
-  }
-  return result;
-}
-export async function removeAccount(params) {
-  let result = {}
-  const res = await request(`/api/user/remove-account/${params}`, {
-    method: 'DELETE',
   });
   if (res.status) {
     result = { ...res }

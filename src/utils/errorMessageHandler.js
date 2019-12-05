@@ -25,6 +25,12 @@ export default function errorMessageHandler(statusCode, message) {
       message: 'Lỗi!',
       description: getCustomMessage(message),
     });
+  }
+  if (statusCode === 500) {
+    notification.error({
+      message: 'Lỗi!',
+      description: getCustomMessage(message),
+    });
   } else {
     notification.error({
       message: 'Lỗi!',
