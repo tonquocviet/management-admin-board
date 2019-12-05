@@ -16,6 +16,7 @@ const listRole = [
   },
 ]
 
+
 function getRoleList(req, res) {
   return res.json(listRole);
 }

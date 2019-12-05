@@ -2,13 +2,10 @@ import {
   queryList,
   queryRoleList,
   toggleStatus,
-  queryDetail,
-  addAccount,
-  removeAccount,
 } from './service';
 
 const Model = {
-  namespace: 'accountActiveManagement',
+  namespace: 'accountBlockedManagement',
   state: {
     data: {
       list: [],
@@ -25,14 +22,6 @@ const Model = {
       });
       if (callback) callback();
     },
-    *add({ payload, callback }, { call }) {
-      const response = yield call(addAccount, payload);
-      if (callback) callback(response);
-    },
-    *remove({ payload, callback }, { call }) {
-      const response = yield call(removeAccount, payload);
-      if (callback) callback(response);
-    },
     *fetchRolesList(_, { call, put }) {
       const response = yield call(queryRoleList)
       yield put({
@@ -44,20 +33,10 @@ const Model = {
       const response = yield call(toggleStatus, payload);
       if (callback) callback(response);
     },
-    *getDetail({ payload }, { call, put }) {
-      const response = yield call(queryDetail, payload);
-      yield put({
-        type: 'saveDetail',
-        payload: response,
-      })
-    },
   },
   reducers: {
     save(state, action) {
       return { ...state, data: action.payload };
-    },
-    saveDetail(state, action) {
-      return { ...state, detail: action.payload };
     },
     populateRolesList(state, action) {
       return { ...state, roleList: action.payload }

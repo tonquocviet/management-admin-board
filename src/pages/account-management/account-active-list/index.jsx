@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Row, message, Tooltip, Modal, Icon, DatePicker } from 'antd';
+import { Button, Card, Col, Form, Input, Row, message, Modal, Icon, DatePicker } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -7,6 +7,7 @@ import styles from './style.less';
 import { WAIT_INTERVAL } from '@/utils/common';
 import StandardTable from './components/StandardTable';
 import CreateForm from './components/CreateForm'
+import UpdateForm from './components/UpdateForm'
 
 const FormItem = Form.Item;
 
@@ -15,21 +16,21 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ accountManagement, loading }) => ({
-  accountManagement,
-  loading: loading.effects['accountManagement/fetch'],
-  loadingToggle: loading.effects['accountManagement/toggleStatus'],
+@connect(({ accountActiveManagement, loading }) => ({
+  accountActiveManagement,
+  loading: loading.effects['accountActiveManagement/fetch'],
+  loadingToggle: loading.effects['accountActiveManagement/toggleStatus'],
+  loadingDetail: loading.effects['accountActiveManagement/getDetail'],
 }))
 
-class AccountList extends Component {
+class AccountActiveList extends Component {
   state = {
     formValues: {},
     searchValue: '',
     isSearch: false,
-    // eslint-disable-next-line react/no-unused-state
     isReset: false,
-    // eslint-disable-next-line react/no-unused-state
-    modalVisible: false,
+    modalCreateVisible: false,
+    modalUpdateVisible: false,
   };
 
   timer = null;
@@ -41,10 +42,8 @@ class AccountList extends Component {
       title: 'Tên tài khoản',
       dataIndex: 'username',
       align: 'center',
-      render: text => (
-        <Button
-          type="link"
-        >
+      render: (text, record) => (
+        <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
         </Button>
       ),
@@ -75,7 +74,7 @@ class AccountList extends Component {
       title: 'Quyền',
       dataIndex: 'role',
       render: a => {
-        const role = this.props.accountManagement.roleList.find(r => r.id === a) || {};
+        const role = this.props.accountActiveManagement.roleList.find(r => r.id === a) || {};
         return <span>{role.name}</span>;
       },
     },
@@ -98,7 +97,7 @@ class AccountList extends Component {
             type="link"
             style={{ color: 'red' }}
             icon="delete"
-            onClick={() => this.handleRemoveItem(record)}
+            onClick={() => this.showConfirmDeleteAccount(record)}
           />
         </>
       ),
@@ -108,10 +107,10 @@ class AccountList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'accountManagement/fetch',
+      type: 'accountActiveManagement/fetch',
     });
     dispatch({
-      type: 'accountManagement/fetchRolesList',
+      type: 'accountActiveManagement/fetchRolesList',
     });
   }
 
@@ -142,7 +141,7 @@ class AccountList extends Component {
     }
 
     dispatch({
-      type: 'accountManagement/fetch',
+      type: 'accountActiveManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -166,30 +165,17 @@ class AccountList extends Component {
     });
   };
 
-  handleRemoveItem = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => { },
-    });
-  };
-
   handleToggle = row => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'accountManagement/toggleStatus',
+      type: 'accountActiveManagement/toggleStatus',
       payload: row,
       callback: res => {
         if (res && res.status) {
           message.success('Chuyển đổi trạng thái thành công!');
           if (!this.currentPager) {
             dispatch({
-              type: 'accountManagement/fetch',
+              type: 'accountActiveManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -199,6 +185,40 @@ class AccountList extends Component {
       },
     });
   };
+
+  showConfirmDeleteAccount = record => {
+    Modal.confirm({
+      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
+      content: '',
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: () => {
+        this.handleRemoveItem(record.id);
+      },
+      onCancel: () => { },
+    });
+  };
+
+  handleRemoveItem = id => {
+    const { dispatch } = this.props
+    dispatch({
+      type: 'accountActiveManagement/remove',
+      payload: id,
+      callback: res => {
+        if (res && res.status) {
+          message.success('Xóa tài khoản quản trị thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountActiveManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleStandardTableChange(pagination, filtersArg, sorter);
+          }
+        }
+      },
+    })
+  }
 
   handleSearch = e => {
     e.preventDefault();
@@ -242,7 +262,7 @@ class AccountList extends Component {
     const { dispatch } = this.props;
     if (!this.currentPage) {
       dispatch({
-        type: 'accountManagement/fetch',
+        type: 'accountActiveManagement/fetch',
         payload: this.state.formValues,
         callback: () => {
           this.setState({
@@ -274,10 +294,57 @@ class AccountList extends Component {
     );
   };
 
-  handleModalVisible = value => {
+  showCreateForm = () => {
+    this.handleModalCreateVisible(true)
+  }
+
+  handleModalCreateVisible = value => {
     this.setState({
-      modalVisible: value,
+      modalCreateVisible: value,
     })
+  }
+
+  showUpdateForm = id => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountActiveManagement/getDetail',
+      payload: id,
+    });
+    this.handleModalUpdateVisible(true);
+  };
+
+  handleModalUpdateVisible = value => {
+    this.setState({
+      modalUpdateVisible: value,
+    })
+  };
+
+  handleCreate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountActiveManagement/add',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          message.success('Thêm mới thành công');
+          this.handleModalCreateVisible(false);
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountActiveManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleStandardTableChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.success('Thêm mới thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
+  }
+
+  handleUpdate = fields => {
+    console.log(fields, 'ra ngoài')
   }
 
   renderAdvancedForm() {
@@ -378,7 +445,7 @@ class AccountList extends Component {
         <Button
           type="primary"
           className={styles.customExportBtn}
-          onClick={() => this.handleModalVisible(true)}
+          onClick={this.showCreateForm}
         >
           <Icon type="plus" />
           Thêm tài khoản quản trị
@@ -389,14 +456,12 @@ class AccountList extends Component {
 
   render() {
     const {
-      accountManagement: { data },
+      accountActiveManagement: { data, detail },
       loading,
       loadingToggle,
+      loadingDetail,
     } = this.props;
-    const { modalVisible } = this.state;
-    const addMethods = {
-      handleModalVisible: this.handleModalVisible,
-    };
+    const { modalCreateVisible, modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
@@ -408,7 +473,7 @@ class AccountList extends Component {
               {this.renderSearchForm()}
             </div>
             <StandardTable
-              loading={loading || loadingToggle}
+              loading={loading || loadingDetail || loadingToggle}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
@@ -416,12 +481,21 @@ class AccountList extends Component {
           </div>
         </Card>
         <CreateForm
-          {...addMethods}
-          modalVisible={modalVisible}
+          handleModalVisible={this.handleModalCreateVisible}
+          modalVisible={modalCreateVisible}
+          handleAdd={this.handleCreate}
         />
+        {!loadingDetail && (
+          <UpdateForm
+            handleModalVisible={this.handleModalUpdateVisible}
+            handleAdd={this.handleUpdate}
+            modalVisible={modalUpdateVisible}
+            data={detail || {}}
+          />
+        )}
       </PageHeaderWrapper>
     );
   }
 }
 
-export default Form.create()(AccountList);
+export default Form.create()(AccountActiveList);
