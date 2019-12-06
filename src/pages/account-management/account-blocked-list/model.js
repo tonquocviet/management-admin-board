@@ -2,6 +2,9 @@ import {
   queryList,
   queryRoleList,
   toggleStatus,
+  removeAccount,
+  queryDetail,
+  updateAccount,
 } from './service';
 
 const Model = {
@@ -29,14 +32,32 @@ const Model = {
         payload: response,
       });
     },
+    *update({ payload, callback }, { call }) {
+      const response = yield call(updateAccount, payload);
+      if (callback) callback(response);
+    },
     *toggleStatus({ payload, callback }, { call }) {
       const response = yield call(toggleStatus, payload);
       if (callback) callback(response);
+    },
+    *remove({ payload, callback }, { call }) {
+      const response = yield call(removeAccount, payload);
+      if (callback) callback(response);
+    },
+    *getDetail({ payload }, { call, put }) {
+      const response = yield call(queryDetail, payload);
+      yield put({
+        type: 'saveDetail',
+        payload: response,
+      })
     },
   },
   reducers: {
     save(state, action) {
       return { ...state, data: action.payload };
+    },
+    saveDetail(state, action) {
+      return { ...state, detail: action.payload };
     },
     populateRolesList(state, action) {
       return { ...state, roleList: action.payload }

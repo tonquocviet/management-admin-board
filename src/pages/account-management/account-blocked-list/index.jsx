@@ -1,13 +1,11 @@
-import { Button, Card, Col, Form, Input, Row, message, Modal, Icon, DatePicker } from 'antd';
+import { Button, Card, Form, message, Modal } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import moment from 'moment';
 import styles from './style.less';
-import { WAIT_INTERVAL } from '@/utils/common';
 import StandardTable from './components/StandardTable';
-
-const FormItem = Form.Item;
+import UpdateForm from './components/UpdateForm';
+import SearchForm from './components/SearchForm';
 
 const getValue = obj =>
   Object.keys(obj)
@@ -18,17 +16,14 @@ const getValue = obj =>
   accountBlockedManagement,
   loading: loading.effects['accountBlockedManagement/fetch'],
   loadingToggle: loading.effects['accountBlockedManagement/toggleStatus'],
+  loadingDetail: loading.effects['accountBlockedManagement/getDetail'],
 }))
 
 class AccountBlockedList extends Component {
   state = {
     formValues: {},
-    searchValue: '',
-    isSearch: false,
-    // eslint-disable-next-line react/no-unused-state
     isReset: false,
-    // eslint-disable-next-line react/no-unused-state
-    modalVisible: false,
+    modalUpdateVisible: false,
   };
 
   timer = null;
@@ -39,11 +34,10 @@ class AccountBlockedList extends Component {
     {
       title: 'Tên tài khoản',
       dataIndex: 'username',
+      sorter: true,
       align: 'center',
-      render: text => (
-        <Button
-          type="link"
-        >
+      render: (text, record) => (
+        <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
         </Button>
       ),
@@ -62,11 +56,13 @@ class AccountBlockedList extends Component {
     },
     {
       title: 'Email',
+      sorter: true,
       dataIndex: 'email',
       align: 'center',
     },
     {
       title: 'Số điện thoại',
+      sorter: true,
       dataIndex: 'phoneNumber',
       align: 'center',
     },
@@ -90,14 +86,14 @@ class AccountBlockedList extends Component {
         <>
           <Button
             type="link"
-            icon="unlock"
+            icon="lock"
             onClick={() => this.showConfirmToggleAccountStatus(record)}
           />
           <Button
             type="link"
             style={{ color: 'red' }}
             icon="delete"
-            onClick={() => this.handleRemoveItem(record)}
+            onClick={() => this.showConfirmDeleteAccount(record)}
           />
         </>
       ),
@@ -133,10 +129,10 @@ class AccountBlockedList extends Component {
 
     if (sorter.field) {
       if (sorter.order === 'ascend') {
-        params.sorter = 'asc';
+        params.sorter = `${sorter.field}=asc`;
       }
       if (sorter.order === 'descend') {
-        params.sorter = 'desc';
+        params.sorter = `${sorter.field}=desc`;
       }
     }
 
@@ -145,7 +141,6 @@ class AccountBlockedList extends Component {
       payload: params,
       callback: () => {
         this.setState({
-          isSearch: false,
           isReset: false,
         });
       },
@@ -155,19 +150,6 @@ class AccountBlockedList extends Component {
   showConfirmToggleAccountStatus = record => {
     Modal.confirm({
       title: `Bạn có chắc muốn mở khóa tài khoản ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => { },
-    });
-  };
-
-  handleRemoveItem = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -192,49 +174,66 @@ class AccountBlockedList extends Component {
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleStandardTableChange(pagination, filtersArg, sorter);
+            this.handleListChange(pagination, filtersArg, sorter);
           }
         }
       },
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
-    const { form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      const startDate =
-        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
-      const endDate =
-        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
-      if (err) return;
-      const values = {
-        ...fieldsValue,
-        startDate,
-        endDate,
-      }
-      this.setState(
-        {
-          formValues: values,
-          searchValue: '',
-          isSearch: true,
-          isReset: false,
-        },
-        this.search,
-      );
+  showConfirmDeleteAccount = record => {
+    Modal.confirm({
+      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
+      content: '',
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: () => {
+        this.handleRemoveItem(record.id);
+      },
+      onCancel: () => { },
     });
   };
 
-  handleSearchOnList = value => {
-    clearTimeout(this.timer);
-    const { formValues } = this.state;
-    const values = formValues;
-    values.searchValue = value;
-    this.setState({
-      searchValue: value,
-      formValues: values,
-    });
-    this.timer = setTimeout(this.search, WAIT_INTERVAL);
+  handleRemoveItem = id => {
+    const { dispatch } = this.props
+    dispatch({
+      type: 'accountBlockedManagement/remove',
+      payload: id,
+      callback: res => {
+        if (res && res.status) {
+          message.success('Xóa tài khoản quản trị thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountBlockedManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        }
+      },
+    })
+  }
+
+  handleSearch = values => {
+    this.setState(
+      {
+        formValues: values,
+        isReset: false,
+      },
+      // đang handel
+      // this.search,
+    );
+  };
+
+  handleFormReset = () => {
+    this.setState(
+      {
+        formValues: {},
+        isReset: true,
+      },
+      this.search,
+    );
   };
 
   search = () => {
@@ -245,7 +244,6 @@ class AccountBlockedList extends Component {
         payload: this.state.formValues,
         callback: () => {
           this.setState({
-            isSearch: false,
             isReset: false,
           });
         },
@@ -257,145 +255,83 @@ class AccountBlockedList extends Component {
     }
   };
 
-  handleClearInput = () => {
-    this.setState(prevState => {
-      const values = prevState.formValues;
-      delete values.searchValue;
-      return {
-        formValues: values,
-      };
+  showUpdateForm = id => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountBlockedManagement/getDetail',
+      payload: id,
     });
-    this.setState(
-      {
-        searchValue: '',
-      },
-      this.search,
-    );
+    this.handleModalUpdateVisible(true);
   };
 
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-      loading,
-    } = this.props;
-    return (
-      <Form
-        onSubmit={this.handleSearch}
-        layout="vertical"
-        hideRequiredMark
-        className={styles.customPaddingCol}
-      >
-        <Row gutter={16}>
-          <Col lg={8} md={12} sm={24}>
-            <FormItem label="Từ ngày">
-              {getFieldDecorator('startDate', {
-                initialValue: moment().add(-219, 'day'),
-              })(
-                <DatePicker
-                  disabledDate={this.disabledStartDate}
-                  placeholder="Chọn ngày bắt đầu"
-                  format="DD/MM/YYYY"
-                  style={{
-                    width: '100%',
-                  }}
-                  onChange={this.getStartDate}
-                />,
-              )}
-            </FormItem>
-          </Col>
-          <Col lg={8} md={12} sm={24}>
-            <FormItem label="Đến ngày">
-              {getFieldDecorator('endDate', {
-                initialValue: moment().add(26, 'day'),
-              })(
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  disabledDate={this.disabledEndDate}
-                  placeholder="Chọn ngày kết thúc"
-                  style={{
-                    width: '100%',
-                  }}
-                  onChange={this.getEndDate}
-                />,
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div
-          style={{
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              textAlign: 'center',
-            }}
-          >
-            <Button type="primary" htmlType="submit" loading={this.state.isSearch && loading}>
-              Tìm tài khoản
-            </Button>
-            <Button
-              className={styles.customButton}
-              loading={this.state.isReset && loading}
-              onClick={this.handleFormReset}
-            >
-              Hủy tìm kiếm
-            </Button>
-          </div>
-        </div>
-      </Form>
-    );
-  }
+  handleModalUpdateVisible = value => {
+    this.setState({
+      modalUpdateVisible: value,
+    })
+  };
 
-  renderSearchForm() {
-    return (
-      <Row type="flex" justify="space-between">
-        <Col md={8} sm={24} xs={24}>
-          <Input
-            value={this.state.searchValue}
-            suffix={
-              this.state.searchValue ? (
-                <Icon
-                  style={{ color: '#ca4f4f' }}
-                  type="close-circle"
-                  onClick={() => this.handleClearInput()}
-                />
-              ) : (
-                  <Icon style={{ color: '#aaaaaa' }} type="search" />
-                )
-            }
-            placeholder="Tìm trên danh sách kết quả"
-            onChange={e => this.handleSearchOnList(e.target.value)}
-          />
-        </Col>
-      </Row>
-    );
+  handleUpdate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountBlockedManagement/update',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          this.handleModalUpdateVisible(false);
+          message.success('Cập nhật thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountBlockedManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.success('Cập nhật thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
   }
 
   render() {
     const {
-      accountBlockedManagement: { data },
+      accountBlockedManagement: { data, detail },
       loading,
       loadingToggle,
+      loadingDetail,
     } = this.props;
+    const { modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
-          {this.renderAdvancedForm()}
+          <SearchForm
+            handleSearch={this.handleSearch}
+            handleFormReset={this.handleFormReset}
+            isReset={this.state.isReset}
+            loading={loading}
+          />
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
-              {this.renderSearchForm()}
             </div>
             <StandardTable
-              loading={loading || loadingToggle}
+              loading={loading || loadingDetail || loadingToggle}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
             />
           </div>
         </Card>
+        {!loadingDetail && (
+          <UpdateForm
+            handleModalVisible={this.handleModalUpdateVisible}
+            handleAdd={this.handleUpdate}
+            modalVisible={modalUpdateVisible}
+            data={detail || {}}
+          />
+        )}
       </PageHeaderWrapper>
     );
   }

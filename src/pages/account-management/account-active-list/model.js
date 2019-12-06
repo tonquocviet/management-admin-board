@@ -5,6 +5,7 @@ import {
   queryDetail,
   addAccount,
   removeAccount,
+  updateAccount,
 } from './service';
 
 const Model = {
@@ -27,6 +28,10 @@ const Model = {
     },
     *add({ payload, callback }, { call }) {
       const response = yield call(addAccount, payload);
+      if (callback) callback(response);
+    },
+    *update({ payload, callback }, { call }) {
+      const response = yield call(updateAccount, payload);
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call }) {

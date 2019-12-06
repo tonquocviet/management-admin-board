@@ -1,15 +1,12 @@
-import { Button, Card, Col, Form, Input, Row, message, Modal, Icon, DatePicker } from 'antd';
+import { Button, Card, Form, Row, message, Modal, Icon } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import moment from 'moment';
 import styles from './style.less';
-import { WAIT_INTERVAL } from '@/utils/common';
 import StandardTable from './components/StandardTable';
-import CreateForm from './components/CreateForm'
-import UpdateForm from './components/UpdateForm'
-
-const FormItem = Form.Item;
+import CreateForm from './components/CreateForm';
+import UpdateForm from './components/UpdateForm';
+import SearchForm from './components/SearchForm';
 
 const getValue = obj =>
   Object.keys(obj)
@@ -26,8 +23,6 @@ const getValue = obj =>
 class AccountActiveList extends Component {
   state = {
     formValues: {},
-    searchValue: '',
-    isSearch: false,
     isReset: false,
     modalCreateVisible: false,
     modalUpdateVisible: false,
@@ -41,6 +36,7 @@ class AccountActiveList extends Component {
     {
       title: 'Tên tài khoản',
       dataIndex: 'username',
+      sorter: true,
       align: 'center',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
@@ -62,11 +58,13 @@ class AccountActiveList extends Component {
     },
     {
       title: 'Email',
+      sorter: true,
       dataIndex: 'email',
       align: 'center',
     },
     {
       title: 'Số điện thoại',
+      sorter: true,
       dataIndex: 'phoneNumber',
       align: 'center',
     },
@@ -133,10 +131,10 @@ class AccountActiveList extends Component {
 
     if (sorter.field) {
       if (sorter.order === 'ascend') {
-        params.sorter = 'asc';
+        params.sorter = `${sorter.field}=asc`;
       }
       if (sorter.order === 'descend') {
-        params.sorter = 'desc';
+        params.sorter = `${sorter.field}=desc`;
       }
     }
 
@@ -145,7 +143,6 @@ class AccountActiveList extends Component {
       payload: params,
       callback: () => {
         this.setState({
-          isSearch: false,
           isReset: false,
         });
       },
@@ -179,7 +176,7 @@ class AccountActiveList extends Component {
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleStandardTableChange(pagination, filtersArg, sorter);
+            this.handleListChange(pagination, filtersArg, sorter);
           }
         }
       },
@@ -213,49 +210,32 @@ class AccountActiveList extends Component {
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleStandardTableChange(pagination, filtersArg, sorter);
+            this.handleListChange(pagination, filtersArg, sorter);
           }
         }
       },
     })
   }
 
-  handleSearch = e => {
-    e.preventDefault();
-    const { form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      const startDate =
-        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
-      const endDate =
-        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
-      if (err) return;
-      const values = {
-        ...fieldsValue,
-        startDate,
-        endDate,
-      }
-      this.setState(
-        {
-          formValues: values,
-          searchValue: '',
-          isSearch: true,
-          isReset: false,
-        },
-        this.search,
-      );
-    });
+  handleSearch = values => {
+    this.setState(
+      {
+        formValues: values,
+        isReset: false,
+      },
+      // đang handel
+      // this.search,
+    );
   };
 
-  handleSearchOnList = value => {
-    clearTimeout(this.timer);
-    const { formValues } = this.state;
-    const values = formValues;
-    values.searchValue = value;
-    this.setState({
-      searchValue: value,
-      formValues: values,
-    });
-    this.timer = setTimeout(this.search, WAIT_INTERVAL);
+  handleFormReset = () => {
+    this.setState(
+      {
+        formValues: {},
+        isReset: true,
+      },
+      this.search,
+    );
   };
 
   search = () => {
@@ -266,7 +246,6 @@ class AccountActiveList extends Component {
         payload: this.state.formValues,
         callback: () => {
           this.setState({
-            isSearch: false,
             isReset: false,
           });
         },
@@ -276,22 +255,6 @@ class AccountActiveList extends Component {
       pagination.current = 1;
       this.handleListChange(pagination, filtersArg, sorter);
     }
-  };
-
-  handleClearInput = () => {
-    this.setState(prevState => {
-      const values = prevState.formValues;
-      delete values.searchValue;
-      return {
-        formValues: values,
-      };
-    });
-    this.setState(
-      {
-        searchValue: '',
-      },
-      this.search,
-    );
   };
 
   showCreateForm = () => {
@@ -326,15 +289,15 @@ class AccountActiveList extends Component {
       payload: fields,
       callback: res => {
         if (res && res.status) {
-          message.success('Thêm mới thành công');
           this.handleModalCreateVisible(false);
+          message.success('Thêm mới thành công');
           if (!this.currentPage) {
             dispatch({
               type: 'accountActiveManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleStandardTableChange(pagination, filtersArg, sorter);
+            this.handleListChange(pagination, filtersArg, sorter);
           }
         } else {
           message.success('Thêm mới thất bại, vui lòng thử lại sau');
@@ -344,104 +307,32 @@ class AccountActiveList extends Component {
   }
 
   handleUpdate = fields => {
-    console.log(fields, 'ra ngoài')
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountActiveManagement/update',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          this.handleModalUpdateVisible(false);
+          message.success('Cập nhật thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountActiveManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.success('Cập nhật thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
   }
 
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-      loading,
-    } = this.props;
-    return (
-      <Form
-        onSubmit={this.handleSearch}
-        layout="vertical"
-        hideRequiredMark
-        className={styles.customPaddingCol}
-      >
-        <Row gutter={16}>
-          <Col lg={8} md={12} sm={24}>
-            <FormItem label="Từ ngày">
-              {getFieldDecorator('startDate', {
-                initialValue: moment().add(-219, 'day'),
-              })(
-                <DatePicker
-                  disabledDate={this.disabledStartDate}
-                  placeholder="Chọn ngày bắt đầu"
-                  format="DD/MM/YYYY"
-                  style={{
-                    width: '100%',
-                  }}
-                  onChange={this.getStartDate}
-                />,
-              )}
-            </FormItem>
-          </Col>
-          <Col lg={8} md={12} sm={24}>
-            <FormItem label="Đến ngày">
-              {getFieldDecorator('endDate', {
-                initialValue: moment().add(26, 'day'),
-              })(
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  disabledDate={this.disabledEndDate}
-                  placeholder="Chọn ngày kết thúc"
-                  style={{
-                    width: '100%',
-                  }}
-                  onChange={this.getEndDate}
-                />,
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div
-          style={{
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              textAlign: 'center',
-            }}
-          >
-            <Button type="primary" htmlType="submit" loading={this.state.isSearch && loading}>
-              Tìm tài khoản
-            </Button>
-            <Button
-              className={styles.customButton}
-              loading={this.state.isReset && loading}
-              onClick={this.handleFormReset}
-            >
-              Hủy tìm kiếm
-            </Button>
-          </div>
-        </div>
-      </Form>
-    );
-  }
-
-  renderSearchForm() {
+  renderCreateComp() {
     return (
       <Row type="flex" justify="space-between">
-        <Col md={8} sm={24} xs={24}>
-          <Input
-            value={this.state.searchValue}
-            suffix={
-              this.state.searchValue ? (
-                <Icon
-                  style={{ color: '#ca4f4f' }}
-                  type="close-circle"
-                  onClick={() => this.handleClearInput()}
-                />
-              ) : (
-                  <Icon style={{ color: '#aaaaaa' }} type="search" />
-                )
-            }
-            placeholder="Tìm trên danh sách kết quả"
-            onChange={e => this.handleSearchOnList(e.target.value)}
-          />
-        </Col>
         <Button
           type="primary"
           className={styles.customExportBtn}
@@ -465,12 +356,17 @@ class AccountActiveList extends Component {
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
-          {this.renderAdvancedForm()}
+          <SearchForm
+            handleSearch={this.handleSearch}
+            handleFormReset={this.handleFormReset}
+            isReset={this.state.isReset}
+            loading={loading}
+          />
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
-              {this.renderSearchForm()}
+              {this.renderCreateComp()}
             </div>
             <StandardTable
               loading={loading || loadingDetail || loadingToggle}

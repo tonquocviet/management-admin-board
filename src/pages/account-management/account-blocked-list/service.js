@@ -54,3 +54,40 @@ export async function toggleStatus(params) {
   }
   return result;
 }
+export async function removeAccount(params) {
+  let result = {}
+  const res = await request(`/api/user/remove-account/${params}`, {
+    method: 'DELETE',
+  });
+  if (res.status) {
+    result = { ...res }
+  }
+  return result;
+}
+export async function queryDetail(params) {
+  let result = {}
+  const res = await request(`/api/user/${params}`);
+  if (res.status) {
+    result = { ...res.result }
+  }
+  return result;
+}
+export async function updateAccount(params) {
+  const data = params && {
+    full_name: params.full_name,
+    phoneNumber: params.phoneNumber,
+    sex_type: params.sex_type,
+    address: params.address,
+    startDate: params.startDate,
+    endDate: params.endDate,
+  }
+  let result = {}
+  const res = await request(`/api/user/update-profile/${params.id}`, {
+    method: 'PUT',
+    data: { ...data },
+  });
+  if (res.status) {
+    result = { ...res }
+  }
+  return result;
+}

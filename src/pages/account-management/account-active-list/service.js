@@ -1,18 +1,21 @@
 import request from '@/utils/request';
-import { async } from 'q';
-import { func } from 'prop-types';
 
 export async function queryList(params = {}) {
+  // eslint-disable-next-line no-mixed-operators
+  const sorter = params && params.sorter && params.sorter.split('=') || ['', ''];
   const requestParams = params && {
     page: params.currentPage || 1,
     pageSize: params.pageSize || 10,
     blocked: false,
-    // full_name: params.sorter || 'asc',
+    // SORT
+    [sorter[0]]: sorter[1],
     // SEARCH
-    // eslint-disable-next-line no-dupe-keys
-    full_name: params.searchValue,
-    startDate: '2019-05-27T08:42:25.397Z',
-    endDate: '2019-12-28T08:42:25.397Z',
+    // username: params.username || undefined,
+    // email: params.email || undefined,
+    // full_name: params.full_name || undefined,
+    // phoneNumber: params.phoneNumber || undefined,
+    // startDate: params.startDate || undefined,
+    // endDate: params.endDate || undefined,
   };
   const response = await request('/api/user', {
     params: requestParams,
@@ -79,6 +82,25 @@ export async function removeAccount(params) {
   let result = {}
   const res = await request(`/api/user/remove-account/${params}`, {
     method: 'DELETE',
+  });
+  if (res.status) {
+    result = { ...res }
+  }
+  return result;
+}
+export async function updateAccount(params) {
+  const data = params && {
+    full_name: params.full_name,
+    phoneNumber: params.phoneNumber,
+    sex_type: params.sex_type,
+    address: params.address,
+    startDate: params.startDate,
+    endDate: params.endDate,
+  }
+  let result = {}
+  const res = await request(`/api/user/update-profile/${params.id}`, {
+    method: 'PUT',
+    data: { ...data },
   });
   if (res.status) {
     result = { ...res }

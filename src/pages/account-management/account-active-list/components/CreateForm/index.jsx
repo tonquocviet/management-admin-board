@@ -1,6 +1,7 @@
 import { Form, Input, Modal, DatePicker, Select } from 'antd';
 import React from 'react';
 import moment from 'moment';
+import InputPhone from '@/components/PhoneInput';
 
 const FormItem = Form.Item;
 
@@ -203,7 +204,7 @@ const CreateForm = props => {
               message: 'Tối thiểu 9 ký tự!',
             },
           ],
-        })(<Input style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
+        })(<InputPhone style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
       </FormItem>
     </Modal>
   );
