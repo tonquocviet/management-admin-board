@@ -75,8 +75,8 @@ class Register extends Component {
         if (!err) {
           const dataRegister = {
             ...values,
-          }
-          delete dataRegister.confirm
+          };
+          delete dataRegister.confirm;
           dispatch({
             type: 'userRegister/submit',
             payload: { ...dataRegister },
@@ -237,13 +237,7 @@ class Register extends Component {
                     validator: this.checkPassword,
                   },
                 ],
-              })(
-                <Input
-                  size="large"
-                  type="password"
-                  placeholder="Vui lòng nhập mật khẩu"
-                />,
-              )}
+              })(<Input size="large" type="password" placeholder="Vui lòng nhập mật khẩu" />)}
             </Popover>
           </FormItem>
           <FormItem>
@@ -257,13 +251,7 @@ class Register extends Component {
                   validator: this.checkConfirm,
                 },
               ],
-            })(
-              <Input
-                size="large"
-                type="password"
-                placeholder="Vui lòng xác nhận mật khẩu"
-              />,
-            )}
+            })(<Input size="large" type="password" placeholder="Vui lòng xác nhận mật khẩu" />)}
           </FormItem>
           <FormItem>
             {getFieldDecorator('full_name', {
@@ -321,7 +309,13 @@ class Register extends Component {
                   message: 'Tối thiểu 9 ký tự!',
                 },
               ],
-            })(<InputPhone size="large" style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
+            })(
+              <InputPhone
+                size="large"
+                style={{ width: '100%' }}
+                placeholder="Nhập số điện thoại"
+              />,
+            )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('address', {

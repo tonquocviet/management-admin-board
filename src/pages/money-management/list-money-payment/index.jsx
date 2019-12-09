@@ -4,15 +4,12 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 export default () => (
   <PageHeaderWrapper>
-    <Card>
-     Danh sách thu chi
-    </Card>
+    <Card>Danh sách thu chi</Card>
     <p
       style={{
         textAlign: 'center',
         marginTop: 24,
       }}
-    >
-    </p>
+    ></p>
   </PageHeaderWrapper>
 );

@@ -4,13 +4,7 @@ import React from 'react';
 const FormItem = Form.Item;
 
 const CreateForm = props => {
-  const {
-    modalVisible,
-    form,
-    handleAdd,
-    handleModalVisible,
-    loading,
-  } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {

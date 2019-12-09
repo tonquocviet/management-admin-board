@@ -20,7 +20,6 @@ const getValue = obj =>
   loadingToggle: loading.effects['internshipActiveManagement/toggleStatus'],
   loadingDetail: loading.effects['internshipActiveManagement/getDetail'],
 }))
-
 class InternCurrentList extends Component {
   state = {
     formValues: {},
@@ -154,7 +153,7 @@ class InternCurrentList extends Component {
       onOk: () => {
         this.handleToggle(record);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -188,12 +187,12 @@ class InternCurrentList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
   handleRemoveItem = id => {
-    const { dispatch } = this.props
+    const { dispatch } = this.props;
     dispatch({
       type: 'internshipActiveManagement/remove',
       payload: id,
@@ -210,8 +209,8 @@ class InternCurrentList extends Component {
           }
         }
       },
-    })
-  }
+    });
+  };
 
   handleSearch = values => {
     this.setState(
@@ -254,14 +253,14 @@ class InternCurrentList extends Component {
   };
 
   showCreateForm = () => {
-    this.handleModalCreateVisible(true)
-  }
+    this.handleModalCreateVisible(true);
+  };
 
   handleModalCreateVisible = value => {
     this.setState({
       modalCreateVisible: value,
-    })
-  }
+    });
+  };
 
   showUpdateForm = id => {
     const { dispatch } = this.props;
@@ -275,7 +274,7 @@ class InternCurrentList extends Component {
   handleModalUpdateVisible = value => {
     this.setState({
       modalUpdateVisible: value,
-    })
+    });
   };
 
   handleCreate = fields => {
@@ -300,7 +299,7 @@ class InternCurrentList extends Component {
         }
       },
     });
-  }
+  };
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
@@ -324,16 +323,12 @@ class InternCurrentList extends Component {
         }
       },
     });
-  }
+  };
 
   renderCreateComp() {
     return (
       <Row type="flex" justify="space-between">
-        <Button
-          type="primary"
-          className={styles.customExportBtn}
-          onClick={this.showCreateForm}
-        >
+        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
           <Icon type="plus" />
           Thêm thực tập sinh
         </Button>

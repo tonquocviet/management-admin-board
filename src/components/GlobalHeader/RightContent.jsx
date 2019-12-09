@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 
 const GlobalHeaderRight = props => {
@@ -14,18 +13,6 @@ const GlobalHeaderRight = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
-        placeholder="Tìm kiếm"
-        defaultValue="umi ui"
-        dataSource={['Nhân viên', 'Thực tập', 'Kế toán']}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
-      />
       <Avatar />
     </div>
   );

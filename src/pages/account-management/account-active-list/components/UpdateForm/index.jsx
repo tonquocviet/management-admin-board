@@ -29,21 +29,14 @@ const genderList = [
   },
 ];
 const CreateForm = props => {
-  const {
-    modalVisible,
-    form,
-    handleAdd,
-    handleModalVisible,
-    loading,
-    data,
-  } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, loading, data } = props;
   const okHandle = () => {
     // eslint-disable-next-line no-underscore-dangle
     form.validateFields((err, fieldsValue) => {
-      const id = data._id
+      const id = data._id;
       // const birthday = (fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString())
-      const startDate = '2019-11-23T13:51:48.400Z'
-      const endDate = '2019-11-23T13:51:48.400Z'
+      const startDate = '2019-11-23T13:51:48.400Z';
+      const endDate = '2019-11-23T13:51:48.400Z';
       if (err) return;
       const value = {
         id,
@@ -52,8 +45,8 @@ const CreateForm = props => {
         endDate,
       };
       ['username', 'email'].forEach(key => {
-        delete value[key]
-      })
+        delete value[key];
+      });
       handleAdd({
         ...value,
       });
@@ -168,11 +161,7 @@ const CreateForm = props => {
             },
           ],
         })(
-          <DatePicker
-            placeholder="Chọn ngày nhận"
-            style={{ width: '100%' }}
-            format="DD/MM/YYYY"
-          />,
+          <DatePicker placeholder="Chọn ngày nhận" style={{ width: '100%' }} format="DD/MM/YYYY" />,
         )}
       </FormItem>
     </Modal>

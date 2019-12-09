@@ -33,8 +33,7 @@ const UserLayout = props => {
       </Helmet>
 
       <div className={styles.container}>
-        <div className={styles.lang}>
-        </div>
+        <div className={styles.lang}></div>
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>

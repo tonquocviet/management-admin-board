@@ -12,7 +12,6 @@ export default () => (
         textAlign: 'center',
         marginTop: 24,
       }}
-    >
-    </p>
+    ></p>
   </PageHeaderWrapper>
 );

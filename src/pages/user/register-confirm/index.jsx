@@ -26,39 +26,36 @@ const actions = (
   verifyRegister,
   submitting: loading.effects['verifyRegister/submit'],
 }))
-
 class RegisterConfirm extends Component {
   handleVerify = e => {
     const { location, form, dispatch } = this.props;
     e.preventDefault();
-    form.validateFields(
-      (err, values) => {
-        if (!err) {
-          const email = (location && location.state && location.state.account) || 'test@gmail.com'
-          const dataVerify = {
-            ...values,
-            email,
-          }
-          dispatch({
-            type: 'verifyRegister/submit',
-            payload: { ...dataVerify },
-            callback: res => {
-              if (res && res.status) {
-                // router.push({
-                //   pathname: '/user/login',
-                // });
-                message.success('Đăng kí tài khoản thành công !');
-              }
-            },
-          })
-        }
-      },
-    )
-  }
+    form.validateFields((err, values) => {
+      if (!err) {
+        const email = (location && location.state && location.state.account) || 'test@gmail.com';
+        const dataVerify = {
+          ...values,
+          email,
+        };
+        dispatch({
+          type: 'verifyRegister/submit',
+          payload: { ...dataVerify },
+          callback: res => {
+            if (res && res.status) {
+              // router.push({
+              //   pathname: '/user/login',
+              // });
+              message.success('Đăng kí tài khoản thành công !');
+            }
+          },
+        });
+      }
+    });
+  };
 
   render() {
-    const { location, form, submitting } = this.props
-    const emailDisplay = (location && location.state && location.state.email) || null
+    const { location, form, submitting } = this.props;
+    const emailDisplay = (location && location.state && location.state.email) || null;
     return (
       <div>
         <Result
@@ -66,8 +63,10 @@ class RegisterConfirm extends Component {
           status="success"
           title={
             <div className={styles.title}>
-              Để đăng nhập vào hệ thống, vui lòng kiểm tra email {emailDisplay} và nhập code kích hoạt tài khoản
-            </div>}
+              Để đăng nhập vào hệ thống, vui lòng kiểm tra email {emailDisplay} và nhập code kích
+              hoạt tài khoản
+            </div>
+          }
           subTitle="Mã xác thực đã được gửi đến địa chỉ email của bạn và có hiệu lực trong 15 phút. Vui lòng đăng nhập vào email kịp thời và kiểm tra trong hộp thư đến hoặc hộp thư Spam."
           extra={actions}
         />
@@ -85,20 +84,22 @@ class RegisterConfirm extends Component {
                     message: 'Giá trị không hợp lệ!',
                   },
                 ],
-              })(<Input maxLength={4} prefix={<Icon type="key"/>} size="large" placeholder="Mã xác thực" />)}
+              })(
+                <Input
+                  maxLength={4}
+                  prefix={<Icon type="key" />}
+                  size="large"
+                  placeholder="Mã xác thực"
+                />,
+              )}
             </FormItem>
-            <Button
-              size="large"
-              loading={submitting}
-              type="primary"
-              htmlType="submit"
-            >
+            <Button size="large" loading={submitting} type="primary" htmlType="submit">
               Xác nhận
-              </Button>
+            </Button>
           </Form>
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -2,18 +2,12 @@ import React from 'react';
 import { Button, Col, Form, Input, Row, DatePicker } from 'antd';
 import moment from 'moment';
 import InputPhone from '@/components/PhoneInput';
-import styles from '../../style.less'
+import styles from '../../style.less';
 
 const FormItem = Form.Item;
 
 const SearchForm = props => {
-  const {
-    handleSearch,
-    form,
-    handleFormReset,
-    isReset,
-    loading,
-  } = props
+  const { handleSearch, form, handleFormReset, isReset, loading } = props;
 
   const onSearch = e => {
     e.preventDefault();
@@ -27,8 +21,8 @@ const SearchForm = props => {
         ...fieldsValue,
         startDate,
         endDate,
-      }
-      handleSearch(values)
+      };
+      handleSearch(values);
     });
   };
 
@@ -99,8 +93,10 @@ const SearchForm = props => {
             })(<Input maxLength={20} placeholder="Nhập họ và tên cần tìm" />)}
           </FormItem>
           <FormItem label="Từ ngày">
-            {getFieldDecorator('startDate', {
-            })(
+            {getFieldDecorator(
+              'startDate',
+              {},
+            )(
               <DatePicker
                 disabledDate={disabledStartDate}
                 placeholder="Chọn ngày bắt đầu"
@@ -124,8 +120,10 @@ const SearchForm = props => {
             })(<Input placeholder="Nhập email cần tìm" />)}
           </FormItem>
           <FormItem label="Đến ngày">
-            {getFieldDecorator('endDate', {
-            })(
+            {getFieldDecorator(
+              'endDate',
+              {},
+            )(
               <DatePicker
                 format="DD/MM/YYYY"
                 disabledDate={disabledEndDate}
@@ -150,18 +148,14 @@ const SearchForm = props => {
         >
           <Button type="primary" htmlType="submit" loading={isReset && loading}>
             Tìm thực tập sinh
-            </Button>
-          <Button
-            className={styles.customButton}
-            loading={isReset && loading}
-            onClick={onReset}
-          >
+          </Button>
+          <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
             Hủy tìm kiếm
-            </Button>
+          </Button>
         </div>
       </div>
     </Form>
-  )
-}
+  );
+};
 
-export default Form.create()(SearchForm)
+export default Form.create()(SearchForm);

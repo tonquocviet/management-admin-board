@@ -111,8 +111,9 @@ class Login extends Component {
           />
           <Submit loading={submitting}>Đăng nhập</Submit>
           <div>
-          <Link className={styles.register} to="/user/register">Đăng kí tài khoản
-          </Link>
+            <Link className={styles.register} to="/user/register">
+              Đăng kí tài khoản
+            </Link>
             <a
               style={{
                 float: 'right',

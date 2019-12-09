@@ -11,7 +11,6 @@ const Model = {
       if (callback) callback(response);
     },
   },
-  reducers: {
-  },
+  reducers: {},
 };
 export default Model;

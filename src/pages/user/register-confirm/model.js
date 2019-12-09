@@ -2,15 +2,13 @@ import { verifyCode } from './service';
 
 const Model = {
   namespace: 'verifyRegister',
-  state: {
-  },
+  state: {},
   effects: {
     *submit({ payload, callback }, { call }) {
       const response = yield call(verifyCode, payload);
       if (callback) callback(response);
     },
   },
-  reducers: {
-  },
+  reducers: {},
 };
 export default Model;

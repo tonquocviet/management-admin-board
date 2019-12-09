@@ -22,7 +22,7 @@ export async function queryList(params = {}) {
       current: (params || {}).currentPage || 1,
     },
     list: [],
-  }
+  };
   result.list = (response.results || []).map(item => ({
     // eslint-disable-next-line no-underscore-dangle
     id: item._id,
@@ -43,32 +43,32 @@ export async function queryRoleList() {
 export async function toggleStatus(params) {
   const dataParams = {
     blocked: false,
-  }
+  };
   let result = {};
   const res = await request(`/api/user/block-account/${params.id}`, {
     method: 'PUT',
     data: dataParams,
   });
   if (res.status) {
-    result = { ...res }
+    result = { ...res };
   }
   return result;
 }
 export async function removeAccount(params) {
-  let result = {}
+  let result = {};
   const res = await request(`/api/user/remove-account/${params}`, {
     method: 'DELETE',
   });
   if (res.status) {
-    result = { ...res }
+    result = { ...res };
   }
   return result;
 }
 export async function queryDetail(params) {
-  let result = {}
+  let result = {};
   const res = await request(`/api/user/${params}`);
   if (res.status) {
-    result = { ...res.result }
+    result = { ...res.result };
   }
   return result;
 }
@@ -80,14 +80,14 @@ export async function updateAccount(params) {
     address: params.address,
     startDate: params.startDate,
     endDate: params.endDate,
-  }
-  let result = {}
+  };
+  let result = {};
   const res = await request(`/api/user/update-profile/${params.id}`, {
     method: 'PUT',
     data: { ...data },
   });
   if (res.status) {
-    result = { ...res }
+    result = { ...res };
   }
   return result;
 }

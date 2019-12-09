@@ -19,23 +19,19 @@ const genderList = [
 ];
 
 const CreateForm = props => {
-  const {
-    modalVisible,
-    form,
-    handleAdd,
-    handleModalVisible,
-    loading,
-  } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      const birthday = (fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString())
-      const startDate = moment().toDate().toISOString()
+      const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
+      const startDate = moment()
+        .toDate()
+        .toISOString();
       if (err) return;
       const value = {
         ...fieldsValue,
         birthday,
         startDate,
-      }
+      };
       handleAdd(value);
     });
   };

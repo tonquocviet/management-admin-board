@@ -19,7 +19,6 @@ const getValue = obj =>
   loadingToggle: loading.effects['accountActiveManagement/toggleStatus'],
   loadingDetail: loading.effects['accountActiveManagement/getDetail'],
 }))
-
 class AccountActiveList extends Component {
   state = {
     formValues: {},
@@ -158,7 +157,7 @@ class AccountActiveList extends Component {
       onOk: () => {
         this.handleToggle(record);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -192,12 +191,12 @@ class AccountActiveList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
   handleRemoveItem = id => {
-    const { dispatch } = this.props
+    const { dispatch } = this.props;
     dispatch({
       type: 'accountActiveManagement/remove',
       payload: id,
@@ -214,8 +213,8 @@ class AccountActiveList extends Component {
           }
         }
       },
-    })
-  }
+    });
+  };
 
   handleSearch = values => {
     this.setState(
@@ -258,14 +257,14 @@ class AccountActiveList extends Component {
   };
 
   showCreateForm = () => {
-    this.handleModalCreateVisible(true)
-  }
+    this.handleModalCreateVisible(true);
+  };
 
   handleModalCreateVisible = value => {
     this.setState({
       modalCreateVisible: value,
-    })
-  }
+    });
+  };
 
   showUpdateForm = id => {
     const { dispatch } = this.props;
@@ -279,7 +278,7 @@ class AccountActiveList extends Component {
   handleModalUpdateVisible = value => {
     this.setState({
       modalUpdateVisible: value,
-    })
+    });
   };
 
   handleCreate = fields => {
@@ -304,7 +303,7 @@ class AccountActiveList extends Component {
         }
       },
     });
-  }
+  };
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
@@ -328,16 +327,12 @@ class AccountActiveList extends Component {
         }
       },
     });
-  }
+  };
 
   renderCreateComp() {
     return (
       <Row type="flex" justify="space-between">
-        <Button
-          type="primary"
-          className={styles.customExportBtn}
-          onClick={this.showCreateForm}
-        >
+        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
           <Icon type="plus" />
           Thêm tài khoản quản trị
         </Button>

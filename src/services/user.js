@@ -42,7 +42,7 @@ export async function queryCurrent() {
       address: dataResult.address,
       phone: dataResult.phoneNumber,
       authority: 'admin',
-    }
+    };
   }
   // return {
   //   authority: 'guess',
