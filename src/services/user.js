@@ -42,11 +42,11 @@ export async function queryCurrent() {
       address: dataResult.address,
       phone: dataResult.phoneNumber,
       authority: 'admin',
-    }
+    };
   }
-  return {
-    authority: 'guess',
-  };
+  // return {
+  //   authority: 'guess',
+  // };
 }
 export async function queryNotices() {
   return request('/api/notices');

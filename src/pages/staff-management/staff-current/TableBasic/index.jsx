@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, Divider, Tag } from 'antd';
-import styles from './index.less';
 
 const columns = [
   {
@@ -78,12 +77,9 @@ const data = [
   },
 ];
 export default () => (
-  <div className={styles.container}>
+  <div>
     <div id="components-table-demo-basic">
-      <Table
-      columns={columns}
-      dataSource={data}
-      />
+      <Table columns={columns} dataSource={data} />
     </div>
   </div>
 );

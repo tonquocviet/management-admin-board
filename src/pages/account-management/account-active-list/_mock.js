@@ -14,7 +14,7 @@ const listRole = [
     name: 'Kế toán',
     description: 'Là nhân viên kế toán của công ty',
   },
-]
+];
 
 function getRoleList(req, res) {
   return res.json(listRole);

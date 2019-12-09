@@ -18,7 +18,6 @@ const getValue = obj =>
   loadingToggle: loading.effects['accountBlockedManagement/toggleStatus'],
   loadingDetail: loading.effects['accountBlockedManagement/getDetail'],
 }))
-
 class AccountBlockedList extends Component {
   state = {
     formValues: {},
@@ -156,7 +155,7 @@ class AccountBlockedList extends Component {
       onOk: () => {
         this.handleToggle(record);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -190,12 +189,12 @@ class AccountBlockedList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
   handleRemoveItem = id => {
-    const { dispatch } = this.props
+    const { dispatch } = this.props;
     dispatch({
       type: 'accountBlockedManagement/remove',
       payload: id,
@@ -212,8 +211,8 @@ class AccountBlockedList extends Component {
           }
         }
       },
-    })
-  }
+    });
+  };
 
   handleSearch = values => {
     this.setState(
@@ -267,7 +266,7 @@ class AccountBlockedList extends Component {
   handleModalUpdateVisible = value => {
     this.setState({
       modalUpdateVisible: value,
-    })
+    });
   };
 
   handleUpdate = fields => {
@@ -292,7 +291,7 @@ class AccountBlockedList extends Component {
         }
       },
     });
-  }
+  };
 
   render() {
     const {
@@ -314,8 +313,7 @@ class AccountBlockedList extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
-            </div>
+            <div className={styles.tableListForm} style={{ marginBottom: 20 }}></div>
             <StandardTable
               loading={loading || loadingDetail || loadingToggle}
               data={data}

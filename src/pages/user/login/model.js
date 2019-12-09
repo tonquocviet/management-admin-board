@@ -19,9 +19,7 @@ const Model = {
       }); // Login successfully
 
       if (response.status === true) {
-        saveTokenToLocalStorage(
-          response.token,
-        );
+        saveTokenToLocalStorage(response.token);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;

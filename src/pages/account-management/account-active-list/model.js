@@ -39,7 +39,7 @@ const Model = {
       if (callback) callback(response);
     },
     *fetchRolesList(_, { call, put }) {
-      const response = yield call(queryRoleList)
+      const response = yield call(queryRoleList);
       yield put({
         type: 'populateRolesList',
         payload: response,
@@ -54,7 +54,7 @@ const Model = {
       yield put({
         type: 'saveDetail',
         payload: response,
-      })
+      });
     },
   },
   reducers: {
@@ -65,7 +65,7 @@ const Model = {
       return { ...state, detail: action.payload };
     },
     populateRolesList(state, action) {
-      return { ...state, roleList: action.payload }
+      return { ...state, roleList: action.payload };
     },
   },
 };

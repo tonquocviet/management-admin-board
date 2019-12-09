@@ -1,6 +1,7 @@
-import { Alert, Checkbox } from 'antd';
+import { Alert } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import Link from 'umi/link';
 import LoginComponents from './components/Login';
 import styles from './style.less';
 
@@ -110,14 +111,9 @@ class Login extends Component {
           />
           <Submit loading={submitting}>Đăng nhập</Submit>
           <div>
-          <a
-              style={{
-                float: 'left',
-              }}
-              href=""
-            >
+            <Link className={styles.register} to="/user/register">
               Đăng kí tài khoản
-            </a>
+            </Link>
             <a
               style={{
                 float: 'right',

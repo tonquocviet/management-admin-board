@@ -30,11 +30,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -86,6 +86,18 @@ export default {
           path: '/user/login',
           component: './user/login',
         },
+        {
+          name: 'Xác nhận tài khoản',
+          icon: 'smile',
+          path: '/user/register-confirm',
+          component: './user/register-confirm',
+        },
+        {
+          name: 'Đăng kí tài khoản',
+          icon: 'smile',
+          path: '/user/register',
+          component: './user/register',
+        },
       ],
     },
     {
@@ -125,7 +137,7 @@ export default {
                 {
                   component: './404',
                 },
-              ]
+              ],
             },
             {
               path: '/staff-management',
@@ -145,62 +157,7 @@ export default {
                 {
                   component: './404',
                 },
-              ]
-            },
-            {
-              path: '/dayoff-management',
-              name: 'Quản lý ngày vắng',
-              icon: 'rocket',
-              routes: [
-                {
-                  path: '/dayoff-management/staff-dayoff',
-                  name: 'Quản lý ngày vắng nhân viên',
-                  component: './dayoff-management/staff-dayoff',
-                },
-                {
-                  path: '/dayoff-management/internship-dayoff',
-                  name: 'Quản lý ngày vắng thực tập sinh',
-                  component: './dayoff-management/internship-dayoff',
-                },
-                {
-                  component: './404',
-                },
-              ]
-            },
-            {
-              path: '/statistic-dayoff',
-              name: 'Thống kê ngày vắng',
-              icon: 'line-chart',
-              routes: [
-                {
-                  path: '/statistic-dayoff/by-month',
-                  name: 'Thống kê ngày vắng theo tháng',
-                  component: './statistic-dayoff/by-month',
-                },
-                {
-                  path: '/statistic-dayoff/by-year',
-                  name: 'Thống kê ngày vắng theo năm',
-                  component: './statistic-dayoff/by-year',
-                },
-                {
-                  component: './404',
-                },
-              ]
-            },
-            {
-              path: '/salary-management',
-              name: 'Quản lý lương nhân viên',
-              icon: 'euro',
-              routes: [
-                {
-                  path: '/salary-management/list',
-                  name: 'Danh sách lương nhân viên',
-                  component: './salary-management/list',
-                },
-                {
-                  component: './404',
-                },
-              ]
+              ],
             },
             {
               path: '/internship-management',
@@ -220,7 +177,62 @@ export default {
                 {
                   component: './404',
                 },
-              ]
+              ],
+            },
+            {
+              path: '/dayoff-management',
+              name: 'Quản lý ngày vắng',
+              icon: 'rocket',
+              routes: [
+                {
+                  path: '/dayoff-management/staff-dayoff',
+                  name: 'Quản lý ngày vắng nhân viên',
+                  component: './dayoff-management/staff-dayoff',
+                },
+                {
+                  path: '/dayoff-management/internship-dayoff',
+                  name: 'Quản lý ngày vắng thực tập sinh',
+                  component: './dayoff-management/internship-dayoff',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
+              path: '/statistic-dayoff',
+              name: 'Thống kê ngày vắng',
+              icon: 'line-chart',
+              routes: [
+                {
+                  path: '/statistic-dayoff/by-month',
+                  name: 'Thống kê ngày vắng theo tháng',
+                  component: './statistic-dayoff/by-month',
+                },
+                {
+                  path: '/statistic-dayoff/by-year',
+                  name: 'Thống kê ngày vắng theo năm',
+                  component: './statistic-dayoff/by-year',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
+              path: '/salary-management',
+              name: 'Quản lý lương nhân viên',
+              icon: 'euro',
+              routes: [
+                {
+                  path: '/salary-management/list',
+                  name: 'Danh sách lương nhân viên',
+                  component: './salary-management/list',
+                },
+                {
+                  component: './404',
+                },
+              ],
             },
             {
               path: '/cv-management',
@@ -235,7 +247,7 @@ export default {
                 {
                   component: './404',
                 },
-              ]
+              ],
             },
             {
               path: '/money-management',
@@ -250,9 +262,8 @@ export default {
                 {
                   component: './404',
                 },
-              ]
-            },
-            // {
+              ],
+            }, // {
             //   path: '/admin',
             //   name: 'Admin',
             //   icon: 'crown',
