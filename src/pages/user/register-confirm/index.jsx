@@ -44,7 +44,6 @@ class RegisterConfirm extends Component {
             payload: { ...dataVerify },
             callback: res => {
               if (res && res.status) {
-                console.log(res, 2323)
                 // router.push({
                 //   pathname: '/user/login',
                 // });
