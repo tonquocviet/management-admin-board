@@ -18,6 +18,7 @@ export async function queryList(params = {}) {
     // endDate: params.endDate || undefined,
   };
   const response = await request('/api/user', {
+    method: 'POST',
     params: requestParams,
   });
   const result = {

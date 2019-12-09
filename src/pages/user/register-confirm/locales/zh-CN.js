@@ -1,0 +1,22 @@
+export default {
+  'userandregister-confirm.login.userName': '用户名',
+  'userandregister-confirm.login.password': '密码',
+  'userandregister-confirm.login.message-invalid-credentials': '账户或密码错误（admin/ant.design）',
+  'userandregister-confirm.login.message-invalid-verification-code': '验证码错误',
+  'userandregister-confirm.login.tab-login-credentials': '账户密码登录',
+  'userandregister-confirm.login.tab-login-mobile': '手机号登录',
+  'userandregister-confirm.login.remember-me': '自动登录',
+  'userandregister-confirm.login.forgot-password': '忘记密码',
+  'userandregister-confirm.login.sign-in-with': '其他登录方式',
+  'userandregister-confirm.login.signup': '注册账户',
+  'userandregister-confirm.login.login': '登录',
+  'userandregister-confirm.register.register': '注册',
+  'userandregister-confirm.register.get-verification-code': '获取验证码',
+  'userandregister-confirm.register.sign-in': '使用已有账户登录',
+  'userandregister-confirm.register-result.msg': '你的账户：{email} 注册成功',
+  'userandregister-confirm.register-result.activation-email':
+    '激活邮件已发送到你的邮箱中，邮件有效期为24小时。请及时登录邮箱，点击邮件中的链接激活帐户。',
+  'userandregister-confirm.register-result.back-home': '返回首页',
+  'userandregister-confirm.register-result.view-mailbox': '查看邮箱',
+  'userandregister-confirm.navBar.lang': '语言',
+};

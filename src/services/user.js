@@ -44,9 +44,9 @@ export async function queryCurrent() {
       authority: 'admin',
     }
   }
-  return {
-    authority: 'guess',
-  };
+  // return {
+  //   authority: 'guess',
+  // };
 }
 export async function queryNotices() {
   return request('/api/notices');

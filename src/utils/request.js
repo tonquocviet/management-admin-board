@@ -70,7 +70,7 @@ request.use(async (ctx, next) => {
     '/api/interShip',
   ];
   if (realApis.some(r => ctx.req.url.startsWith(r))) {
-    ctx.req.url = `https://admin-htactive.herokuapp.com${ctx.req.url}`;
+    ctx.req.url = `https://admin-abcxyz.herokuapp.com${ctx.req.url}`;
   }
   await next();
 });
