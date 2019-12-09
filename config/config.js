@@ -148,6 +148,26 @@ export default {
               ]
             },
             {
+              path: '/internship-management',
+              name: 'Quản lý thực tập sinh',
+              icon: 'share-alt',
+              routes: [
+                {
+                  path: '/internship-management/internship-current',
+                  name: 'Thực tập sinh hiện tại',
+                  component: './internship-management/internship-current',
+                },
+                {
+                  path: '/internship-management/internship-leave',
+                  name: 'Thực tập sinh đã rời công ty',
+                  component: './internship-management/internship-leave',
+                },
+                {
+                  component: './404',
+                },
+              ]
+            },
+            {
               path: '/dayoff-management',
               name: 'Quản lý ngày vắng',
               icon: 'rocket',
@@ -196,26 +216,6 @@ export default {
                   path: '/salary-management/list',
                   name: 'Danh sách lương nhân viên',
                   component: './salary-management/list',
-                },
-                {
-                  component: './404',
-                },
-              ]
-            },
-            {
-              path: '/internship-management',
-              name: 'Quản lý thực tập sinh',
-              icon: 'share-alt',
-              routes: [
-                {
-                  path: '/internship-management/internship-current',
-                  name: 'Thực tập sinh hiện tại',
-                  component: './internship-management/internship-current',
-                },
-                {
-                  path: '/internship-management/internship-leave',
-                  name: 'Thực tập sinh đã rời công ty',
-                  component: './internship-management/internship-leave',
                 },
                 {
                   component: './404',

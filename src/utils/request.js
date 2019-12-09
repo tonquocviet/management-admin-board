@@ -67,6 +67,7 @@ request.use(async (ctx, next) => {
   const realApis = [
     '/api/auth',
     '/api/user',
+    '/api/interShip',
   ];
   if (realApis.some(r => ctx.req.url.startsWith(r))) {
     ctx.req.url = `https://admin-htactive.herokuapp.com${ctx.req.url}`;
