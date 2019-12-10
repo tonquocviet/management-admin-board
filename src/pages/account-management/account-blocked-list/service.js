@@ -2,18 +2,21 @@ import request from '@/utils/request';
 
 export async function queryList(params = {}) {
   const requestParams = params && {
-    page: params.currentPage || 1,
-    pageSize: params.pageSize || 10,
     blocked: true,
-    // full_name: params.sorter || 'asc',
-    // SEARCH
-    // eslint-disable-next-line no-dupe-keys
-    full_name: params.searchValue,
-    startDate: '2019-05-27T08:42:25.397Z',
-    endDate: '2019-12-28T08:42:25.397Z',
+    sort: {
+      ...params.sorter,
+    },
+    filter: {
+      ...params.search,
+    },
+    pagination: {
+      pageSize: params.pageSize || 10,
+      page: params.currentPage || 1,
+    },
   };
   const response = await request('/api/user', {
-    params: requestParams,
+    method: 'POST',
+    data: requestParams,
   });
   const result = {
     pagination: {

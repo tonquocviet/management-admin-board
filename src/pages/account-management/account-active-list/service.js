@@ -1,25 +1,22 @@
 import request from '@/utils/request';
 
 export async function queryList(params = {}) {
-  // eslint-disable-next-line no-mixed-operators
-  const sorter = (params && params.sorter && params.sorter.split('=')) || ['', ''];
   const requestParams = params && {
-    page: params.currentPage || 1,
-    pageSize: params.pageSize || 10,
     blocked: false,
-    // SORT
-    [sorter[0]]: sorter[1],
-    // SEARCH
-    // username: params.username || undefined,
-    // email: params.email || undefined,
-    // full_name: params.full_name || undefined,
-    // phoneNumber: params.phoneNumber || undefined,
-    // startDate: params.startDate || undefined,
-    // endDate: params.endDate || undefined,
+    sort: {
+      ...params.sorter,
+    },
+    filter: {
+      ...params.search,
+    },
+    pagination: {
+      pageSize: params.pageSize || 10,
+      page: params.currentPage || 1,
+    },
   };
   const response = await request('/api/user', {
     method: 'POST',
-    params: requestParams,
+    data: requestParams,
   });
   const result = {
     pagination: {

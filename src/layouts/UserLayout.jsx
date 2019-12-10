@@ -41,7 +41,7 @@ const UserLayout = props => {
                 <img alt="logo" className={styles.logo} src={logo} />
               </Link>
             </div>
-            <div className={styles.desc}>Đăng nhập tài khoản</div>
+            <div className={styles.desc}>HT Admin Management Board</div>
           </div>
           {children}
         </div>
