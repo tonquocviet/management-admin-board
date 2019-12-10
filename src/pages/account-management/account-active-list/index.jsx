@@ -130,10 +130,14 @@ class AccountActiveList extends Component {
 
     if (sorter.field) {
       if (sorter.order === 'ascend') {
-        params.sorter = `${sorter.field}=asc`;
+        params.sorter = {
+          [sorter.field]: 0,
+        }
       }
       if (sorter.order === 'descend') {
-        params.sorter = `${sorter.field}=desc`;
+        params.sorter = {
+          [sorter.field]: -1,
+        }
       }
     }
 
@@ -222,8 +226,7 @@ class AccountActiveList extends Component {
         formValues: values,
         isReset: false,
       },
-      // đang handel
-      // this.search,
+      this.search,
     );
   };
 
@@ -240,9 +243,13 @@ class AccountActiveList extends Component {
   search = () => {
     const { dispatch } = this.props;
     if (!this.currentPage) {
+      const search = this.state.formValues
+      const dataValues = {
+        search,
+      }
       dispatch({
         type: 'accountActiveManagement/fetch',
-        payload: this.state.formValues,
+        payload: dataValues,
         callback: () => {
           this.setState({
             isReset: false,

@@ -146,7 +146,7 @@ const SearchForm = props => {
             textAlign: 'center',
           }}
         >
-          <Button type="primary" htmlType="submit" loading={isReset && loading}>
+          <Button type="primary" htmlType="submit" loading={loading}>
             Tìm tài khoản
           </Button>
           <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
