@@ -39,48 +39,34 @@ const positionList = [
     name: 'Microsoft ASP.NET',
   },
 ];
-const timeInternList = [
-  {
-    id: 1,
-    value: 2,
-    name: '1 tháng',
-  },
-  {
-    id: 2,
-    value: 3,
-    name: '2 tháng',
-  },
-  {
-    id: 3,
-    value: 4,
-    name: '3 tháng',
-  },
-  {
-    id: 5,
-    value: 5,
-    name: '4 tháng',
-  },
-  {
-    id: 6,
-    value: 6,
-    name: '5 tháng',
-  },
-];
 
 const CreateForm = props => {
   const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
-      const startDate = fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString();
+      const startDate =
+        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
+      const endDate =
+        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
       if (err) return;
       const value = {
         ...fieldsValue,
         birthday,
         startDate,
+        endDate,
       };
       handleAdd(value);
     });
+  };
+
+  const disabledEndDate = endValue => {
+    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
+    const endDate = moment(endValue).startOf('day');
+    if (!endDate || !startDate) {
+      return false;
+    }
+    return endDate <= startDate;
   };
 
   const formItemLayout = {
@@ -289,31 +275,6 @@ const CreateForm = props => {
           </Select>,
         )}
       </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian thực tập">
-        {form.getFieldDecorator('time_interShip', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian thực tập !',
-            },
-          ],
-        })(
-          <Select
-            showSearch
-            placeholder="Chọn thời gian thực tập"
-            style={{ width: '100%' }}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {(timeInternList || []).map(r => (
-              <Select.Option key={r.id} value={r.value}>
-                {r.name}
-              </Select.Option>
-            ))}
-          </Select>,
-        )}
-      </FormItem>
       <FormItem {...formItemLayout} label="Thời gian bắt đầu">
         {form.getFieldDecorator('startDate', {
           rules: [
@@ -325,6 +286,25 @@ const CreateForm = props => {
         })(
           <DatePicker
             placeholder="Chọn ngày bắt đầu"
+            format="DD/MM/YYYY"
+            style={{
+              width: '100%',
+            }}
+          />,
+        )}
+      </FormItem>
+      <FormItem {...formItemLayout} label="Thời gian kết thúc">
+        {form.getFieldDecorator('endDate', {
+          rules: [
+            {
+              required: true,
+              message: 'Vui lòng chọn thời gian kêt thúc thực tập !',
+            },
+          ],
+        })(
+          <DatePicker
+            placeholder="Chọn ngày kết thúc"
+            disabledDate={disabledEndDate}
             format="DD/MM/YYYY"
             style={{
               width: '100%',

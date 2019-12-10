@@ -31,24 +31,6 @@ const SearchForm = props => {
     handleFormReset();
   };
 
-  const disabledStartDate = startValue => {
-    const endDate = moment(form.getFieldValue('endDate')).startOf('day');
-    const startDate = moment(startValue).startOf('day');
-    if (!startDate || !endDate) {
-      return false;
-    }
-    return startDate > endDate;
-  };
-
-  const disabledEndDate = endValue => {
-    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
-    const endDate = moment(endValue).startOf('day');
-    if (!endDate || !startDate) {
-      return false;
-    }
-    return endDate < startDate;
-  };
-
   const { getFieldDecorator } = form;
 
   return (
@@ -98,7 +80,6 @@ const SearchForm = props => {
               {},
             )(
               <DatePicker
-                disabledDate={disabledStartDate}
                 placeholder="Chọn ngày bắt đầu"
                 format="DD/MM/YYYY"
                 style={{
@@ -126,7 +107,6 @@ const SearchForm = props => {
             )(
               <DatePicker
                 format="DD/MM/YYYY"
-                disabledDate={disabledEndDate}
                 placeholder="Chọn ngày kết thúc"
                 style={{
                   width: '100%',
