@@ -1,10 +1,21 @@
-import { Form, Input, Modal, DatePicker, Select } from 'antd';
+/* eslint-disable no-underscore-dangle */
+import { Form, Modal, Input, Select, DatePicker } from 'antd';
 import React from 'react';
 import moment from 'moment';
-import InputPhone from '@/components/PhoneInput';
 
 const FormItem = Form.Item;
-
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+    md: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+    md: { span: 18 },
+  },
+};
 const genderList = [
   {
     id: 1,
@@ -17,6 +28,7 @@ const genderList = [
     name: 'Nữ',
   },
 ];
+
 const positionList = [
   {
     id: 1,
@@ -41,9 +53,11 @@ const positionList = [
 ];
 
 const CreateForm = props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, loading, data } = props;
   const okHandle = () => {
+    // eslint-disable-next-line no-underscore-dangle
     form.validateFields((err, fieldsValue) => {
+      const id = data._id;
       const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
       const startDate =
         (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
@@ -51,12 +65,18 @@ const CreateForm = props => {
         (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
       if (err) return;
       const value = {
+        id,
         ...fieldsValue,
         birthday,
         startDate,
         endDate,
       };
-      handleAdd(value);
+      ['username', 'email'].forEach(key => {
+        delete value[key];
+      });
+      handleAdd({
+        ...value,
+      });
     });
   };
 
@@ -69,88 +89,38 @@ const CreateForm = props => {
     return endDate <= startDate;
   };
 
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 8 },
-      md: { span: 8 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 12 },
-      md: { span: 15 },
-    },
-  };
   return (
     <Modal
       confirmLoading={loading}
-      style={{ top: 20 }}
       destroyOnClose
       okText="Lưu"
       cancelText="Hủy"
-      title="Thêm mới thực tập sinh"
+      title="Chỉnh sửa thông tin tài khoản"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible(false)}
-      width={550}
+      width={560}
+      style={{ top: 20 }}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Mã thực tập sinh">
-        {form.getFieldDecorator('username', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập mã thực tập sinh!',
-            },
-            {
-              min: 4,
-              message: 'Tối thiểu 4 ký tự!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input maxLength={20} placeholder="Nhập mã thực tập sinh" />)}
-      </FormItem>
       <FormItem {...formItemLayout} label="Email">
         {form.getFieldDecorator('email', {
+          initialValue: data.email,
           rules: [
             {
               required: true,
-              message: 'Vui lòng nhập email của bạn!',
-            },
-            {
-              type: 'email',
-              message: 'Email không đúng định dạng!',
+              message: 'Vui lòng nhập Email',
             },
           ],
-        })(<Input style={{ width: '100%' }} placeholder="Nhập email @..." />)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Mật khẩu">
-        {form.getFieldDecorator('password', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập mật khẩu!',
-            },
-            {
-              min: 8,
-              message: 'Tối thiểu 8 ký tự!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input.Password placeholder="Nhập mật khẩu" />)}
+        })(<Input disabled placeholder="Nhập Email" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Họ và tên">
         {form.getFieldDecorator('full_name', {
+          initialValue: data.full_name,
           rules: [
             {
               required: true,
-              message: 'Vui lòng nhập họ và tên!',
+              message: 'Vui lòng nhập họ tên!',
             },
             {
               whitespace: true,
@@ -159,25 +129,9 @@ const CreateForm = props => {
           ],
         })(<Input placeholder="Nhập họ và tên" />)}
       </FormItem>
-      <FormItem {...formItemLayout} label="Ngày sinh">
-        {form.getFieldDecorator('birthday', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn ngày sinh!',
-            },
-          ],
-        })(
-          <DatePicker
-            placeholder="Chọn ngày sinh"
-            style={{ width: '100%' }}
-            format="DD/MM/YYYY"
-            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
-          />,
-        )}
-      </FormItem>
       <FormItem {...formItemLayout} label="Giới tính">
         {form.getFieldDecorator('sex_type', {
+          initialValue: data.sex_type,
           rules: [
             {
               required: true,
@@ -203,52 +157,29 @@ const CreateForm = props => {
       </FormItem>
       <FormItem {...formItemLayout} label="Địa chỉ">
         {form.getFieldDecorator('address', {
+          initialValue: data.address,
           rules: [
             {
               required: true,
               message: 'Vui lòng nhập địa chỉ!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
             },
           ],
         })(<Input placeholder="Nhập địa chỉ" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Số điện thoại">
         {form.getFieldDecorator('phoneNumber', {
+          initialValue: data.phoneNumber,
           rules: [
             {
               required: true,
               message: 'Vui lòng nhập số điện thoại!',
             },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-            {
-              min: 9,
-              message: 'Tối thiểu 9 ký tự!',
-            },
           ],
-        })(<InputPhone style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Sinh viên trường">
-        {form.getFieldDecorator('university', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập trường!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input placeholder="Nhập tên trường" />)}
+        })(<Input placeholder="Nhập số điện thoại" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Vị trí thực tập">
         {form.getFieldDecorator('position_apply', {
+          initialValue: data.position_apply,
           rules: [
             {
               required: true,
@@ -272,8 +203,26 @@ const CreateForm = props => {
           </Select>,
         )}
       </FormItem>
+      <FormItem {...formItemLayout} label="Ngày sinh">
+        {form.getFieldDecorator('birthday', {
+          initialValue: moment(data.birthday),
+          rules: [
+            {
+              required: true,
+              message: 'Vui lòng chọn ngày sinh!',
+            },
+          ],
+        })(
+          <DatePicker
+          placeholder="Chọn ngày sinh"
+          style={{ width: '100%' }} format="DD/MM/YYYY"
+          disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
+          />,
+        )}
+      </FormItem>
       <FormItem {...formItemLayout} label="Thời gian bắt đầu">
         {form.getFieldDecorator('startDate', {
+          initialValue: moment(data.startDate),
           rules: [
             {
               required: true,
@@ -292,6 +241,7 @@ const CreateForm = props => {
       </FormItem>
       <FormItem {...formItemLayout} label="Thời gian kết thúc">
         {form.getFieldDecorator('endDate', {
+          initialValue: moment(data.endDate),
           rules: [
             {
               required: true,
