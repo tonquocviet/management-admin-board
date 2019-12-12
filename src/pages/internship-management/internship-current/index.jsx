@@ -126,10 +126,14 @@ class InternCurrentList extends Component {
 
     if (sorter.field) {
       if (sorter.order === 'ascend') {
-        params.sorter = `${sorter.field}=asc`;
+        params.sorter = {
+          [sorter.field]: 0,
+        };
       }
       if (sorter.order === 'descend') {
-        params.sorter = `${sorter.field}=desc`;
+        params.sorter = {
+          [sorter.field]: -1,
+        };
       }
     }
 
@@ -198,7 +202,7 @@ class InternCurrentList extends Component {
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa tài khoản quản trị thành công');
+          message.success('Xóa thực tập sinh');
           if (!this.currentPage) {
             dispatch({
               type: 'internshipActiveManagement/fetch',
@@ -218,8 +222,7 @@ class InternCurrentList extends Component {
         formValues: values,
         isReset: false,
       },
-      // đang handel
-      // this.search,
+      this.search,
     );
   };
 
@@ -236,9 +239,13 @@ class InternCurrentList extends Component {
   search = () => {
     const { dispatch } = this.props;
     if (!this.currentPage) {
+      const search = this.state.formValues;
+      const dataValues = {
+        search,
+      };
       dispatch({
         type: 'internshipActiveManagement/fetch',
-        payload: this.state.formValues,
+        payload: dataValues,
         callback: () => {
           this.setState({
             isReset: false,
@@ -319,7 +326,7 @@ class InternCurrentList extends Component {
             this.handleListChange(pagination, filtersArg, sorter);
           }
         } else {
-          message.success('Cập nhật thất bại, vui lòng thử lại sau');
+          message.error('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });

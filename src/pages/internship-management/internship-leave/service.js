@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export async function queryList(params = {}) {
   const requestParams = params && {
-    blocked: false,
+    blocked: true,
     sort: {
       ...params.sorter,
     },
@@ -35,7 +35,7 @@ export async function queryList(params = {}) {
 }
 export async function toggleStatus(params) {
   const dataParams = {
-    blocked: true,
+    blocked: false,
   };
   let result = {};
   const res = await request(`/api/interShip/blocked/${params.id}`, {
@@ -52,17 +52,6 @@ export async function queryDetail(params) {
   const res = await request(`/api/interShip/${params}`);
   if (res.status) {
     result = { ...res.result };
-  }
-  return result;
-}
-export async function addInternShip(params) {
-  let result = {};
-  const res = await request('/api/interShip/create', {
-    method: 'POST',
-    data: params,
-  });
-  if (res.status) {
-    result = { ...res };
   }
   return result;
 }

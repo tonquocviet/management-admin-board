@@ -1,8 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 import request from '@/utils/request';
 
 export async function queryList(params = {}) {
   const requestParams = params && {
-    blocked: false,
+    month: (params.search && params.search.month) || null,
+    year: (params.search && params.search.year) || null,
     sort: {
       ...params.sorter,
     },
@@ -14,7 +16,7 @@ export async function queryList(params = {}) {
       page: params.currentPage || 1,
     },
   };
-  const response = await request('/api/interShip/get?', {
+  const response = await request('/api/absence-employee/get', {
     method: 'POST',
     data: requestParams,
   });
@@ -29,35 +31,44 @@ export async function queryList(params = {}) {
   result.list = (response.results || []).map(item => ({
     // eslint-disable-next-line no-underscore-dangle
     id: item._id,
+    full_name: item.user.full_name,
+    idUser: item.user._id,
     ...item,
   }));
   return result;
 }
-export async function toggleStatus(params) {
-  const dataParams = {
-    blocked: true,
-  };
+export async function queryDetail(id) {
   let result = {};
-  const res = await request(`/api/interShip/blocked/${params.id}`, {
-    method: 'PUT',
-    data: dataParams,
-  });
-  if (res.status) {
-    result = { ...res };
-  }
-  return result;
-}
-export async function queryDetail(params) {
-  let result = {};
-  const res = await request(`/api/interShip/${params}`);
+  const res = await request(`/api/absence-employee/detail/${id}`);
   if (res.status) {
     result = { ...res.result };
   }
   return result;
 }
-export async function addInternShip(params) {
+export async function queryEmployee() {
+  const requestParams = {
+    blocked: false,
+    sort: {},
+    filter: {},
+    pagination: {
+      pageSize: 100,
+      page: 1,
+    },
+  };
+
+  const res = await request('/api/user', {
+    method: 'POST',
+    data: requestParams,
+  });
+  let result = [];
+  if (res.results) {
+    result = [...res.results];
+  }
+  return result;
+}
+export async function addDayOff(params) {
   let result = {};
-  const res = await request('/api/interShip/create', {
+  const res = await request('/api/absence-employee/create', {
     method: 'POST',
     data: params,
   });
@@ -68,7 +79,7 @@ export async function addInternShip(params) {
 }
 export async function removeAccount(params) {
   let result = {};
-  const res = await request(`/api/interShip/remove/${params}`, {
+  const res = await request(`/api/absence-employee/${params}`, {
     method: 'DELETE',
   });
   if (res.status) {
@@ -76,11 +87,11 @@ export async function removeAccount(params) {
   }
   return result;
 }
-export async function updateAccount(params) {
+export async function updateDayOff(params) {
   let result = {};
-  const res = await request(`/api/interShip/update/${params.id}`, {
+  const res = await request(`/api/absence-employee/${params.id}`, {
     method: 'PUT',
-    data: { ...params },
+    data: { ...params.values },
   });
   if (res.status) {
     result = { ...res };

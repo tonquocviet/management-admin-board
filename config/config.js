@@ -115,24 +115,14 @@ export default {
               component: './Welcome',
             },
             {
-              path: '/account-management',
-              name: 'Quản lý tài khoản',
-              icon: 'user',
+              path: '/role-management',
+              name: 'Quản lý quyền',
+              icon: 'setting',
               routes: [
                 {
-                  path: '/account-management/account-active-list',
-                  name: 'Tài khoản đang hoạt động',
-                  component: './account-management/account-active-list',
-                },
-                {
-                  path: '/account-management/account-blocked-list',
-                  name: 'Tài khoản đang bị khóa',
-                  component: './account-management/account-blocked-list',
-                },
-                {
-                  path: '/account-management/account-role',
-                  name: 'Quản lý quyền tài khoản',
-                  component: './account-management/account-role',
+                  path: '/role-management/role-list',
+                  name: 'Danh sách quyền trong hệ thống',
+                  component: './role-management/role-list',
                 },
                 {
                   component: './404',
@@ -142,17 +132,17 @@ export default {
             {
               path: '/staff-management',
               name: 'Quản lý nhân viên',
-              icon: 'idcard',
+              icon: 'user',
               routes: [
                 {
-                  path: '/staff-management/staff-current',
-                  name: 'Nhân viên hiện tại',
-                  component: './staff-management/staff-current',
+                  path: '/staff-management/staff-active-list',
+                  name: 'Nhân viên đang hoạt động',
+                  component: './staff-management/staff-active-list',
                 },
                 {
-                  path: '/staff-management/staff-leave',
+                  path: '/staff-management/staff-blocked-list',
                   name: 'Nhân viên đã rời công ty',
-                  component: './staff-management/staff-leave',
+                  component: './staff-management/staff-blocked-list',
                 },
                 {
                   component: './404',
@@ -190,29 +180,9 @@ export default {
                   component: './dayoff-management/staff-dayoff',
                 },
                 {
-                  path: '/dayoff-management/internship-dayoff',
-                  name: 'Quản lý ngày vắng thực tập sinh',
-                  component: './dayoff-management/internship-dayoff',
-                },
-                {
-                  component: './404',
-                },
-              ],
-            },
-            {
-              path: '/statistic-dayoff',
-              name: 'Thống kê ngày vắng',
-              icon: 'line-chart',
-              routes: [
-                {
-                  path: '/statistic-dayoff/by-month',
-                  name: 'Thống kê ngày vắng theo tháng',
-                  component: './statistic-dayoff/by-month',
-                },
-                {
-                  path: '/statistic-dayoff/by-year',
-                  name: 'Thống kê ngày vắng theo năm',
-                  component: './statistic-dayoff/by-year',
+                  path: '/dayoff-management/statistics-dayoff',
+                  name: 'Thống kê ngày vắng',
+                  component: './dayoff-management/statistics-dayoff',
                 },
                 {
                   component: './404',

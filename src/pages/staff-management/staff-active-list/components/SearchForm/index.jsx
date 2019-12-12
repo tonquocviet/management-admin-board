@@ -41,7 +41,7 @@ const SearchForm = props => {
     >
       <Row gutter={16}>
         <Col lg={8} md={12} sm={24}>
-          <FormItem label="Tên tài khoản">
+          <FormItem label="Mã nhân viên">
             {getFieldDecorator('username', {
               rules: [
                 {
@@ -49,7 +49,7 @@ const SearchForm = props => {
                   message: 'Giá trị không hợp lệ!',
                 },
               ],
-            })(<Input maxLength={20} placeholder="Nhập tài khoản cần tìm" />)}
+            })(<Input maxLength={20} placeholder="Nhập mã nhân viên cần tìm" />)}
           </FormItem>
           <FormItem label="Số điện thoại">
             {getFieldDecorator('phoneNumber', {
@@ -126,7 +126,7 @@ const SearchForm = props => {
           }}
         >
           <Button type="primary" htmlType="submit" loading={loading}>
-            Tìm thực tập sinh
+            Tìm kết quả
           </Button>
           <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
             Hủy tìm kiếm

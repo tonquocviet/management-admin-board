@@ -17,58 +17,24 @@ const genderList = [
     name: 'Nữ',
   },
 ];
-const positionList = [
-  {
-    id: 1,
-    name: 'React Js',
-  },
-  {
-    id: 2,
-    name: 'Vue Js',
-  },
-  {
-    id: 3,
-    name: 'Dọn vệ sinh',
-  },
-  {
-    id: 5,
-    name: 'DevOps',
-  },
-  {
-    id: 6,
-    name: 'Microsoft ASP.NET',
-  },
-];
 
 const CreateForm = props => {
   const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
-      const startDate =
-        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
-      const endDate =
-        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
+      const startDate = moment()
+        .toDate()
+        .toISOString();
       if (err) return;
       const value = {
         ...fieldsValue,
         birthday,
         startDate,
-        endDate,
       };
       handleAdd(value);
     });
   };
-
-  const disabledEndDate = endValue => {
-    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
-    const endDate = moment(endValue).startOf('day');
-    if (!endDate || !startDate) {
-      return false;
-    }
-    return endDate <= startDate;
-  };
-
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -88,19 +54,19 @@ const CreateForm = props => {
       destroyOnClose
       okText="Lưu"
       cancelText="Hủy"
-      title="Thêm mới thực tập sinh"
+      title="Thêm mới nhân viên"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible(false)}
       width={550}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Mã thực tập sinh">
+      <FormItem {...formItemLayout} label="Tài khoản">
         {form.getFieldDecorator('username', {
           rules: [
             {
               required: true,
-              message: 'Vui lòng nhập mã thực tập sinh!',
+              message: 'Vui lòng nhập mã nhân viên!',
             },
             {
               min: 4,
@@ -111,7 +77,7 @@ const CreateForm = props => {
               message: 'Giá trị không hợp lệ!',
             },
           ],
-        })(<Input maxLength={20} placeholder="Nhập mã thực tập sinh" />)}
+        })(<Input maxLength={20} placeholder="Nhập mã nhân viên" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Email">
         {form.getFieldDecorator('email', {
@@ -133,6 +99,9 @@ const CreateForm = props => {
             {
               required: true,
               message: 'Vui lòng nhập mật khẩu!',
+            },
+            {
+              message: 'Mật khẩu phải có chữ và số!',
             },
             {
               min: 8,
@@ -232,82 +201,6 @@ const CreateForm = props => {
             },
           ],
         })(<InputPhone style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Sinh viên trường">
-        {form.getFieldDecorator('university', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập trường!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input placeholder="Nhập tên trường" />)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Vị trí thực tập">
-        {form.getFieldDecorator('position_apply', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn vị trí thực tập !',
-            },
-          ],
-        })(
-          <Select
-            showSearch
-            placeholder="Chọn vị trí thực tập"
-            style={{ width: '100%' }}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {(positionList || []).map(r => (
-              <Select.Option key={r.id} value={r.name}>
-                {r.name}
-              </Select.Option>
-            ))}
-          </Select>,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian bắt đầu">
-        {form.getFieldDecorator('startDate', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian thực tập !',
-            },
-          ],
-        })(
-          <DatePicker
-            placeholder="Chọn ngày bắt đầu"
-            format="DD/MM/YYYY"
-            style={{
-              width: '100%',
-            }}
-          />,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian kết thúc">
-        {form.getFieldDecorator('endDate', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian kêt thúc thực tập !',
-            },
-          ],
-        })(
-          <DatePicker
-            placeholder="Chọn ngày kết thúc"
-            disabledDate={disabledEndDate}
-            format="DD/MM/YYYY"
-            style={{
-              width: '100%',
-            }}
-          />,
-        )}
       </FormItem>
     </Modal>
   );

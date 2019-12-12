@@ -28,46 +28,19 @@ const genderList = [
     name: 'Nữ',
   },
 ];
-
-const positionList = [
-  {
-    id: 1,
-    name: 'React Js',
-  },
-  {
-    id: 2,
-    name: 'Vue Js',
-  },
-  {
-    id: 3,
-    name: 'Dọn vệ sinh',
-  },
-  {
-    id: 5,
-    name: 'DevOps',
-  },
-  {
-    id: 6,
-    name: 'Microsoft ASP.NET',
-  },
-];
-
 const CreateForm = props => {
   const { modalVisible, form, handleAdd, handleModalVisible, loading, data } = props;
   const okHandle = () => {
     // eslint-disable-next-line no-underscore-dangle
     form.validateFields((err, fieldsValue) => {
       const id = data._id;
-      const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
-      const startDate =
-        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
-      const endDate =
-        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
+      // const birthday = (fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString())
+      const startDate = '2019-11-23T13:51:48.400Z';
+      const endDate = '2019-11-23T13:51:48.400Z';
       if (err) return;
       const value = {
         id,
         ...fieldsValue,
-        birthday,
         startDate,
         endDate,
       };
@@ -79,23 +52,13 @@ const CreateForm = props => {
       });
     });
   };
-
-  const disabledEndDate = endValue => {
-    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
-    const endDate = moment(endValue).startOf('day');
-    if (!endDate || !startDate) {
-      return false;
-    }
-    return endDate <= startDate;
-  };
-
   return (
     <Modal
       confirmLoading={loading}
       destroyOnClose
       okText="Lưu"
       cancelText="Hủy"
-      title="Chỉnh sửa thông tin tài khoản"
+      title="Chỉnh sửa thông tin nhân viên"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible(false)}
@@ -103,6 +66,17 @@ const CreateForm = props => {
       style={{ top: 20 }}
       maskClosable={false}
     >
+      <FormItem {...formItemLayout} label="Mã nhân viên">
+        {form.getFieldDecorator('username', {
+          initialValue: data.username,
+          rules: [
+            {
+              required: true,
+              message: 'Không được để trống mã nhân viên!',
+            },
+          ],
+        })(<Input disabled placeholder="Tên tài khoản" />)}
+      </FormItem>
       <FormItem {...formItemLayout} label="Email">
         {form.getFieldDecorator('email', {
           initialValue: data.email,
@@ -177,86 +151,21 @@ const CreateForm = props => {
           ],
         })(<Input placeholder="Nhập số điện thoại" />)}
       </FormItem>
-      <FormItem {...formItemLayout} label="Vị trí thực tập">
-        {form.getFieldDecorator('position_apply', {
-          initialValue: data.position_apply,
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn vị trí thực tập !',
-            },
-          ],
-        })(
-          <Select
-            showSearch
-            placeholder="Chọn vị trí thực tập"
-            style={{ width: '100%' }}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {(positionList || []).map(r => (
-              <Select.Option key={r.id} value={r.name}>
-                {r.name}
-              </Select.Option>
-            ))}
-          </Select>,
-        )}
-      </FormItem>
       <FormItem {...formItemLayout} label="Ngày sinh">
         {form.getFieldDecorator('birthday', {
           initialValue: moment(data.birthday),
           rules: [
             {
               required: true,
-              message: 'Vui lòng chọn ngày sinh!',
+              message: 'Vui lòng chọn ngày nhận!',
             },
           ],
         })(
           <DatePicker
-            placeholder="Chọn ngày sinh"
+            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
+            placeholder="Chọn ngày nhận"
             style={{ width: '100%' }}
             format="DD/MM/YYYY"
-            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
-          />,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian bắt đầu">
-        {form.getFieldDecorator('startDate', {
-          initialValue: moment(data.startDate),
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian thực tập !',
-            },
-          ],
-        })(
-          <DatePicker
-            placeholder="Chọn ngày bắt đầu"
-            format="DD/MM/YYYY"
-            style={{
-              width: '100%',
-            }}
-          />,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian kết thúc">
-        {form.getFieldDecorator('endDate', {
-          initialValue: moment(data.endDate),
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian kêt thúc thực tập !',
-            },
-          ],
-        })(
-          <DatePicker
-            placeholder="Chọn ngày kết thúc"
-            disabledDate={disabledEndDate}
-            format="DD/MM/YYYY"
-            style={{
-              width: '100%',
-            }}
           />,
         )}
       </FormItem>
