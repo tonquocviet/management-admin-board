@@ -40,9 +40,6 @@ export async function queryList(params = {}) {
 
   return result;
 }
-export async function queryRoleList() {
-  return request('/api/account-management/role');
-}
 export async function toggleStatus(params) {
   const dataParams = {
     blocked: false,
