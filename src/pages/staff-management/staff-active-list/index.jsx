@@ -1,10 +1,10 @@
-import { Button, Card, Form, message, Modal } from 'antd';
+import { Button, Card, Form, Row, message, Modal, Icon } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
+import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
 
@@ -13,16 +13,17 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ internshipLeaveManagement, loading }) => ({
-  internshipLeaveManagement,
-  loading: loading.effects['internshipLeaveManagement/fetch'],
-  loadingToggle: loading.effects['internshipLeaveManagement/toggleStatus'],
-  loadingDetail: loading.effects['internshipLeaveManagement/getDetail'],
+@connect(({ accountActiveManagement, loading }) => ({
+  accountActiveManagement,
+  loading: loading.effects['accountActiveManagement/fetch'],
+  loadingToggle: loading.effects['accountActiveManagement/toggleStatus'],
+  loadingDetail: loading.effects['accountActiveManagement/getDetail'],
 }))
-class InternCurrentList extends Component {
+class AccountActiveList extends Component {
   state = {
     formValues: {},
     isReset: false,
+    modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
@@ -32,15 +33,20 @@ class InternCurrentList extends Component {
 
   columns = [
     {
-      title: 'Họ và tên',
+      title: 'Mã nhân viên',
+      dataIndex: 'username',
       sorter: true,
       align: 'center',
-      dataIndex: 'full_name',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
         </Button>
       ),
+    },
+    {
+      title: 'Họ và tên',
+      sorter: true,
+      dataIndex: 'full_name',
     },
     {
       title: 'Giới tính',
@@ -62,21 +68,10 @@ class InternCurrentList extends Component {
       align: 'center',
     },
     {
-      title: 'Vị trí thực tập',
-      dataIndex: 'position_apply',
+      title: 'Trạng thái',
+      dataIndex: 'status_account',
       align: 'center',
-    },
-    {
-      title: 'Ngày bắt đầu',
-      dataIndex: 'startDate',
-      align: 'center',
-      render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-    },
-    {
-      title: 'Ngày kết thúc',
-      dataIndex: 'endDate',
-      align: 'center',
-      render: dateEnd => <span>{moment(dateEnd).format('DD/MM/YYYY')}</span>,
+      render: status => <span>{status ? 'Đã khóa' : 'Đang hoạt động'}</span>,
     },
     {
       title: 'Hành động',
@@ -101,7 +96,7 @@ class InternCurrentList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'internshipLeaveManagement/fetch',
+      type: 'accountActiveManagement/fetch',
     });
   }
 
@@ -136,7 +131,7 @@ class InternCurrentList extends Component {
     }
 
     dispatch({
-      type: 'internshipLeaveManagement/fetch',
+      type: 'accountActiveManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -148,7 +143,7 @@ class InternCurrentList extends Component {
 
   showConfirmToggleAccountStatus = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
+      title: `Bạn có chắc muốn khóa nhân viên ${record.username} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -162,14 +157,14 @@ class InternCurrentList extends Component {
   handleToggle = row => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'internshipLeaveManagement/toggleStatus',
+      type: 'accountActiveManagement/toggleStatus',
       payload: row,
       callback: res => {
         if (res && res.status) {
           message.success('Chuyển đổi trạng thái thành công!');
           if (!this.currentPager) {
             dispatch({
-              type: 'internshipLeaveManagement/fetch',
+              type: 'accountActiveManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -182,7 +177,7 @@ class InternCurrentList extends Component {
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
+      title: `Bạn có chắc muốn xóa nhân viên ${record.username} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -196,14 +191,14 @@ class InternCurrentList extends Component {
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'internshipLeaveManagement/remove',
+      type: 'accountActiveManagement/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa thực tập sinh');
+          message.success('Xóa nhân viên thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'internshipLeaveManagement/fetch',
+              type: 'accountActiveManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -242,7 +237,7 @@ class InternCurrentList extends Component {
         search,
       };
       dispatch({
-        type: 'internshipLeaveManagement/fetch',
+        type: 'accountActiveManagement/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -257,10 +252,20 @@ class InternCurrentList extends Component {
     }
   };
 
+  showCreateForm = () => {
+    this.handleModalCreateVisible(true);
+  };
+
+  handleModalCreateVisible = value => {
+    this.setState({
+      modalCreateVisible: value,
+    });
+  };
+
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'internshipLeaveManagement/getDetail',
+      type: 'accountActiveManagement/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -272,10 +277,34 @@ class InternCurrentList extends Component {
     });
   };
 
+  handleCreate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'accountActiveManagement/add',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          this.handleModalCreateVisible(false);
+          message.success('Thêm mới thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'accountActiveManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.success('Thêm mới thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
+  };
+
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'internshipLeaveManagement/update',
+      type: 'accountActiveManagement/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -283,27 +312,38 @@ class InternCurrentList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'internshipLeaveManagement/fetch',
+              type: 'accountActiveManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
+          message.success('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
   };
 
+  renderCreateComp() {
+    return (
+      <Row type="flex" justify="space-between">
+        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
+          <Icon type="plus" />
+          Thêm mới nhân viên
+        </Button>
+      </Row>
+    );
+  }
+
   render() {
     const {
-      internshipLeaveManagement: { data, detail },
+      accountActiveManagement: { data, detail },
       loading,
       loadingToggle,
       loadingDetail,
     } = this.props;
-    const { modalUpdateVisible } = this.state;
+    const { modalCreateVisible, modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
@@ -316,6 +356,9 @@ class InternCurrentList extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
+            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
+              {this.renderCreateComp()}
+            </div>
             <StandardTable
               loading={loading || loadingDetail || loadingToggle}
               data={data}
@@ -324,6 +367,11 @@ class InternCurrentList extends Component {
             />
           </div>
         </Card>
+        <CreateForm
+          handleModalVisible={this.handleModalCreateVisible}
+          modalVisible={modalCreateVisible}
+          handleAdd={this.handleCreate}
+        />
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}
@@ -337,4 +385,4 @@ class InternCurrentList extends Component {
   }
 }
 
-export default Form.create()(InternCurrentList);
+export default Form.create()(AccountActiveList);

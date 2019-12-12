@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus */
 import React from 'react';
-import { Button, Col, Form, Input, Row, DatePicker, Divider, Select } from 'antd';
-import moment from 'moment';
+import { Button, Col, Form, Row, DatePicker, Divider, Select } from 'antd';
 import styles from '../../style.less';
 
 const FormItem = Form.Item;
@@ -51,15 +50,6 @@ const SearchForm = props => {
     });
   };
 
-  const disabledEndDate = endValue => {
-    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
-    const endDate = moment(endValue).startOf('day');
-    if (!endDate || !startDate) {
-      return false;
-    }
-    return endDate <= startDate;
-  };
-
   const onReset = () => {
     form.resetFields();
     handleFormReset();
@@ -95,53 +85,6 @@ const SearchForm = props => {
       hideRequiredMark
       className={styles.customPaddingCol}
     >
-      <Row gutter={16}>
-        <Col lg={8} md={12} sm={24}>
-          <FormItem label="Họ và tên">
-            {getFieldDecorator('user', {
-              rules: [
-                {
-                  whitespace: true,
-                  message: 'Giá trị không hợp lệ!',
-                },
-              ],
-            })(<Input placeholder="Nhập họ và tên cần tìm" />)}
-          </FormItem>
-        </Col>
-        <Col lg={8} md={12} sm={24}>
-          <FormItem label="Từ ngày">
-            {getFieldDecorator(
-              'startDate',
-              {},
-            )(
-              <DatePicker
-                placeholder="Chọn ngày bắt đầu"
-                format="DD/MM/YYYY"
-                style={{
-                  width: '100%',
-                }}
-              />,
-            )}
-          </FormItem>
-        </Col>
-        <Col lg={8} md={12} sm={24}>
-          <FormItem label="Đến ngày">
-            {getFieldDecorator(
-              'endDate',
-              {},
-            )(
-              <DatePicker
-                disabledDate={disabledEndDate}
-                format="DD/MM/YYYY"
-                placeholder="Chọn ngày kết thúc"
-                style={{
-                  width: '100%',
-                }}
-              />,
-            )}
-          </FormItem>
-        </Col>
-      </Row>
       <Divider orientation="center">Lọc danh sách theo tháng/năm hoặc theo năm</Divider>
       <Row type="flex" justify="center">
         <Col lg={8} md={12} sm={24}>

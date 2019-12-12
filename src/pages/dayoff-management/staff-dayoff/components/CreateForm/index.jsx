@@ -11,12 +11,11 @@ const CreateForm = props => {
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       const startDate =
-        (moment(fieldsValue.startDate && fieldsValue.startDate).format()) || undefined;
-      const endDate =
-        (moment(fieldsValue.endDate && fieldsValue.endDate).format()) || undefined;
+        moment(fieldsValue.startDate && fieldsValue.startDate).format() || undefined;
+      const endDate = moment(fieldsValue.endDate && fieldsValue.endDate).format() || undefined;
       const startDateConvert = new Date(startDate.substring(0, 10));
       const endDateConvert = new Date(endDate.substring(0, 10));
-      const total_absence = (endDateConvert - startDateConvert) / (1000 * 3600 * 24)
+      const total_absence = (endDateConvert - startDateConvert) / (1000 * 3600 * 24);
       if (err) return;
       const values = {
         ...fieldsValue,
@@ -63,7 +62,7 @@ const CreateForm = props => {
       width={550}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Họ và tên người nghỉ">
+      <FormItem {...formItemLayout} label="Nhân viên nghỉ">
         {form.getFieldDecorator('user', {
           rules: [
             {
@@ -74,7 +73,7 @@ const CreateForm = props => {
         })(
           <Select
             showSearch
-            placeholder="Chọn người nghỉ"
+            placeholder="Chọn nhân viên"
             style={{ width: '100%' }}
             filterOption={(input, option) =>
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0

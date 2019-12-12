@@ -109,12 +109,12 @@ class DayOffList extends Component {
       if (sorter.order === 'ascend') {
         params.sorter = {
           [sorter.field]: 0,
-        }
+        };
       }
       if (sorter.order === 'descend') {
         params.sorter = {
           [sorter.field]: -1,
-        }
+        };
       }
     }
 
@@ -186,10 +186,10 @@ class DayOffList extends Component {
   search = () => {
     const { dispatch } = this.props;
     if (!this.currentPage) {
-      const search = this.state.formValues
+      const search = this.state.formValues;
       const dataValues = {
         search,
-      }
+      };
       dispatch({
         type: 'dayoffListManagement/fetch',
         payload: dataValues,

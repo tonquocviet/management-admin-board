@@ -214,9 +214,10 @@ const CreateForm = props => {
           ],
         })(
           <DatePicker
-          placeholder="Chọn ngày sinh"
-          style={{ width: '100%' }} format="DD/MM/YYYY"
-          disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
+            placeholder="Chọn ngày sinh"
+            style={{ width: '100%' }}
+            format="DD/MM/YYYY"
+            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
           />,
         )}
       </FormItem>

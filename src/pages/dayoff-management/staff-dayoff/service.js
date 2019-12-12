@@ -48,10 +48,8 @@ export async function queryDetail(id) {
 export async function queryEmployee() {
   const requestParams = {
     blocked: false,
-    sort: {
-    },
-    filter: {
-    },
+    sort: {},
+    filter: {},
     pagination: {
       pageSize: 100,
       page: 1,
@@ -61,10 +59,10 @@ export async function queryEmployee() {
   const res = await request('/api/user', {
     method: 'POST',
     data: requestParams,
-  })
+  });
   let result = [];
   if (res.results) {
-    result = [...res.results]
+    result = [...res.results];
   }
   return result;
 }

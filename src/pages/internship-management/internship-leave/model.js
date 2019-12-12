@@ -1,10 +1,4 @@
-import {
-  queryList,
-  toggleStatus,
-  queryDetail,
-  removeAccount,
-  updateAccount,
-} from './service';
+import { queryList, toggleStatus, queryDetail, removeAccount, updateAccount } from './service';
 
 const Model = {
   namespace: 'internshipLeaveManagement',

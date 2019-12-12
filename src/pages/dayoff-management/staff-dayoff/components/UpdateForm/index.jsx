@@ -30,7 +30,7 @@ const CreateForm = props => {
         (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
       const startDateConvert = new Date(startDate.substring(0, 10));
       const endDateConvert = new Date(endDate.substring(0, 10));
-      const total_absence = (endDateConvert - startDateConvert) / (1000 * 3600 * 24)
+      const total_absence = (endDateConvert - startDateConvert) / (1000 * 3600 * 24);
       if (err) return;
       const values = {
         ...fieldsValue,
