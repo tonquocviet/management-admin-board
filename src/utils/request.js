@@ -19,19 +19,22 @@ const handle500 = () => {
 
 const errorHandler = error => {
   const { response } = error;
+  const urlName = window.location.pathname;
 
   if (response && response.status) {
-    if (response.status === 401) {
-      return handle401(error);
-    }
-    if (response.status === 403) {
-      return handle403();
-    }
-    if (response.status === 500) {
-      return handle500();
+    if (urlName !== '/user/login') {
+      if (response.status === 401) {
+        return handle401(error);
+      }
+      if (response.status === 403) {
+        return handle403();
+      }
+      if (response.status === 500) {
+        return handle500();
+      }
     }
     response.json().then(res => {
-      errorMessageHandler(response.status, res.message);
+      errorMessageHandler(response.status, res.message || 'Xảy ra lỗi không xác định được');
     });
   }
   return null;
