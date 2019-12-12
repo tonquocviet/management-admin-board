@@ -66,14 +66,6 @@ class AccountBlockedList extends Component {
       align: 'center',
     },
     {
-      title: 'Quyền',
-      dataIndex: 'role',
-      render: a => {
-        const role = this.props.accountBlockedManagement.roleList.find(r => r.id === a) || {};
-        return <span>{role.name}</span>;
-      },
-    },
-    {
       title: 'Trạng thái',
       dataIndex: 'status_account',
       align: 'center',
@@ -103,9 +95,6 @@ class AccountBlockedList extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'accountBlockedManagement/fetch',
-    });
-    dispatch({
-      type: 'accountBlockedManagement/fetchRolesList',
     });
   }
 

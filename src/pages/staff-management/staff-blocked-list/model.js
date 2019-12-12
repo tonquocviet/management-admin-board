@@ -1,6 +1,5 @@
 import {
   queryList,
-  queryRoleList,
   toggleStatus,
   removeAccount,
   queryDetail,
@@ -24,13 +23,6 @@ const Model = {
         payload: response,
       });
       if (callback) callback();
-    },
-    *fetchRolesList(_, { call, put }) {
-      const response = yield call(queryRoleList);
-      yield put({
-        type: 'populateRolesList',
-        payload: response,
-      });
     },
     *update({ payload, callback }, { call }) {
       const response = yield call(updateAccount, payload);
@@ -58,9 +50,6 @@ const Model = {
     },
     saveDetail(state, action) {
       return { ...state, detail: action.payload };
-    },
-    populateRolesList(state, action) {
-      return { ...state, roleList: action.payload };
     },
   },
 };
