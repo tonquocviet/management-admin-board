@@ -13,7 +13,7 @@ const handle403 = () => {
 };
 
 const handle500 = () => {
-  window.location = '/500';
+  window.location = '/user/login';
   return null;
 };
 
