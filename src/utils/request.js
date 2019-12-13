@@ -34,7 +34,7 @@ const errorHandler = error => {
       }
     }
     response.json().then(res => {
-      errorMessageHandler(response.status, res.message || 'Xảy ra lỗi không xác định được');
+      errorMessageHandler(response.status, res.message || response.status, res.error || 'Xảy ra lỗi không xác định được');
     });
   }
   return null;

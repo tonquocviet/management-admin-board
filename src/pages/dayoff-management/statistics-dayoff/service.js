@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import request from '@/utils/request';
 
-export async function queryList(params = {}) {
-  const requestParams = params && {
-    month: (params.search && params.search.month) || null,
-    year: (params.search && params.search.year) || null,
+export async function queryList(params) {
+  const requestParams = {
+    month: (params && params.month) || undefined,
+    year: (params && params.year) || 2019,
   };
   const response = await request('/api/absence-employee/statistics-absence', {
     method: 'GET',
@@ -13,12 +13,23 @@ export async function queryList(params = {}) {
   const result = {
     list: [],
   };
-  result.list = (response.results || []).map(item => ({
-    // eslint-disable-next-line no-underscore-dangle
-    id: item._id,
-    full_name: item.user.full_name,
-    idUser: item.user._id,
-    ...item,
-  }));
+  result.list = ((response && response.results) || []).map((item, index) => {
+    if (item._id.year) {
+      return {
+        id: index,
+        month: item._id.month,
+        year: item._id.year,
+        total_date_absence: item.total_date_absence,
+        total_request_absence: item.total_request_absence,
+      }
+    }
+    return {
+      id: index,
+      month: item._id.month,
+      day: item._id.day,
+      total_date_absence: item.total_date_absence,
+      total_request_absence: item.total_request_absence,
+    }
+  });
   return result;
 }

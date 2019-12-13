@@ -14,47 +14,16 @@ const { UserName, Password, Submit } = LoginComponents;
 class Login extends Component {
   loginForm = undefined;
 
-  state = {
-    type: 'account',
-  };
-
   handleSubmit = (err, values) => {
-    const { type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'userLogin/login',
-        payload: { ...values, type },
+        payload: { ...values },
       });
     }
   };
 
-  onTabChange = type => {
-    this.setState({
-      type,
-    });
-  };
-
-  onGetCaptcha = () =>
-    new Promise((resolve, reject) => {
-      if (!this.loginForm) {
-        return;
-      }
-
-      this.loginForm.validateFields(['mobile'], {}, (err, values) => {
-        if (err) {
-          reject(err);
-        } else {
-          const { dispatch } = this.props;
-          dispatch({
-            type: 'userLogin/getCaptcha',
-            payload: values.mobile,
-          })
-            .then(resolve)
-            .catch(reject);
-        }
-      });
-    });
 
   renderMessage = content => (
     <Alert
@@ -68,23 +37,16 @@ class Login extends Component {
   );
 
   render() {
-    const { userLogin, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
-    const { type } = this.state;
+    const { submitting } = this.props;
     return (
       <div className={styles.main}>
         <LoginComponents
-          defaultActiveKey={type}
           onTabChange={this.onTabChange}
           onSubmit={this.handleSubmit}
           ref={form => {
             this.loginForm = form;
           }}
         >
-          {status === 'error' &&
-            loginType === 'account' &&
-            !submitting &&
-            this.renderMessage('Sai tên đăng nhập hoặc mật khẩu')}
           <UserName
             name="email"
             placeholder="Email"

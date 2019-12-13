@@ -1,16 +1,10 @@
-import { Button, Card, Form } from 'antd';
+import { Card, Form } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
 import SearchForm from './components/SearchForm';
-
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 
 @connect(({ dayoffStatistic, loading }) => ({
   dayoffStatistic,
@@ -28,47 +22,29 @@ class DayOffStatistic extends Component {
 
   columns = [
     {
-      title: 'Họ và tên',
+      title: (this.checkYear()) ? 'Năm' : 'Ngày',
       align: 'center',
-      dataIndex: 'full_name',
-      render: (text, record) => (
-        <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
-          {text}
-        </Button>
-      ),
+      dataIndex: 'day',
     },
     {
-      title: 'Số ngày nghỉ',
-      dataIndex: 'total_absence',
+      title: 'Tháng',
+      align: 'center',
+      dataIndex: 'month',
+    },
+    {
+      title: 'Năm',
+      align: 'center',
+      dataIndex: 'year',
+    },
+    {
+      title: 'Tổng số ngày nghỉ',
+      dataIndex: 'total_date_absence',
       align: 'center',
     },
     {
-      title: 'Ngày bắt đầu nghỉ',
-      dataIndex: 'startDate',
-      sorter: true,
+      title: 'Tổng số request nghỉ',
+      dataIndex: 'total_request_absence',
       align: 'center',
-      render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-    },
-    {
-      title: 'Ngày trở lại làm việc',
-      dataIndex: 'endDate',
-      sorter: true,
-      align: 'center',
-      render: dateEnd => <span>{moment(dateEnd).format('DD/MM/YYYY')}</span>,
-    },
-    {
-      title: 'Hành động',
-      align: 'center',
-      render: record => (
-        <>
-          <Button
-            type="link"
-            style={{ color: 'red' }}
-            icon="delete"
-            onClick={() => this.showConfirmDeleteAccount(record)}
-          />
-        </>
-      ),
     },
   ];
 
@@ -78,47 +54,6 @@ class DayOffStatistic extends Component {
       type: 'dayoffStatistic/fetch',
     });
   }
-
-  handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-
-    if (sorter.field) {
-      if (sorter.order === 'ascend') {
-        params.sorter = {
-          [sorter.field]: 0,
-        };
-      }
-      if (sorter.order === 'descend') {
-        params.sorter = {
-          [sorter.field]: -1,
-        };
-      }
-    }
-
-    dispatch({
-      type: 'dayoffStatistic/fetch',
-      payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
-    });
-  };
 
   handleSearch = values => {
     this.setState(
@@ -144,24 +79,29 @@ class DayOffStatistic extends Component {
     const { dispatch } = this.props;
     if (!this.currentPage) {
       const search = this.state.formValues;
-      const dataValues = {
-        search,
-      };
       dispatch({
         type: 'dayoffStatistic/fetch',
-        payload: dataValues,
+        payload: search,
         callback: () => {
           this.setState({
             isReset: false,
           });
         },
       });
-    } else {
-      const { pagination, filtersArg, sorter } = this.currentPage;
-      pagination.current = 1;
-      this.handleListChange(pagination, filtersArg, sorter);
     }
   };
+
+  checkYear() {
+    const year =
+      this.props.dayoffStatistic.data
+      && this.props.dayoffStatistic.data.list[0]
+      && this.props.dayoffStatistic.data.list[0].year
+    if (year) {
+      return year;
+    }
+    return undefined;
+  }
+
 
   render() {
     const {
@@ -184,7 +124,6 @@ class DayOffStatistic extends Component {
               loading={loading}
               data={data}
               columns={this.columns}
-              onChange={this.handleListChange}
             />
           </div>
         </Card>

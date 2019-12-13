@@ -27,7 +27,6 @@ class StandardTable extends Component {
           rowKey="id"
           dataSource={list}
           pagination={paginationProps}
-          onChange={this.handleTableChange}
           {...rest}
         />
       </div>
