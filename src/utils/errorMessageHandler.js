@@ -19,7 +19,8 @@ const serverErrorMessage = {
   503: 'Yêu cầu quá hạn.',
 };
 
-export default function errorMessageHandler(statusCode, message) {
+export default function errorMessageHandler(statusCode, message, error) {
+  const urlName = window.location.pathname;
   if (statusCode === 400) {
     notification.error({
       message: 'Lỗi!',
@@ -31,6 +32,14 @@ export default function errorMessageHandler(statusCode, message) {
       message: 'Lỗi!',
       description: getCustomMessage(message),
     });
+  }
+  if (urlName === '/user/login') {
+    if (statusCode === 401) {
+      notification.error({
+        message: 'Lỗi!',
+        description: getCustomMessage(error),
+      });
+    }
   } else {
     notification.error({
       message: 'Lỗi!',

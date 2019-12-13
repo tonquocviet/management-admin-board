@@ -17,7 +17,6 @@ const Model = {
         type: 'changeLoginStatus',
         payload: response,
       }); // Login successfully
-
       if (response.status === true) {
         saveTokenToLocalStorage(response.token);
         const urlParams = new URL(window.location.href);

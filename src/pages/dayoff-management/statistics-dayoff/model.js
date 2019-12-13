@@ -5,7 +5,6 @@ const Model = {
   state: {
     data: {
       list: [],
-      pagination: {},
     },
   },
   effects: {

@@ -7,7 +7,10 @@ const FormItem = Form.Item;
 
 const yearList = [];
 for (let i = 2012; i <= new Date().getFullYear(); i++) {
-  const Obj = { name: i };
+  const Obj = {
+    value: i,
+    name: i,
+  };
   yearList.push(Obj);
 }
 
@@ -30,10 +33,6 @@ const SearchForm = props => {
       return undefined;
     };
     form.validateFields((err, fieldsValue) => {
-      const startDate =
-        (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
-      const endDate =
-        (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
       if (err) return;
       const valueMonth = (fieldsValue.month && fieldsValue.month.format('l')) || undefined;
       const result = check(valueMonth);
@@ -41,8 +40,6 @@ const SearchForm = props => {
       const year = (result && result.yearDirective) || fieldsValue.year;
       const values = {
         ...fieldsValue,
-        startDate,
-        endDate,
         month,
         year,
       };
@@ -85,7 +82,7 @@ const SearchForm = props => {
       hideRequiredMark
       className={styles.customPaddingCol}
     >
-      <Divider orientation="center">Lọc danh sách theo tháng/năm hoặc theo năm</Divider>
+      <Divider orientation="center">Thống kê theo tháng/năm hoặc theo năm</Divider>
       <Row type="flex" justify="center">
         <Col lg={8} md={12} sm={24}>
           <FormItem label="Chọn tháng / năm">
@@ -117,7 +114,7 @@ const SearchForm = props => {
                 }
               >
                 {(yearList || []).map(r => (
-                  <Select.Option key={r.index} value={r.name}>
+                  <Select.Option key={r.value} value={r.name}>
                     {r.name}
                   </Select.Option>
                 ))}
