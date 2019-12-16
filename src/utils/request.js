@@ -67,7 +67,13 @@ request.interceptors.response.use((res, options) => {
 });
 
 request.use(async (ctx, next) => {
-  const realApis = ['/api/auth', '/api/user', '/api/interShip', '/api/absence-employee'];
+  const realApis = [
+    '/api/auth',
+    '/api/user',
+    '/api/interShip',
+    '/api/absence-employee',
+    '/api/cv-apply',
+  ];
   if (realApis.some(r => ctx.req.url.startsWith(r))) {
     ctx.req.url = `https://admin-abcxyz.herokuapp.com${ctx.req.url}`;
   }
