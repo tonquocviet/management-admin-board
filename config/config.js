@@ -190,6 +190,26 @@ export default {
               ],
             },
             {
+              path: '/cv-management',
+              name: 'Quản lý CV',
+              icon: 'file-protect',
+              routes: [
+                {
+                  path: '/cv-management/list-cv-all',
+                  name: 'Danh sách tất cả CV nộp vào',
+                  component: './cv-management/list-cv-all',
+                },
+                {
+                  path: '/cv-management/list-cv-pass',
+                  name: 'Danh sách CV trúng tuyển',
+                  component: './cv-management/list-cv-pass',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
               path: '/salary-management',
               name: 'Quản lý lương nhân viên',
               icon: 'euro',
@@ -198,21 +218,6 @@ export default {
                   path: '/salary-management/list',
                   name: 'Danh sách lương nhân viên',
                   component: './salary-management/list',
-                },
-                {
-                  component: './404',
-                },
-              ],
-            },
-            {
-              path: '/cv-management',
-              name: 'Quản lý CV',
-              icon: 'file-protect',
-              routes: [
-                {
-                  path: '/cv-management/list-cv',
-                  name: 'Danh sách CV',
-                  component: './cv-management/list-cv',
                 },
                 {
                   component: './404',
