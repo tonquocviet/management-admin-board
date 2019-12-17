@@ -75,14 +75,14 @@ class Login extends Component {
             <Link className={styles.register} to="/user/register">
               Đăng kí tài khoản
             </Link>
-            <a
+            <Link
               style={{
                 float: 'right',
               }}
-              href=""
+              to="/user/forgot-password"
             >
               Quên mật khẩu?
-            </a>
+            </Link>
           </div>
         </LoginComponents>
       </div>

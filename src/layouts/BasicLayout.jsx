@@ -41,8 +41,8 @@ const defaultFooterDom = (
     links={[
       {
         key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
+        title: <Icon type="facebook" />,
+        href: 'https://www.facebook.com/htactive/',
         blankTarget: true,
       },
       {
@@ -53,8 +53,8 @@ const defaultFooterDom = (
       },
       {
         key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
+        title: <Icon type="linkedin" />,
+        href: 'https://www.linkedin.com/company/ht-active-software',
         blankTarget: true,
       },
     ]}

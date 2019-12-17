@@ -30,24 +30,13 @@ class AvatarDropdown extends React.Component {
         avatar: '',
         name: '',
       },
-      menu,
     } = this.props;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        {menu && (
-          <Menu.Item key="center">
-            <Icon type="user" />
-            Thông tin tài khoản
-          </Menu.Item>
-        )}
-        {menu && (
-          <Menu.Item key="settings">
-            <Icon type="setting" />
-            Cài đặt tài khoản
-          </Menu.Item>
-        )}
-        {menu && <Menu.Divider />}
-
+        <Menu.Item key="settings">
+          <Icon type="setting" />
+          Cài đặt tài khoản
+        </Menu.Item>
         <Menu.Item key="logout">
           <Icon type="logout" />
           Đăng xuất
