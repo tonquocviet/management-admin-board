@@ -34,7 +34,11 @@ const errorHandler = error => {
       }
     }
     response.json().then(res => {
-      errorMessageHandler(response.status, res.message || response.status, res.error || 'Xảy ra lỗi không xác định được');
+      errorMessageHandler(
+        response.status,
+        res.message || response.status,
+        res.error || 'Xảy ra lỗi không xác định được',
+      );
     });
   }
   return null;
@@ -73,6 +77,7 @@ request.use(async (ctx, next) => {
     '/api/interShip',
     '/api/absence-employee',
     '/api/cv-apply',
+    '/api/salary-employee',
   ];
   if (realApis.some(r => ctx.req.url.startsWith(r))) {
     ctx.req.url = `https://admin-abcxyz.herokuapp.com${ctx.req.url}`;

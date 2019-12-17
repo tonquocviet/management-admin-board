@@ -1,12 +1,4 @@
-import {
-  queryList,
-  toggleStatus,
-  queryDetail,
-  addCV,
-  removeCV,
-  updateCV,
-  queryPositionApply,
-} from './service';
+import { queryList, queryDetail, addCV, removeCV, updateCV, queryPositionApply } from './service';
 
 const Model = {
   namespace: 'cvAllManagement',
@@ -30,7 +22,7 @@ const Model = {
       yield put({
         type: 'savePosition',
         payload: response,
-      })
+      });
     },
     *add({ payload, callback }, { call }) {
       const response = yield call(addCV, payload);
@@ -42,10 +34,6 @@ const Model = {
     },
     *remove({ payload, callback }, { call }) {
       const response = yield call(removeCV, payload);
-      if (callback) callback(response);
-    },
-    *toggleStatus({ payload, callback }, { call }) {
-      const response = yield call(toggleStatus, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {
@@ -62,9 +50,6 @@ const Model = {
     },
     saveDetail(state, action) {
       return { ...state, detail: action.payload };
-    },
-    populateRolesList(state, action) {
-      return { ...state, roleList: action.payload };
     },
     savePosition(state, action) {
       return { ...state, PositionApplyList: action.payload };

@@ -1,4 +1,4 @@
-import { Button, Card, Form, Row, message, Modal, Icon, Tag, Typography } from 'antd';
+import { Button, Card, Form, Row, message, Modal, Icon } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -8,20 +8,20 @@ import StandardTable from './components/StandardTable';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
-
-const { Text } = Typography;
+import MoneySpan from '@/components/MoneySpan';
 
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
 
-@connect(({ cvAllManagement, loading }) => ({
-  cvAllManagement,
-  loading: loading.effects['cvAllManagement/fetch'],
-  loadingDetail: loading.effects['cvAllManagement/getDetail'],
+@connect(({ salaryManagement, loading }) => ({
+  salaryManagement,
+  loading: loading.effects['salaryManagement/fetch'],
+  loadingDetail: loading.effects['salaryManagement/getDetail'],
+  loadingEmployee: loading.effects['salaryManagement/getEmployee'],
 }))
-class CVAllList extends Component {
+class SalaryEmployeeList extends Component {
   state = {
     formValues: {},
     isReset: false,
@@ -29,14 +29,16 @@ class CVAllList extends Component {
     modalUpdateVisible: false,
   };
 
+  timer = null;
+
   currentPager = null;
 
   columns = [
     {
       title: 'Họ và tên',
-      sorter: true,
       align: 'center',
-      dataIndex: 'full_name',
+      sorter: true,
+      dataIndex: 'user',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
@@ -44,62 +46,27 @@ class CVAllList extends Component {
       ),
     },
     {
-      title: 'Email',
+      title: 'Tổng lương được nhận',
+      dataIndex: 'total_salary',
+      align: 'center',
+      render: money => <MoneySpan number={money} />,
+    },
+    {
+      title: 'Ngày chuyển lương',
+      dataIndex: 'payment_salary_date',
       sorter: true,
-      dataIndex: 'email',
-      align: 'center',
-    },
-    {
-      title: 'Chức vụ ứng tuyển',
-      dataIndex: 'type_apply',
-      align: 'center',
-      render: type => <span>{type === 1 ? 'Thử việc/Developer' : 'Thực tập sinh'}</span>,
-    },
-    {
-      title: 'Vị trí ứng tuyển',
-      dataIndex: 'position_apply',
-      align: 'center',
-    },
-    {
-      title: 'Tổng điểm CV',
-      dataIndex: 'cv_point',
-      align: 'center',
-      render: result => <Text strong>{result}</Text>,
-    },
-    {
-      title: 'Tham gia phỏng vấn',
-      dataIndex: 'take_interview',
-      align: 'center',
-      render: result => (
-        <span>
-          {result ? (
-            <Text type="warning" strong>
-              Có
-            </Text>
-          ) : (
-            <Text type="danger" strong>
-              Không
-            </Text>
-          )}
-        </span>
-      ),
-    },
-    {
-      title: 'Kết quả',
-      dataIndex: 'interview_pass_fail',
-      align: 'center',
-      render: result => (
-        <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>
-      ),
-    },
-    {
-      title: 'Ngày nộp CV',
-      dataIndex: 'createAt',
       align: 'center',
       render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
     },
     {
+      title: 'Cập nhật cuối',
+      dataIndex: 'updateAt',
+      align: 'center',
+      render: dateEnd => <span>{moment(dateEnd).format('DD/MM/YYYY')}</span>,
+    },
+    {
       title: 'Hành động',
+      align: 'center',
       render: record => (
         <>
           <Button
@@ -116,10 +83,10 @@ class CVAllList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/fetch',
+      type: 'salaryManagement/fetch',
     });
     dispatch({
-      type: 'cvAllManagement/fetchPositionApply',
+      type: 'salaryManagement/getEmployee',
     });
   }
 
@@ -154,7 +121,7 @@ class CVAllList extends Component {
     }
 
     dispatch({
-      type: 'cvAllManagement/fetch',
+      type: 'salaryManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -166,7 +133,7 @@ class CVAllList extends Component {
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn CV của ${record.full_name} không?`,
+      title: `Bạn có chắc muốn xóa phiếu lương của ${record.user} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -180,14 +147,14 @@ class CVAllList extends Component {
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/remove',
+      type: 'salaryManagement/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa thành công');
+          message.success('Xóa phiếu lương thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'salaryManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -226,7 +193,7 @@ class CVAllList extends Component {
         search,
       };
       dispatch({
-        type: 'cvAllManagement/fetch',
+        type: 'salaryManagement/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -254,7 +221,7 @@ class CVAllList extends Component {
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/getDetail',
+      type: 'salaryManagement/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -269,7 +236,7 @@ class CVAllList extends Component {
   handleCreate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/add',
+      type: 'salaryManagement/add',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -277,7 +244,7 @@ class CVAllList extends Component {
           message.success('Thêm mới thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'salaryManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -293,7 +260,7 @@ class CVAllList extends Component {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/update',
+      type: 'salaryManagement/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -301,7 +268,7 @@ class CVAllList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'salaryManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -319,7 +286,7 @@ class CVAllList extends Component {
       <Row type="flex" justify="space-between">
         <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
           <Icon type="plus" />
-          Thêm CV
+          Thêm phiếu lương
         </Button>
       </Row>
     );
@@ -327,9 +294,8 @@ class CVAllList extends Component {
 
   render() {
     const {
-      cvAllManagement: { data, detail, PositionApplyList },
+      salaryManagement: { data, detail, employeeList },
       loading,
-      loadingToggle,
       loadingDetail,
     } = this.props;
     const { modalCreateVisible, modalUpdateVisible } = this.state;
@@ -337,7 +303,6 @@ class CVAllList extends Component {
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
           <SearchForm
-            dataApply={PositionApplyList || []}
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
             isReset={this.state.isReset}
@@ -350,7 +315,7 @@ class CVAllList extends Component {
               {this.renderCreateComp()}
             </div>
             <StandardTable
-              loading={loading || loadingDetail || loadingToggle}
+              loading={loading || loadingDetail}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
@@ -358,14 +323,13 @@ class CVAllList extends Component {
           </div>
         </Card>
         <CreateForm
-          dataApply={PositionApplyList || []}
+          dataEmployee={employeeList || []}
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
         />
         {!loadingDetail && (
           <UpdateForm
-            dataApply={PositionApplyList || []}
             handleModalVisible={this.handleModalUpdateVisible}
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
@@ -377,4 +341,4 @@ class CVAllList extends Component {
   }
 }
 
-export default Form.create()(CVAllList);
+export default Form.create()(SalaryEmployeeList);

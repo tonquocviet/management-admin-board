@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { Table } from 'antd';
 import React, { Component } from 'react';
 import styles from './index.less';
@@ -23,7 +22,13 @@ class StandardTable extends Component {
     };
     return (
       <div className={styles.staffGroupList}>
-        <Table rowKey="id" dataSource={list} pagination={paginationProps} {...rest} />
+        <Table
+          rowKey="id"
+          dataSource={list}
+          pagination={paginationProps}
+          onChange={this.handleTableChange}
+          {...rest}
+        />
       </div>
     );
   }

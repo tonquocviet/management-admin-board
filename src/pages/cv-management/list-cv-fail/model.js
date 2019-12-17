@@ -1,13 +1,20 @@
-import { queryList, toggleStatus, removeAccount, queryDetail, updateAccount } from './service';
+import {
+  queryList,
+  toggleStatus,
+  queryDetail,
+  addCV,
+  removeCV,
+  updateCV,
+  queryPositionApply,
+} from './service';
 
 const Model = {
-  namespace: 'accountBlockedManagement',
+  namespace: 'cvFailManagement',
   state: {
     data: {
       list: [],
       pagination: {},
     },
-    roleList: [],
   },
   effects: {
     *fetch({ payload, callback }, { call, put }) {
@@ -18,16 +25,27 @@ const Model = {
       });
       if (callback) callback();
     },
+    *fetchPositionApply({ payload }, { call, put }) {
+      const response = yield call(queryPositionApply, payload);
+      yield put({
+        type: 'savePosition',
+        payload: response,
+      });
+    },
+    *add({ payload, callback }, { call }) {
+      const response = yield call(addCV, payload);
+      if (callback) callback(response);
+    },
     *update({ payload, callback }, { call }) {
-      const response = yield call(updateAccount, payload);
+      const response = yield call(updateCV, payload);
+      if (callback) callback(response);
+    },
+    *remove({ payload, callback }, { call }) {
+      const response = yield call(removeCV, payload);
       if (callback) callback(response);
     },
     *toggleStatus({ payload, callback }, { call }) {
       const response = yield call(toggleStatus, payload);
-      if (callback) callback(response);
-    },
-    *remove({ payload, callback }, { call }) {
-      const response = yield call(removeAccount, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {
@@ -44,6 +62,9 @@ const Model = {
     },
     saveDetail(state, action) {
       return { ...state, detail: action.payload };
+    },
+    savePosition(state, action) {
+      return { ...state, PositionApplyList: action.payload };
     },
   },
 };

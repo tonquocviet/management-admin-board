@@ -2,7 +2,6 @@ import {
   queryList,
   toggleStatus,
   queryDetail,
-  addCV,
   removeCV,
   updateCV,
   queryPositionApply,
@@ -30,11 +29,7 @@ const Model = {
       yield put({
         type: 'savePosition',
         payload: response,
-      })
-    },
-    *add({ payload, callback }, { call }) {
-      const response = yield call(addCV, payload);
-      if (callback) callback(response);
+      });
     },
     *update({ payload, callback }, { call }) {
       const response = yield call(updateCV, payload);

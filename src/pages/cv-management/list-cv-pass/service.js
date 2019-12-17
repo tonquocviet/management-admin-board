@@ -7,7 +7,7 @@ export async function queryList(params = {}) {
       ...params.sorter,
     },
     filter: {
-      cv_pass_fail: true,
+      interview_pass_fail: true,
       ...params.search,
     },
     pagination: {
@@ -56,17 +56,6 @@ export async function queryDetail(params) {
   }
   return result;
 }
-export async function addCV(params) {
-  let result = {};
-  const res = await request('/api/interShip/create', {
-    method: 'POST',
-    data: params,
-  });
-  if (res.status) {
-    result = { ...res };
-  }
-  return result;
-}
 export async function removeCV(params) {
   let result = {};
   const res = await request(`/api/cv-apply/${params}`, {
@@ -90,7 +79,7 @@ export async function updateCV(params) {
 }
 export async function queryPositionApply() {
   let result = [];
-  const res = await request('/api/cv-apply/options/position-apply')
+  const res = await request('/api/cv-apply/options/position-apply');
 
   if (res.status) {
     result = [...res.results].map((item, index) => ({

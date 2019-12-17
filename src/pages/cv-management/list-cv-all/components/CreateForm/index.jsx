@@ -25,11 +25,10 @@ const CreateForm = props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const time_interview =
-        (fieldsValue.time_interview
-          && fieldsValue.time_interview.toDate().toISOString()) || undefined;
+        (fieldsValue.time_interview && fieldsValue.time_interview.toDate().toISOString()) ||
+        undefined;
       const createAt =
-        (fieldsValue.createAt
-          && fieldsValue.createAt.toDate().toISOString()) || undefined;
+        (fieldsValue.createAt && fieldsValue.createAt.toDate().toISOString()) || undefined;
       const value = {
         ...fieldsValue,
         time_interview,

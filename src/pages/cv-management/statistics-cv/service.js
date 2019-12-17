@@ -6,7 +6,7 @@ export async function queryList(params) {
     month: (params && params.month) || undefined,
     year: (params && params.year) || undefined,
   };
-  const response = await request('/api/absence-employee/statistics-absence', {
+  const response = await request('/api/cv-apply/statistics/cv-apply', {
     method: 'GET',
     params: requestParams,
   });
@@ -19,16 +19,14 @@ export async function queryList(params) {
         id: index,
         month: item._id.month,
         year: item._id.year,
-        total_date_absence: item.total_date_absence,
-        total_request_absence: item.total_request_absence,
+        total_cv: item.total_cv,
       };
     }
     return {
       id: index,
       month: item._id.month,
       day: item._id.day,
-      total_date_absence: item.total_date_absence,
-      total_request_absence: item.total_request_absence,
+      total_cv: item.total_cv,
     };
   });
   return result;

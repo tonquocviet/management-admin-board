@@ -6,11 +6,11 @@ import styles from './style.less';
 import StandardTable from './components/StandardTable';
 import SearchForm from './components/SearchForm';
 
-@connect(({ dayoffStatistic, loading }) => ({
-  dayoffStatistic,
-  loading: loading.effects['dayoffStatistic/fetch'],
+@connect(({ cvStatistic, loading }) => ({
+  cvStatistic,
+  loading: loading.effects['cvStatistic/fetch'],
 }))
-class DayOffStatistic extends Component {
+class CVStatistic extends Component {
   state = {
     formValues: {},
     isReset: false,
@@ -37,13 +37,8 @@ class DayOffStatistic extends Component {
       dataIndex: 'year',
     },
     {
-      title: 'Tổng số ngày nghỉ',
-      dataIndex: 'total_date_absence',
-      align: 'center',
-    },
-    {
-      title: 'Tổng số request nghỉ',
-      dataIndex: 'total_request_absence',
+      title: 'Tổng số CV',
+      dataIndex: 'total_cv',
       align: 'center',
     },
   ];
@@ -51,7 +46,7 @@ class DayOffStatistic extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dayoffStatistic/fetch',
+      type: 'cvStatistic/fetch',
     });
   }
 
@@ -80,7 +75,7 @@ class DayOffStatistic extends Component {
     if (!this.currentPage) {
       const search = this.state.formValues;
       dispatch({
-        type: 'dayoffStatistic/fetch',
+        type: 'cvStatistic/fetch',
         payload: search,
         callback: () => {
           this.setState({
@@ -91,11 +86,12 @@ class DayOffStatistic extends Component {
     }
   };
 
+  // đang handel
   checkYear() {
     const year =
-      this.props.dayoffStatistic.data &&
-      this.props.dayoffStatistic.data.list[0] &&
-      this.props.dayoffStatistic.data.list[0].year;
+      this.props.cvStatistic.data &&
+      this.props.cvStatistic.data.list[0] &&
+      this.props.cvStatistic.data.list[0].year;
     if (year) {
       return year;
     }
@@ -104,7 +100,7 @@ class DayOffStatistic extends Component {
 
   render() {
     const {
-      dayoffStatistic: { data },
+      cvStatistic: { data },
       loading,
     } = this.props;
     return (
@@ -127,4 +123,4 @@ class DayOffStatistic extends Component {
   }
 }
 
-export default Form.create()(DayOffStatistic);
+export default Form.create()(CVStatistic);

@@ -1,13 +1,19 @@
-import { queryList, toggleStatus, removeAccount, queryDetail, updateAccount } from './service';
+import {
+  queryList,
+  queryDetail,
+  addSalary,
+  updateSalary,
+  removeSalary,
+  queryEmployee,
+} from './service';
 
 const Model = {
-  namespace: 'accountBlockedManagement',
+  namespace: 'salaryManagement',
   state: {
     data: {
       list: [],
       pagination: {},
     },
-    roleList: [],
   },
   effects: {
     *fetch({ payload, callback }, { call, put }) {
@@ -18,22 +24,29 @@ const Model = {
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call }) {
-      const response = yield call(updateAccount, payload);
+    *add({ payload, callback }, { call }) {
+      const response = yield call(addSalary, payload);
       if (callback) callback(response);
     },
-    *toggleStatus({ payload, callback }, { call }) {
-      const response = yield call(toggleStatus, payload);
+    *update({ payload, callback }, { call }) {
+      const response = yield call(updateSalary, payload);
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call }) {
-      const response = yield call(removeAccount, payload);
+      const response = yield call(removeSalary, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {
       const response = yield call(queryDetail, payload);
       yield put({
         type: 'saveDetail',
+        payload: response,
+      });
+    },
+    *getEmployee({ payload }, { call, put }) {
+      const response = yield call(queryEmployee, payload);
+      yield put({
+        type: 'saveEmployee',
         payload: response,
       });
     },
@@ -44,6 +57,9 @@ const Model = {
     },
     saveDetail(state, action) {
       return { ...state, detail: action.payload };
+    },
+    saveEmployee(state, action) {
+      return { ...state, employeeList: action.payload };
     },
   },
 };

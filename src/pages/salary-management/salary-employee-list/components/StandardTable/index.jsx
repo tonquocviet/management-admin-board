@@ -23,7 +23,13 @@ class StandardTable extends Component {
     };
     return (
       <div className={styles.staffGroupList}>
-        <Table rowKey="id" dataSource={list} pagination={paginationProps} {...rest} />
+        <Table
+          rowKey="id"
+          dataSource={list}
+          pagination={paginationProps}
+          onChange={this.handleTableChange}
+          {...rest}
+        />
       </div>
     );
   }

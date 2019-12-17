@@ -1,11 +1,10 @@
-import { Button, Card, Form, Row, message, Modal, Icon, Tag, Typography } from 'antd';
+import { Button, Card, Form, message, Modal, Tag, Typography } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
-import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
 
@@ -26,7 +25,6 @@ class CVPassList extends Component {
   state = {
     formValues: {},
     isReset: false,
-    modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
@@ -72,13 +70,27 @@ class CVPassList extends Component {
       title: 'Tham gia phỏng vấn',
       dataIndex: 'take_interview',
       align: 'center',
-      render: result => <span>{result ? <Text type="warning" strong>Có</Text> : <Text type="danger" strong>Không</Text>}</span>,
+      render: result => (
+        <span>
+          {result ? (
+            <Text type="warning" strong>
+              Có
+            </Text>
+          ) : (
+            <Text type="danger" strong>
+              Không
+            </Text>
+          )}
+        </span>
+      ),
     },
     {
       title: 'Kết quả',
       dataIndex: 'interview_pass_fail',
       align: 'center',
-      render: result => <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>,
+      render: result => (
+        <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>
+      ),
     },
     {
       title: 'Ngày nộp CV',
@@ -166,7 +178,7 @@ class CVPassList extends Component {
       onOk: () => {
         this.handleToggle(record);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -200,7 +212,7 @@ class CVPassList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -268,16 +280,6 @@ class CVPassList extends Component {
     }
   };
 
-  showCreateForm = () => {
-    this.handleModalCreateVisible(true);
-  };
-
-  handleModalCreateVisible = value => {
-    this.setState({
-      modalCreateVisible: value,
-    });
-  };
-
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
@@ -290,30 +292,6 @@ class CVPassList extends Component {
   handleModalUpdateVisible = value => {
     this.setState({
       modalUpdateVisible: value,
-    });
-  };
-
-  handleCreate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvPassManagement/add',
-      payload: fields,
-      callback: res => {
-        if (res && res.status) {
-          this.handleModalCreateVisible(false);
-          message.success('Thêm mới thành công');
-          if (!this.currentPage) {
-            dispatch({
-              type: 'cvPassManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        } else {
-          message.error('Thêm mới thất bại, vui lòng thử lại sau');
-        }
-      },
     });
   };
 
@@ -341,17 +319,6 @@ class CVPassList extends Component {
     });
   };
 
-  renderCreateComp() {
-    return (
-      <Row type="flex" justify="space-between">
-        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
-          <Icon type="plus" />
-          Thêm CV
-        </Button>
-      </Row>
-    );
-  }
-
   render() {
     const {
       cvPassManagement: { data, detail, PositionApplyList },
@@ -359,7 +326,7 @@ class CVPassList extends Component {
       loadingToggle,
       loadingDetail,
     } = this.props;
-    const { modalCreateVisible, modalUpdateVisible } = this.state;
+    const { modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
@@ -373,9 +340,6 @@ class CVPassList extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
-              {this.renderCreateComp()}
-            </div>
             <StandardTable
               loading={loading || loadingDetail || loadingToggle}
               data={data}
@@ -384,11 +348,6 @@ class CVPassList extends Component {
             />
           </div>
         </Card>
-        <CreateForm
-          handleModalVisible={this.handleModalCreateVisible}
-          modalVisible={modalCreateVisible}
-          handleAdd={this.handleCreate}
-        />
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}

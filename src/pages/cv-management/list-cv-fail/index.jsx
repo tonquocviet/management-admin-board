@@ -16,12 +16,13 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ cvAllManagement, loading }) => ({
-  cvAllManagement,
-  loading: loading.effects['cvAllManagement/fetch'],
-  loadingDetail: loading.effects['cvAllManagement/getDetail'],
+@connect(({ cvFailManagement, loading }) => ({
+  cvFailManagement,
+  loading: loading.effects['cvFailManagement/fetch'],
+  loadingToggle: loading.effects['cvFailManagement/toggleStatus'],
+  loadingDetail: loading.effects['cvFailManagement/getDetail'],
 }))
-class CVAllList extends Component {
+class CVFailList extends Component {
   state = {
     formValues: {},
     isReset: false,
@@ -57,6 +58,7 @@ class CVAllList extends Component {
     },
     {
       title: 'Vị trí ứng tuyển',
+      sorter: true,
       dataIndex: 'position_apply',
       align: 'center',
     },
@@ -104,9 +106,14 @@ class CVAllList extends Component {
         <>
           <Button
             type="link"
+            icon="lock"
+            onClick={() => this.showConfirmToggleAccountStatus(record)}
+          />
+          <Button
+            type="link"
             style={{ color: 'red' }}
             icon="delete"
-            onClick={() => this.showConfirmDeleteAccount(record)}
+            onClick={() => this.showConfirmDeleteCVPass(record)}
           />
         </>
       ),
@@ -116,10 +123,10 @@ class CVAllList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/fetch',
+      type: 'cvFailManagement/fetch',
     });
     dispatch({
-      type: 'cvAllManagement/fetchPositionApply',
+      type: 'cvFailManagement/fetchPositionApply',
     });
   }
 
@@ -154,7 +161,7 @@ class CVAllList extends Component {
     }
 
     dispatch({
-      type: 'cvAllManagement/fetch',
+      type: 'cvFailManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -164,9 +171,43 @@ class CVAllList extends Component {
     });
   };
 
-  showConfirmDeleteAccount = record => {
+  showConfirmToggleAccountStatus = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn CV của ${record.full_name} không?`,
+      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
+      content: '',
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: () => {
+        this.handleToggle(record);
+      },
+      onCancel: () => {},
+    });
+  };
+
+  handleToggle = row => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'cvFailManagement/toggleStatus',
+      payload: row,
+      callback: res => {
+        if (res && res.status) {
+          message.success('Chuyển đổi trạng thái thành công!');
+          if (!this.currentPager) {
+            dispatch({
+              type: 'cvFailManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        }
+      },
+    });
+  };
+
+  showConfirmDeleteCVPass = record => {
+    Modal.confirm({
+      title: `Bạn có chắc muốn xóa cv của ${record.full_name} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -180,14 +221,14 @@ class CVAllList extends Component {
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/remove',
+      type: 'cvFailManagement/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
           message.success('Xóa thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -226,7 +267,7 @@ class CVAllList extends Component {
         search,
       };
       dispatch({
-        type: 'cvAllManagement/fetch',
+        type: 'cvFailManagement/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -254,7 +295,7 @@ class CVAllList extends Component {
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/getDetail',
+      type: 'cvFailManagement/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -269,7 +310,7 @@ class CVAllList extends Component {
   handleCreate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/add',
+      type: 'cvFailManagement/add',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -277,7 +318,7 @@ class CVAllList extends Component {
           message.success('Thêm mới thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -293,7 +334,7 @@ class CVAllList extends Component {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvAllManagement/update',
+      type: 'cvFailManagement/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -301,7 +342,7 @@ class CVAllList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvAllManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -327,7 +368,7 @@ class CVAllList extends Component {
 
   render() {
     const {
-      cvAllManagement: { data, detail, PositionApplyList },
+      cvFailManagement: { data, detail, PositionApplyList },
       loading,
       loadingToggle,
       loadingDetail,
@@ -358,14 +399,12 @@ class CVAllList extends Component {
           </div>
         </Card>
         <CreateForm
-          dataApply={PositionApplyList || []}
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
         />
         {!loadingDetail && (
           <UpdateForm
-            dataApply={PositionApplyList || []}
             handleModalVisible={this.handleModalUpdateVisible}
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
@@ -377,4 +416,4 @@ class CVAllList extends Component {
   }
 }
 
-export default Form.create()(CVAllList);
+export default Form.create()(CVFailList);

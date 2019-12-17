@@ -24,7 +24,6 @@ class Login extends Component {
     }
   };
 
-
   renderMessage = content => (
     <Alert
       style={{
