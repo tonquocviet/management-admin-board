@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
+import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
 
@@ -15,16 +16,17 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ cvPassManagement, loading }) => ({
-  cvPassManagement,
-  loading: loading.effects['cvPassManagement/fetch'],
-  loadingToggle: loading.effects['cvPassManagement/toggleStatus'],
-  loadingDetail: loading.effects['cvPassManagement/getDetail'],
+@connect(({ cvFailManagement, loading }) => ({
+  cvFailManagement,
+  loading: loading.effects['cvFailManagement/fetch'],
+  loadingToggle: loading.effects['cvFailManagement/toggleStatus'],
+  loadingDetail: loading.effects['cvFailManagement/getDetail'],
 }))
-class CVPassList extends Component {
+class CVFailList extends Component {
   state = {
     formValues: {},
     isReset: false,
+    modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
@@ -107,10 +109,10 @@ class CVPassList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/fetch',
+      type: 'cvFailManagement/fetch',
     });
     dispatch({
-      type: 'cvPassManagement/fetchPositionApply',
+      type: 'cvFailManagement/fetchPositionApply',
     });
   }
 
@@ -145,7 +147,7 @@ class CVPassList extends Component {
     }
 
     dispatch({
-      type: 'cvPassManagement/fetch',
+      type: 'cvFailManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -171,14 +173,14 @@ class CVPassList extends Component {
   handleToggle = row => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/toggleStatus',
+      type: 'cvFailManagement/toggleStatus',
       payload: row,
       callback: res => {
         if (res && res.status) {
           message.success('Chuyển đổi trạng thái thành công!');
           if (!this.currentPager) {
             dispatch({
-              type: 'cvPassManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -205,14 +207,14 @@ class CVPassList extends Component {
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/remove',
+      type: 'cvFailManagement/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
           message.success('Xóa thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvPassManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -251,7 +253,7 @@ class CVPassList extends Component {
         search,
       };
       dispatch({
-        type: 'cvPassManagement/fetch',
+        type: 'cvFailManagement/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -266,10 +268,20 @@ class CVPassList extends Component {
     }
   };
 
+  showCreateForm = () => {
+    this.handleModalCreateVisible(true);
+  };
+
+  handleModalCreateVisible = value => {
+    this.setState({
+      modalCreateVisible: value,
+    });
+  };
+
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/getDetail',
+      type: 'cvFailManagement/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -281,10 +293,34 @@ class CVPassList extends Component {
     });
   };
 
+  handleCreate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'cvFailManagement/add',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          this.handleModalCreateVisible(false);
+          message.success('Thêm mới thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'cvFailManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.error('Thêm mới thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
+  };
+
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/update',
+      type: 'cvFailManagement/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -292,7 +328,7 @@ class CVPassList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvPassManagement/fetch',
+              type: 'cvFailManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -305,14 +341,25 @@ class CVPassList extends Component {
     });
   };
 
+  renderCreateComp() {
+    return (
+      <Row type="flex" justify="space-between">
+        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
+          <Icon type="plus" />
+          Thêm CV
+        </Button>
+      </Row>
+    );
+  }
+
   render() {
     const {
-      cvPassManagement: { data, detail, PositionApplyList },
+      cvFailManagement: { data, detail, PositionApplyList },
       loading,
       loadingToggle,
       loadingDetail,
     } = this.props;
-    const { modalUpdateVisible } = this.state;
+    const { modalCreateVisible, modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
@@ -326,6 +373,9 @@ class CVPassList extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
+            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
+              {this.renderCreateComp()}
+            </div>
             <StandardTable
               loading={loading || loadingDetail || loadingToggle}
               data={data}
@@ -334,6 +384,11 @@ class CVPassList extends Component {
             />
           </div>
         </Card>
+        <CreateForm
+          handleModalVisible={this.handleModalCreateVisible}
+          modalVisible={modalCreateVisible}
+          handleAdd={this.handleCreate}
+        />
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}
@@ -347,4 +402,4 @@ class CVPassList extends Component {
   }
 }
 
-export default Form.create()(CVPassList);
+export default Form.create()(CVFailList);

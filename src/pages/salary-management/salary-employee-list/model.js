@@ -1,14 +1,14 @@
 import {
   queryList,
   queryDetail,
-  addCV,
-  removeCV,
-  updateCV,
-  queryPositionApply,
+  addSalary,
+  updateSalary,
+  removeSalary,
+  queryEmployee,
 } from './service';
 
 const Model = {
-  namespace: 'cvAllManagement',
+  namespace: 'salaryManagement',
   state: {
     data: {
       list: [],
@@ -24,29 +24,29 @@ const Model = {
       });
       if (callback) callback();
     },
-    *fetchPositionApply({ payload }, { call, put }) {
-      const response = yield call(queryPositionApply, payload);
-      yield put({
-        type: 'savePosition',
-        payload: response,
-      })
-    },
     *add({ payload, callback }, { call }) {
-      const response = yield call(addCV, payload);
+      const response = yield call(addSalary, payload);
       if (callback) callback(response);
     },
     *update({ payload, callback }, { call }) {
-      const response = yield call(updateCV, payload);
+      const response = yield call(updateSalary, payload);
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call }) {
-      const response = yield call(removeCV, payload);
+      const response = yield call(removeSalary, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {
       const response = yield call(queryDetail, payload);
       yield put({
         type: 'saveDetail',
+        payload: response,
+      });
+    },
+    *getEmployee({ payload }, { call, put }) {
+      const response = yield call(queryEmployee, payload);
+      yield put({
+        type: 'saveEmployee',
         payload: response,
       });
     },
@@ -58,8 +58,8 @@ const Model = {
     saveDetail(state, action) {
       return { ...state, detail: action.payload };
     },
-    savePosition(state, action) {
-      return { ...state, PositionApplyList: action.payload };
+    saveEmployee(state, action) {
+      return { ...state, employeeList: action.payload };
     },
   },
 };

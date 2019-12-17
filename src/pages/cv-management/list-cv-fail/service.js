@@ -7,6 +7,7 @@ export async function queryList(params = {}) {
       ...params.sorter,
     },
     filter: {
+      interview_pass_fail: false,
       ...params.search,
     },
     pagination: {
@@ -33,9 +34,23 @@ export async function queryList(params = {}) {
 
   return result;
 }
+export async function toggleStatus(params) {
+  const dataParams = {
+    blocked: true,
+  };
+  let result = {};
+  const res = await request(`/api/interShip/blocked/${params.id}`, {
+    method: 'PUT',
+    data: dataParams,
+  });
+  if (res.status) {
+    result = { ...res };
+  }
+  return result;
+}
 export async function queryDetail(params) {
   let result = {};
-  const res = await request(`/api/cv-apply/${params}`);
+  const res = await request(`/api/interShip/${params}`);
   if (res.status) {
     result = { ...res.result };
   }
@@ -43,7 +58,7 @@ export async function queryDetail(params) {
 }
 export async function addCV(params) {
   let result = {};
-  const res = await request('/api/cv-apply/create', {
+  const res = await request('/api/interShip/create', {
     method: 'POST',
     data: params,
   });
@@ -64,9 +79,9 @@ export async function removeCV(params) {
 }
 export async function updateCV(params) {
   let result = {};
-  const res = await request(`/api/cv-apply/${params.id}`, {
+  const res = await request(`/api/interShip/update/${params.id}`, {
     method: 'PUT',
-    data: { ...params.value },
+    data: { ...params },
   });
   if (res.status) {
     result = { ...res };

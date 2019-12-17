@@ -1,41 +1,44 @@
-import { Button, Card, Form, Row, message, Modal, Icon, Tag, Typography } from 'antd';
+import { Button, Card, Form, Row, message, Modal, Icon } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
+import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
-
-const { Text } = Typography;
+import MoneySpan from '@/components/MoneySpan';
 
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
 
-@connect(({ cvPassManagement, loading }) => ({
-  cvPassManagement,
-  loading: loading.effects['cvPassManagement/fetch'],
-  loadingToggle: loading.effects['cvPassManagement/toggleStatus'],
-  loadingDetail: loading.effects['cvPassManagement/getDetail'],
+@connect(({ salaryManagement, loading }) => ({
+  salaryManagement,
+  loading: loading.effects['salaryManagement/fetch'],
+  loadingDetail: loading.effects['salaryManagement/getDetail'],
+  loadingEmployee: loading.effects['salaryManagement/getEmployee'],
 }))
-class CVPassList extends Component {
+class SalaryEmployeeList extends Component {
   state = {
     formValues: {},
     isReset: false,
+    modalCreateVisible: false,
     modalUpdateVisible: false,
   };
+
+  timer = null;
 
   currentPager = null;
 
   columns = [
     {
       title: 'Họ và tên',
-      sorter: true,
       align: 'center',
-      dataIndex: 'full_name',
+      sorter: true,
+      dataIndex: 'user',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
@@ -43,61 +46,34 @@ class CVPassList extends Component {
       ),
     },
     {
-      title: 'Email',
+      title: 'Tổng lương được nhận',
+      dataIndex: 'total_salary',
+      align: 'center',
+      render: money => <MoneySpan number={money} />,
+    },
+    {
+      title: 'Ngày chuyển lương',
+      dataIndex: 'payment_salary_date',
       sorter: true,
-      dataIndex: 'email',
-      align: 'center',
-    },
-    {
-      title: 'Chức vụ ứng tuyển',
-      dataIndex: 'type_apply',
-      align: 'center',
-      render: type => <span>{type === 1 ? 'Thử việc/Developer' : 'Thực tập sinh'}</span>,
-    },
-    {
-      title: 'Vị trí ứng tuyển',
-      sorter: true,
-      dataIndex: 'position_apply',
-      align: 'center',
-    },
-    {
-      title: 'Tổng điểm CV',
-      dataIndex: 'cv_point',
-      align: 'center',
-      render: result => <Text strong>{result}</Text>,
-    },
-    {
-      title: 'Tham gia phỏng vấn',
-      dataIndex: 'take_interview',
-      align: 'center',
-      render: result => <span>{result ? <Text type="warning" strong>Có</Text> : <Text type="danger" strong>Không</Text>}</span>,
-    },
-    {
-      title: 'Kết quả',
-      dataIndex: 'interview_pass_fail',
-      align: 'center',
-      render: result => <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>,
-    },
-    {
-      title: 'Ngày nộp CV',
-      dataIndex: 'createAt',
       align: 'center',
       render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
     },
     {
+      title: 'Cập nhật cuối',
+      dataIndex: 'updateAt',
+      align: 'center',
+      render: dateEnd => <span>{moment(dateEnd).format('DD/MM/YYYY')}</span>,
+    },
+    {
       title: 'Hành động',
+      align: 'center',
       render: record => (
         <>
           <Button
             type="link"
-            icon="lock"
-            onClick={() => this.showConfirmToggleAccountStatus(record)}
-          />
-          <Button
-            type="link"
             style={{ color: 'red' }}
             icon="delete"
-            onClick={() => this.showConfirmDeleteCVPass(record)}
+            onClick={() => this.showConfirmDeleteAccount(record)}
           />
         </>
       ),
@@ -107,10 +83,10 @@ class CVPassList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/fetch',
+      type: 'salaryManagement/fetch',
     });
     dispatch({
-      type: 'cvPassManagement/fetchPositionApply',
+      type: 'salaryManagement/getEmployee',
     });
   }
 
@@ -145,7 +121,7 @@ class CVPassList extends Component {
     }
 
     dispatch({
-      type: 'cvPassManagement/fetch',
+      type: 'salaryManagement/fetch',
       payload: params,
       callback: () => {
         this.setState({
@@ -155,64 +131,30 @@ class CVPassList extends Component {
     });
   };
 
-  showConfirmToggleAccountStatus = record => {
+  showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => { },
-    });
-  };
-
-  handleToggle = row => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvPassManagement/toggleStatus',
-      payload: row,
-      callback: res => {
-        if (res && res.status) {
-          message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
-            dispatch({
-              type: 'cvPassManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        }
-      },
-    });
-  };
-
-  showConfirmDeleteCVPass = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn xóa cv của ${record.full_name} không?`,
+      title: `Bạn có chắc muốn xóa phiếu lương của ${record.user} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/remove',
+      type: 'salaryManagement/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa thành công');
+          message.success('Xóa phiếu lương thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvPassManagement/fetch',
+              type: 'salaryManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -251,7 +193,7 @@ class CVPassList extends Component {
         search,
       };
       dispatch({
-        type: 'cvPassManagement/fetch',
+        type: 'salaryManagement/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -266,10 +208,20 @@ class CVPassList extends Component {
     }
   };
 
+  showCreateForm = () => {
+    this.handleModalCreateVisible(true);
+  };
+
+  handleModalCreateVisible = value => {
+    this.setState({
+      modalCreateVisible: value,
+    });
+  };
+
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/getDetail',
+      type: 'salaryManagement/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -281,10 +233,34 @@ class CVPassList extends Component {
     });
   };
 
+  handleCreate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'salaryManagement/add',
+      payload: fields,
+      callback: res => {
+        if (res && res.status) {
+          this.handleModalCreateVisible(false);
+          message.success('Thêm mới thành công');
+          if (!this.currentPage) {
+            dispatch({
+              type: 'salaryManagement/fetch',
+            });
+          } else {
+            const { pagination, filtersArg, sorter } = this.currentPager;
+            this.handleListChange(pagination, filtersArg, sorter);
+          }
+        } else {
+          message.error('Thêm mới thất bại, vui lòng thử lại sau');
+        }
+      },
+    });
+  };
+
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'cvPassManagement/update',
+      type: 'salaryManagement/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -292,7 +268,7 @@ class CVPassList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'cvPassManagement/fetch',
+              type: 'salaryManagement/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPager;
@@ -305,19 +281,28 @@ class CVPassList extends Component {
     });
   };
 
+  renderCreateComp() {
+    return (
+      <Row type="flex" justify="space-between">
+        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
+          <Icon type="plus" />
+          Thêm phiếu lương
+        </Button>
+      </Row>
+    );
+  }
+
   render() {
     const {
-      cvPassManagement: { data, detail, PositionApplyList },
+      salaryManagement: { data, detail, employeeList },
       loading,
-      loadingToggle,
       loadingDetail,
     } = this.props;
-    const { modalUpdateVisible } = this.state;
+    const { modalCreateVisible, modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
           <SearchForm
-            dataApply={PositionApplyList || []}
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
             isReset={this.state.isReset}
@@ -326,14 +311,23 @@ class CVPassList extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
+            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
+              {this.renderCreateComp()}
+            </div>
             <StandardTable
-              loading={loading || loadingDetail || loadingToggle}
+              loading={loading || loadingDetail}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
             />
           </div>
         </Card>
+        <CreateForm
+          dataEmployee={employeeList || []}
+          handleModalVisible={this.handleModalCreateVisible}
+          modalVisible={modalCreateVisible}
+          handleAdd={this.handleCreate}
+        />
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}
@@ -347,4 +341,4 @@ class CVPassList extends Component {
   }
 }
 
-export default Form.create()(CVPassList);
+export default Form.create()(SalaryEmployeeList);

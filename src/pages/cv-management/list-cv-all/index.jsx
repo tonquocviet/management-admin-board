@@ -19,7 +19,6 @@ const getValue = obj =>
 @connect(({ cvAllManagement, loading }) => ({
   cvAllManagement,
   loading: loading.effects['cvAllManagement/fetch'],
-  loadingToggle: loading.effects['cvAllManagement/toggleStatus'],
   loadingDetail: loading.effects['cvAllManagement/getDetail'],
 }))
 class CVAllList extends Component {
@@ -91,11 +90,6 @@ class CVAllList extends Component {
         <>
           <Button
             type="link"
-            icon="lock"
-            onClick={() => this.showConfirmToggleAccountStatus(record)}
-          />
-          <Button
-            type="link"
             style={{ color: 'red' }}
             icon="delete"
             onClick={() => this.showConfirmDeleteAccount(record)}
@@ -152,40 +146,6 @@ class CVAllList extends Component {
         this.setState({
           isReset: false,
         });
-      },
-    });
-  };
-
-  showConfirmToggleAccountStatus = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => { },
-    });
-  };
-
-  handleToggle = row => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvAllManagement/toggleStatus',
-      payload: row,
-      callback: res => {
-        if (res && res.status) {
-          message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
-            dispatch({
-              type: 'cvAllManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        }
       },
     });
   };

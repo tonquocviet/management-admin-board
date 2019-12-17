@@ -196,13 +196,23 @@ export default {
               routes: [
                 {
                   path: '/cv-management/list-cv-all',
-                  name: 'Danh sách tất cả CV nộp vào',
+                  name: 'Danh sách CV nộp vào',
                   component: './cv-management/list-cv-all',
                 },
                 {
                   path: '/cv-management/list-cv-pass',
                   name: 'Danh sách CV trúng tuyển',
                   component: './cv-management/list-cv-pass',
+                },
+                {
+                  path: '/cv-management/list-cv-fail',
+                  name: 'Danh sách CV không trúng tuyển',
+                  component: './cv-management/list-cv-fail',
+                },
+                {
+                  path: '/cv-management/statistics-cv',
+                  name: 'Thống kê CV',
+                  component: './cv-management/statistics-cv',
                 },
                 {
                   component: './404',
@@ -215,9 +225,14 @@ export default {
               icon: 'euro',
               routes: [
                 {
-                  path: '/salary-management/list',
+                  path: '/salary-management/salary-employee-list',
                   name: 'Danh sách lương nhân viên',
-                  component: './salary-management/list',
+                  component: './salary-management/salary-employee-list',
+                },
+                {
+                  path: '/salary-management/statistics-salary-employee',
+                  name: 'Thống kê lương nhân viên',
+                  component: './salary-management/statistics-salary-employee',
                 },
                 {
                   component: './404',
