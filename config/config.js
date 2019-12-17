@@ -82,21 +82,29 @@ export default {
       component: '../layouts/UserLayout',
       routes: [
         {
-          name: 'login',
+          name: 'Login',
           path: '/user/login',
           component: './user/login',
         },
         {
           name: 'Xác nhận tài khoản',
-          icon: 'smile',
           path: '/user/register-confirm',
           component: './user/register-confirm',
         },
         {
           name: 'Đăng kí tài khoản',
-          icon: 'smile',
           path: '/user/register',
           component: './user/register',
+        },
+        {
+          name: 'Quên mật khẩu',
+          path: '/user/forgot-password',
+          component: './user/forgot-password',
+        },
+        {
+          name: 'Đặt lại mật khẩu',
+          path: '/user/reset-password',
+          component: './user/reset-password',
         },
       ],
     },
