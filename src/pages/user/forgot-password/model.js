@@ -2,8 +2,7 @@ import { ForgotPass } from './service';
 
 const Model = {
   namespace: 'userForgot',
-  state: {
-  },
+  state: {},
   effects: {
     *submit({ payload, callback }, { call }) {
       const response = yield call(ForgotPass, payload);

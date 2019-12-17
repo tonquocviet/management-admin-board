@@ -10,35 +10,32 @@ const FormItem = Form.Item;
   userForgot,
   submitting: loading.effects['userForgot/submit'],
 }))
-
 class Register extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { form, dispatch } = this.props;
     const account = form.getFieldValue('email');
-    form.validateFields(
-      (err, values) => {
-        if (!err) {
-          const dataForgot = {
-            ...values,
-          };
-          dispatch({
-            type: 'userForgot/submit',
-            payload: { ...dataForgot },
-            callback: res => {
-              if (res && res.status) {
-                router.push({
-                  pathname: '/user/reset-password',
-                  state: {
-                    account,
-                  },
-                });
-              }
-            },
-          });
-        }
-      },
-    );
+    form.validateFields((err, values) => {
+      if (!err) {
+        const dataForgot = {
+          ...values,
+        };
+        dispatch({
+          type: 'userForgot/submit',
+          payload: { ...dataForgot },
+          callback: res => {
+            if (res && res.status) {
+              router.push({
+                pathname: '/user/reset-password',
+                state: {
+                  account,
+                },
+              });
+            }
+          },
+        });
+      }
+    });
   };
 
   render() {

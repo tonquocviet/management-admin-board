@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { parse, stringify } from 'qs';
 import { setAuthority } from '@/utils/authority';
-import { removeTokenToLocalStorage } from '@/utils/utils'
+import { removeTokenToLocalStorage } from '@/utils/utils';
 
 export function getPageQuery() {
   return parse(window.location.href.split('?')[1]);
@@ -14,7 +14,7 @@ const Model = {
   },
   effects: {
     *logout(_, { put }) {
-      removeTokenToLocalStorage()
+      removeTokenToLocalStorage();
       const { redirect } = getPageQuery(); // redirect
 
       if (window.location.pathname !== '/user/login' && !redirect) {

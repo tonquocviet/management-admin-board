@@ -80,8 +80,8 @@ class RegisterConfirm extends Component {
           status="success"
           title={
             <div className={styles.title}>
-              Vui lòng kiểm tra hộp thư đến hoặc thư spam email {emailDisplay} và nhập code để
-              đặt lại mật khẩu
+              Vui lòng kiểm tra hộp thư đến hoặc thư spam email {emailDisplay} và nhập code để đặt
+              lại mật khẩu
             </div>
           }
           subTitle="Mã xác thực đã được gửi đến địa chỉ email của bạn và có hiệu lực trong 15 phút. Vui lòng đăng nhập vào email kịp thời và kiểm tra trong hộp thư đến hoặc hộp thư Spam."
@@ -101,13 +101,7 @@ class RegisterConfirm extends Component {
                     message: 'Giá trị không hợp lệ!',
                   },
                 ],
-              })(
-                <Input
-                  maxLength={4}
-                  size="large"
-                  placeholder="Mã xác thực"
-                />,
-              )}
+              })(<Input maxLength={4} size="large" placeholder="Mã xác thực" />)}
             </FormItem>
             <FormItem label="Mật khẩu mới">
               {form.getFieldDecorator('password', {

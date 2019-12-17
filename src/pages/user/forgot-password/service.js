@@ -6,6 +6,6 @@ export async function ForgotPass(params) {
     data: params,
   });
   if (res.status) {
-    return { ...res }
+    return { ...res };
   }
 }
