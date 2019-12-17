@@ -26,19 +26,17 @@ export async function queryList(params = {}) {
     },
     list: [],
   };
-  result.list = (response.results || []).map(item => (
-    {
-      // eslint-disable-next-line no-underscore-dangle
-      id: item._id,
-      user: item.user.full_name,
-      idUser: item.user._id,
-      salary_basic: item.salary_basic,
-      subsidize: item.subsidize,
-      total_salary: item.total_salary,
-      payment_salary_date: item.payment_salary_date,
-      notes: item.notes,
-    }
-  ));
+  result.list = (response.results || []).map(item => ({
+    // eslint-disable-next-line no-underscore-dangle
+    id: item._id,
+    user: item.user.full_name,
+    idUser: item.user._id,
+    salary_basic: item.salary_basic,
+    subsidize: item.subsidize,
+    total_salary: item.total_salary,
+    payment_salary_date: item.payment_salary_date,
+    notes: item.notes,
+  }));
   return result;
 }
 export async function queryDetail(id) {

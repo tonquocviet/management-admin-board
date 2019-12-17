@@ -8,7 +8,7 @@ export async function accountLogin(params) {
   if (res && res.status) {
     return {
       ...res,
-    }
+    };
   }
   return {
     status: false,

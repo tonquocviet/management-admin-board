@@ -21,7 +21,7 @@ export async function queryList(params) {
         year: item._id.year,
         total_date_absence: item.total_date_absence,
         total_request_absence: item.total_request_absence,
-      }
+      };
     }
     return {
       id: index,
@@ -29,7 +29,7 @@ export async function queryList(params) {
       day: item._id.day,
       total_date_absence: item.total_date_absence,
       total_request_absence: item.total_request_absence,
-    }
+    };
   });
   return result;
 }

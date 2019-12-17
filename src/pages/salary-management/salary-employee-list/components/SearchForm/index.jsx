@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable no-plusplus */
 import React from 'react';
-import { Button, Col, Form, Input, Row, DatePicker, Divider, Select } from 'antd';
-import moment from 'moment';
+import { Button, Col, Form, Input, Row, DatePicker } from 'antd';
 import styles from '../../style.less';
 
 const FormItem = Form.Item;
@@ -18,23 +17,11 @@ const SearchForm = props => {
 
   const onSearch = e => {
     e.preventDefault();
-    // check lấy cả tháng và năm
-    const check = valueMonth => {
-      if (valueMonth) {
-        const convert = valueMonth.split('/');
-        const monthDirective = Number(convert[1]);
-        const yearDirective = Number(convert[2]);
-        return {
-          monthDirective,
-          yearDirective,
-        };
-      }
-      return undefined;
-    };
     form.validateFields((err, fieldsValue) => {
       const payment_salary_date =
         (fieldsValue.payment_salary_date &&
-          fieldsValue.payment_salary_date.toDate().toISOString()) || undefined;
+          fieldsValue.payment_salary_date.toDate().toISOString()) ||
+        undefined;
       if (err) return;
       const values = {
         ...fieldsValue,

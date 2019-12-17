@@ -1,7 +1,18 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
-import { Form, Modal, Input, Select, Slider, Button, Popconfirm, Radio, Tag, Typography } from 'antd';
+import {
+  Form,
+  Modal,
+  Input,
+  Select,
+  Slider,
+  Button,
+  Popconfirm,
+  Radio,
+  Tag,
+  Typography,
+} from 'antd';
 import React, { useState } from 'react';
 
 const { Text } = Typography;
@@ -63,7 +74,7 @@ const CreateForm = props => {
     event.preventDefault();
     const checkInput = event.target.value;
     setValueCV(checkInput);
-  }
+  };
 
   return (
     <Modal
@@ -183,52 +194,50 @@ const CreateForm = props => {
           ],
         })(
           <>
-            {isAllowCV ?
-              (
-                <>
-                  <Input placeholder="Nhập CV"
-                    defaultValue={isValueCV || data.url_preview_cv}
-                    onChange={event => handleChangeCV(event)} />
-                  <a style={{ marginRight: 8 }} onClick={() => setIsAllowCV(!isAllowCV)}>Lưu</a>
-                  <Popconfirm title="Bạn có chắc muốn hủy?" okText="Đồng ý" cancelText="Không"
-                    onConfirm={() => setIsAllowCV(!isAllowCV)}
-                  >
-                    <a href="#">Hủy</a>
-                  </Popconfirm>
-                </>
-              )
-              : isValueCV ? (
-                <>
-                  <a
-                    href={isValueCV}
-                    target="_blank" rel="noopener noreferrer"
-                    className="ant-form-text">
-                    {isValueCV}
-                  </a>
-                  <Button
-                    type="link"
-                    icon="edit"
-                    onClick={() => setIsAllowCV(!isAllowCV)}
-                  >
-                  </Button>
-                </>
-              ) : (
-                  <>
-                    <a
-                      href={data.url_preview_cv}
-                      target="_blank" rel="noopener noreferrer"
-                      className="ant-form-text">
-                      {data.url_preview_cv}
-                    </a>
-                    <Button
-                      type="link"
-                      icon="edit"
-                      onClick={() => setIsAllowCV(!isAllowCV)}
-                    >
-                    </Button>
-                  </>
-                )
-            }
+            {isAllowCV ? (
+              <>
+                <Input
+                  placeholder="Nhập CV"
+                  defaultValue={isValueCV || data.url_preview_cv}
+                  onChange={event => handleChangeCV(event)}
+                />
+                <a style={{ marginRight: 8 }} onClick={() => setIsAllowCV(!isAllowCV)}>
+                  Lưu
+                </a>
+                <Popconfirm
+                  title="Bạn có chắc muốn hủy?"
+                  okText="Đồng ý"
+                  cancelText="Không"
+                  onConfirm={() => setIsAllowCV(!isAllowCV)}
+                >
+                  <a href="#">Hủy</a>
+                </Popconfirm>
+              </>
+            ) : isValueCV ? (
+              <>
+                <a
+                  href={isValueCV}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ant-form-text"
+                >
+                  {isValueCV}
+                </a>
+                <Button type="link" icon="edit" onClick={() => setIsAllowCV(!isAllowCV)}></Button>
+              </>
+            ) : (
+              <>
+                <a
+                  href={data.url_preview_cv}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ant-form-text"
+                >
+                  {data.url_preview_cv}
+                </a>
+                <Button type="link" icon="edit" onClick={() => setIsAllowCV(!isAllowCV)}></Button>
+              </>
+            )}
           </>,
         )}
       </FormItem>
@@ -255,8 +264,12 @@ const CreateForm = props => {
           initialValue: data.cv_pass_fail,
         })(
           <Radio.Group>
-            <Radio value><Tag color="green">Đạt yêu cầu</Tag></Radio>
-            <Radio value={false}><Tag color="red">Không đạt yêu cầu</Tag></Radio>
+            <Radio value>
+              <Tag color="green">Đạt yêu cầu</Tag>
+            </Radio>
+            <Radio value={false}>
+              <Tag color="red">Không đạt yêu cầu</Tag>
+            </Radio>
           </Radio.Group>,
         )}
       </Form.Item>
@@ -285,8 +298,16 @@ const CreateForm = props => {
           initialValue: data.take_interview,
         })(
           <Radio.Group>
-            <Radio value><Text type="warning" strong>Có</Text></Radio>
-            <Radio value={false}><Text type="danger" strong>Không</Text></Radio>
+            <Radio value>
+              <Text type="warning" strong>
+                Có
+              </Text>
+            </Radio>
+            <Radio value={false}>
+              <Text type="danger" strong>
+                Không
+              </Text>
+            </Radio>
           </Radio.Group>,
         )}
       </Form.Item>
@@ -295,8 +316,12 @@ const CreateForm = props => {
           initialValue: data.interview_pass_fail,
         })(
           <Radio.Group>
-            <Radio value><Tag color="green">PASS</Tag></Radio>
-            <Radio value={false}><Tag color="red">FAIL</Tag></Radio>
+            <Radio value>
+              <Tag color="green">PASS</Tag>
+            </Radio>
+            <Radio value={false}>
+              <Tag color="red">FAIL</Tag>
+            </Radio>
           </Radio.Group>,
         )}
       </Form.Item>

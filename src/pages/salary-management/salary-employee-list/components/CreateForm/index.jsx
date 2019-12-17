@@ -14,7 +14,7 @@ const CreateForm = props => {
       const payment_salary_date =
         fieldsValue.payment_salary_date && fieldsValue.payment_salary_date.toDate().toISOString();
       if (err) return;
-      const total_salary = fieldsValue.salary_basic + fieldsValue.subsidize || 0
+      const total_salary = fieldsValue.salary_basic + fieldsValue.subsidize || 0;
       const values = {
         ...fieldsValue,
         payment_salary_date,
@@ -150,9 +150,9 @@ const CreateForm = props => {
           ],
         })(
           <Input.TextArea
-          placeholder="Vui lòng nhập ghi chú rõ ràng !"
-          autoSize={{ minRows: 3, maxRows: 5 }}>
-          </Input.TextArea>,
+            placeholder="Vui lòng nhập ghi chú rõ ràng !"
+            autoSize={{ minRows: 3, maxRows: 5 }}
+          ></Input.TextArea>,
         )}
       </FormItem>
     </Modal>

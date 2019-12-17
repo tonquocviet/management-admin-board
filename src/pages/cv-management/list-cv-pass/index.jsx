@@ -1,4 +1,4 @@
-import { Button, Card, Form, Row, message, Modal, Icon, Tag, Typography } from 'antd';
+import { Button, Card, Form, message, Modal, Tag, Typography } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -70,13 +70,27 @@ class CVPassList extends Component {
       title: 'Tham gia phỏng vấn',
       dataIndex: 'take_interview',
       align: 'center',
-      render: result => <span>{result ? <Text type="warning" strong>Có</Text> : <Text type="danger" strong>Không</Text>}</span>,
+      render: result => (
+        <span>
+          {result ? (
+            <Text type="warning" strong>
+              Có
+            </Text>
+          ) : (
+            <Text type="danger" strong>
+              Không
+            </Text>
+          )}
+        </span>
+      ),
     },
     {
       title: 'Kết quả',
       dataIndex: 'interview_pass_fail',
       align: 'center',
-      render: result => <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>,
+      render: result => (
+        <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>
+      ),
     },
     {
       title: 'Ngày nộp CV',
@@ -164,7 +178,7 @@ class CVPassList extends Component {
       onOk: () => {
         this.handleToggle(record);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -198,7 +212,7 @@ class CVPassList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 

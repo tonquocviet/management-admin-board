@@ -22,7 +22,7 @@ class DayOffStatistic extends Component {
 
   columns = [
     {
-      title: (this.checkYear()) ? 'Năm' : 'Ngày',
+      title: this.checkYear() ? 'Năm' : 'Ngày',
       align: 'center',
       dataIndex: 'day',
     },
@@ -93,15 +93,14 @@ class DayOffStatistic extends Component {
 
   checkYear() {
     const year =
-      this.props.dayoffStatistic.data
-      && this.props.dayoffStatistic.data.list[0]
-      && this.props.dayoffStatistic.data.list[0].year
+      this.props.dayoffStatistic.data &&
+      this.props.dayoffStatistic.data.list[0] &&
+      this.props.dayoffStatistic.data.list[0].year;
     if (year) {
       return year;
     }
     return undefined;
   }
-
 
   render() {
     const {
@@ -120,11 +119,7 @@ class DayOffStatistic extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
-            <StandardTable
-              loading={loading}
-              data={data}
-              columns={this.columns}
-            />
+            <StandardTable loading={loading} data={data} columns={this.columns} />
           </div>
         </Card>
       </PageHeaderWrapper>

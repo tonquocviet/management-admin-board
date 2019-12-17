@@ -29,7 +29,7 @@ const Model = {
       yield put({
         type: 'savePosition',
         payload: response,
-      })
+      });
     },
     *update({ payload, callback }, { call }) {
       const response = yield call(updateCV, payload);

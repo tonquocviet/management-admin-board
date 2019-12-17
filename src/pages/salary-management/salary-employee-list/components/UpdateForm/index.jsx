@@ -25,15 +25,14 @@ const CreateForm = props => {
     employeeName: (data && data.user && data.user.full_name) || null,
     employeeId: (data && data.user && data.user._id) || null,
     ...data,
-  }
+  };
   const okHandle = () => {
     // eslint-disable-next-line no-underscore-dangle
     form.validateFields((err, fieldsValue) => {
       const id = data._id;
       const payment_salary_date =
-        fieldsValue.payment_salary_date &&
-          fieldsValue.payment_salary_date.toDate().toISOString();
-      const total_salary = fieldsValue.salary_basic + fieldsValue.subsidize || 0
+        fieldsValue.payment_salary_date && fieldsValue.payment_salary_date.toDate().toISOString();
+      const total_salary = fieldsValue.salary_basic + fieldsValue.subsidize || 0;
       if (err) return;
       const values = {
         ...fieldsValue,
@@ -120,7 +119,9 @@ const CreateForm = props => {
           ],
         })(
           <DatePicker
-            disabledDate={someDate => someDate && someDate < moment(data.payment_salary_date).startOf('day')}
+            disabledDate={someDate =>
+              someDate && someDate < moment(data.payment_salary_date).startOf('day')
+            }
             placeholder="Chọn ngày chuyển lương"
             format="DD/MM/YYYY"
             style={{
@@ -140,9 +141,9 @@ const CreateForm = props => {
           ],
         })(
           <Input.TextArea
-          placeholder="Vui lòng nhập ghi chú rõ ràng !"
-          autoSize={{ minRows: 3, maxRows: 5 }}>
-          </Input.TextArea>,
+            placeholder="Vui lòng nhập ghi chú rõ ràng !"
+            autoSize={{ minRows: 3, maxRows: 5 }}
+          ></Input.TextArea>,
         )}
       </FormItem>
     </Modal>

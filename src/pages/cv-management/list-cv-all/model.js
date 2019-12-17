@@ -1,11 +1,4 @@
-import {
-  queryList,
-  queryDetail,
-  addCV,
-  removeCV,
-  updateCV,
-  queryPositionApply,
-} from './service';
+import { queryList, queryDetail, addCV, removeCV, updateCV, queryPositionApply } from './service';
 
 const Model = {
   namespace: 'cvAllManagement',
@@ -29,7 +22,7 @@ const Model = {
       yield put({
         type: 'savePosition',
         payload: response,
-      })
+      });
     },
     *add({ payload, callback }, { call }) {
       const response = yield call(addCV, payload);

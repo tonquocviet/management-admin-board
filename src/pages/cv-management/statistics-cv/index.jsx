@@ -22,7 +22,7 @@ class CVStatistic extends Component {
 
   columns = [
     {
-      title: (this.checkYear()) ? 'Năm' : 'Ngày',
+      title: this.checkYear() ? 'Năm' : 'Ngày',
       align: 'center',
       dataIndex: 'day',
     },
@@ -89,15 +89,14 @@ class CVStatistic extends Component {
   // đang handel
   checkYear() {
     const year =
-      this.props.cvStatistic.data
-      && this.props.cvStatistic.data.list[0]
-      && this.props.cvStatistic.data.list[0].year
+      this.props.cvStatistic.data &&
+      this.props.cvStatistic.data.list[0] &&
+      this.props.cvStatistic.data.list[0].year;
     if (year) {
       return year;
     }
     return undefined;
   }
-
 
   render() {
     const {
@@ -116,11 +115,7 @@ class CVStatistic extends Component {
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
-            <StandardTable
-              loading={loading}
-              data={data}
-              columns={this.columns}
-            />
+            <StandardTable loading={loading} data={data} columns={this.columns} />
           </div>
         </Card>
       </PageHeaderWrapper>

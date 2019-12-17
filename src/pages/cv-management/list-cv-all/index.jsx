@@ -70,13 +70,27 @@ class CVAllList extends Component {
       title: 'Tham gia phỏng vấn',
       dataIndex: 'take_interview',
       align: 'center',
-      render: result => <span>{result ? <Text type="warning" strong>Có</Text> : <Text type="danger" strong>Không</Text>}</span>,
+      render: result => (
+        <span>
+          {result ? (
+            <Text type="warning" strong>
+              Có
+            </Text>
+          ) : (
+            <Text type="danger" strong>
+              Không
+            </Text>
+          )}
+        </span>
+      ),
     },
     {
       title: 'Kết quả',
       dataIndex: 'interview_pass_fail',
       align: 'center',
-      render: result => <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>,
+      render: result => (
+        <span>{result ? <Tag color="green">PASS</Tag> : <Tag color="red">FAIL</Tag>}</span>
+      ),
     },
     {
       title: 'Ngày nộp CV',
@@ -159,7 +173,7 @@ class CVAllList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 

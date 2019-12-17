@@ -1,10 +1,4 @@
-import {
-  queryList,
-  toggleStatus,
-  removeAccount,
-  queryDetail,
-  updateAccount,
-} from './service';
+import { queryList, toggleStatus, removeAccount, queryDetail, updateAccount } from './service';
 
 const Model = {
   namespace: 'accountBlockedManagement',

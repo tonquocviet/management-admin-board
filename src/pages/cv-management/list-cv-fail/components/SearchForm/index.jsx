@@ -60,8 +60,10 @@ const SearchForm = props => {
             })(<Input maxLength={20} placeholder="Nhập họ và tên cần tìm" />)}
           </FormItem>
           <FormItem label="Chức vụ ứng tuyển">
-            {form.getFieldDecorator('position_apply', {
-            })(
+            {form.getFieldDecorator(
+              'position_apply',
+              {},
+            )(
               <Select
                 showSearch
                 placeholder="Chọn chức vụ ứng tuyển"
@@ -91,8 +93,10 @@ const SearchForm = props => {
             })(<InputPhone placeholder="Nhập số điện thoại cần tìm" />)}
           </FormItem>
           <FormItem label="Vị trí ứng tuyển">
-            {form.getFieldDecorator('type_apply', {
-            })(
+            {form.getFieldDecorator(
+              'type_apply',
+              {},
+            )(
               <Select
                 showSearch
                 placeholder="Chọn vị trí ứng tuyển"

@@ -20,14 +20,14 @@ export async function queryList(params) {
         month: item._id.month,
         year: item._id.year,
         total_cv: item.total_cv,
-      }
+      };
     }
     return {
       id: index,
       month: item._id.month,
       day: item._id.day,
       total_cv: item.total_cv,
-    }
+    };
   });
   return result;
 }

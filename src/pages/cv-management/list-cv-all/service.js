@@ -75,7 +75,7 @@ export async function updateCV(params) {
 }
 export async function queryPositionApply() {
   let result = [];
-  const res = await request('/api/cv-apply/options/position-apply')
+  const res = await request('/api/cv-apply/options/position-apply');
 
   if (res.status) {
     result = [...res.results].map((item, index) => ({
