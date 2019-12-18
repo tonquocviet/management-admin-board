@@ -26,7 +26,7 @@ const actions = (
   newPassword,
   submitting: loading.effects['newPassword/submit'],
 }))
-class RegisterConfirm extends Component {
+class ResetPassword extends Component {
   handleReset = e => {
     const { location, form, dispatch } = this.props;
     e.preventDefault();
@@ -63,7 +63,7 @@ class RegisterConfirm extends Component {
 
   comparePassword = (rule, value, callback) => {
     const { form } = this.props;
-    if (value && value !== form.getFieldValue('password')) {
+    if (value && value !== form.getFieldValue('newPassword')) {
       callback('Mật khẩu không khớp!');
     } else {
       callback();
@@ -73,6 +73,30 @@ class RegisterConfirm extends Component {
   render() {
     const { location, form, submitting } = this.props;
     const emailDisplay = (location && location.state && location.state.email) || null;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+        md: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 15 },
+      },
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 9,
+        },
+      },
+    };
     return (
       <div>
         <Result
@@ -88,7 +112,7 @@ class RegisterConfirm extends Component {
           extra={actions}
         />
         <div className={styles.main}>
-          <Form layout="inline" onSubmit={this.handleReset}>
+          <Form {...formItemLayout} onSubmit={this.handleReset}>
             <FormItem label="Mã xác thực">
               {form.getFieldDecorator('verificationCode', {
                 rules: [
@@ -104,7 +128,7 @@ class RegisterConfirm extends Component {
               })(<Input maxLength={4} size="large" placeholder="Mã xác thực" />)}
             </FormItem>
             <FormItem label="Mật khẩu mới">
-              {form.getFieldDecorator('password', {
+              {form.getFieldDecorator('newPassword', {
                 rules: [
                   {
                     required: true,
@@ -144,9 +168,11 @@ class RegisterConfirm extends Component {
                 ],
               })(<Input.Password size="large" placeholder="Xác nhận mật khẩu tại đây" />)}
             </FormItem>
-            <Button size="large" loading={submitting} type="primary" htmlType="submit">
-              Xác nhận
-            </Button>
+            <FormItem {...tailFormItemLayout}>
+              <Button size="large" loading={submitting} type="primary" htmlType="submit">
+                Xác nhận
+              </Button>
+            </FormItem>
           </Form>
         </div>
       </div>
@@ -154,4 +180,4 @@ class RegisterConfirm extends Component {
   }
 }
 
-export default Form.create()(RegisterConfirm);
+export default Form.create()(ResetPassword);

@@ -279,6 +279,10 @@ export default {
       ],
     },
     {
+      path: '/500',
+      component: './500',
+    },
+    {
       component: './404',
     },
   ],

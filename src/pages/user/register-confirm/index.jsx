@@ -3,7 +3,7 @@
 import { Button, Result, Form, Input, Icon, message } from 'antd';
 import Link from 'umi/link';
 import { connect } from 'dva';
-// import router from 'umi/router';
+import router from 'umi/router';
 import React, { Component } from 'react';
 import styles from './style.less';
 
@@ -42,9 +42,9 @@ class RegisterConfirm extends Component {
           payload: { ...dataVerify },
           callback: res => {
             if (res && res.status) {
-              // router.push({
-              //   pathname: '/user/login',
-              // });
+              router.push({
+                pathname: '/user/login',
+              });
               message.success('Đăng kí tài khoản thành công !');
             }
           },
