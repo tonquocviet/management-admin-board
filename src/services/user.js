@@ -3,11 +3,6 @@ import request from '@/utils/request';
 export async function query() {
   return request('/api/users');
 }
-export async function logout() {
-  return request('/api/staffs/logout', {
-    method: 'POST',
-  });
-}
 // eslint-disable-next-line consistent-return
 export async function queryCurrent() {
   const response = await request('/api/user/get-me');
