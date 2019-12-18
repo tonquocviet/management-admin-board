@@ -1,5 +1,5 @@
 
-# Status Deploy and live product
+# Status deploy and live product
 This product live in site with [ht-admin-manage.netlify.com](ht-admin-manage.netlify.com).
 
 Status deploy in master branch
