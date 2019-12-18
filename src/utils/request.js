@@ -22,16 +22,19 @@ const errorHandler = error => {
   const { response } = error;
   const urlName = window.location.pathname;
   if (response && response.status) {
-    if (urlName === '/user/reset-password' ||
-      urlName === '/user/register' || urlName === '/user/register-confirm') {
+    if (
+      urlName === '/user/reset-password' ||
+      urlName === '/user/register' ||
+      urlName === '/user/register-confirm'
+    ) {
       if (response.status === 500) {
-        console.log('500 Internal Server Error')
+        console.log('500 Internal Server Error');
       }
       if (response.status === 401) {
-        console.log('401 Unauthorized')
+        console.log('401 Unauthorized');
       }
       if (response.status === 400) {
-        console.log('400 Unauthorized')
+        console.log('400 Unauthorized');
       }
     } else if (urlName !== '/user/login') {
       if (response.status === 401) {
@@ -46,9 +49,7 @@ const errorHandler = error => {
     }
 
     response.json().then(res => {
-      errorMessageHandler(
-        response.status, res.error || 'Xảy ra lỗi không xác định được',
-      );
+      errorMessageHandler(response.status, res.error || 'Xảy ra lỗi không xác định được');
     });
   }
   return { error };
