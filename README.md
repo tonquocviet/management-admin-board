@@ -1,6 +1,8 @@
 
 # Status Deploy and live product
-This project live in site with [ht-admin-manage](ht-admin-manage.netlify.com).
+This project live in site with [ht-admin-manage.netlify.com](ht-admin-manage.netlify.com).
+
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f9837b29-4462-4118-a1af-0bf06f245ccf/deploy-status)](https://app.netlify.com/sites/ht-admin-manage/deploys)
 
 ## Environment Prepare
