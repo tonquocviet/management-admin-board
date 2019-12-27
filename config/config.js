@@ -248,6 +248,21 @@ export default {
               ],
             },
             {
+              path: '/labor-contracts',
+              name: 'Quản lý hợp đồng lao động',
+              icon: 'snippets',
+              routes: [
+                {
+                  path: '/labor-contracts/labor-contracts-list',
+                  name: 'Danh sách hợp đồng lao động',
+                  component: './labor-contracts/labor-contracts-list',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
               path: '/money-management',
               name: 'Quản lý tiền thu chi',
               icon: 'area-chart',
