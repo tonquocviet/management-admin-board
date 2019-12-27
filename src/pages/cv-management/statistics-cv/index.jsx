@@ -13,28 +13,16 @@ import SearchForm from './components/SearchForm';
 class CVStatistic extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
   };
 
-  timer = null;
-
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
-      title: this.checkYear() ? 'Năm' : 'Ngày',
+      title: 'Thời gian cụ thể',
       align: 'center',
-      dataIndex: 'day',
-    },
-    {
-      title: 'Tháng',
-      align: 'center',
-      dataIndex: 'month',
-    },
-    {
-      title: 'Năm',
-      align: 'center',
-      dataIndex: 'year',
+      dataIndex: 'time_sheet',
     },
     {
       title: 'Tổng số CV',
@@ -54,7 +42,7 @@ class CVStatistic extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -64,7 +52,6 @@ class CVStatistic extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -79,24 +66,12 @@ class CVStatistic extends Component {
         payload: search,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
     }
   };
-
-  // đang handel
-  checkYear() {
-    const year =
-      this.props.cvStatistic.data &&
-      this.props.cvStatistic.data.list[0] &&
-      this.props.cvStatistic.data.list[0].year;
-    if (year) {
-      return year;
-    }
-    return undefined;
-  }
 
   render() {
     const {
@@ -109,8 +84,7 @@ class CVStatistic extends Component {
           <SearchForm
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>

@@ -7,7 +7,7 @@ import styles from '../../style.less';
 const FormItem = Form.Item;
 
 const SearchForm = props => {
-  const { handleSearch, form, handleFormReset, isReset, loading } = props;
+  const { handleSearch, form, handleFormReset, loading } = props;
 
   const onSearch = e => {
     e.preventDefault();
@@ -34,10 +34,10 @@ const SearchForm = props => {
   const disabledStartDate = startValue => {
     const endDate = moment(form.getFieldValue('endDate')).startOf('day');
     const startDate = moment(startValue).startOf('day');
-    if (!startDate || !endDate) {
+    if (!endDate || !startDate) {
       return false;
     }
-    return startDate > endDate;
+    return endDate <= startDate;
   };
 
   const disabledEndDate = endValue => {
@@ -46,7 +46,7 @@ const SearchForm = props => {
     if (!endDate || !startDate) {
       return false;
     }
-    return endDate < startDate;
+    return endDate <= startDate;
   };
 
   const { getFieldDecorator } = form;
@@ -146,10 +146,10 @@ const SearchForm = props => {
             textAlign: 'center',
           }}
         >
-          <Button type="primary" htmlType="submit" loading={isReset && loading}>
-            Tìm tài khoản
+          <Button type="primary" htmlType="submit" loading={loading}>
+            Tìm kết quả
           </Button>
-          <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
+          <Button className={styles.customButton} onClick={onReset}>
             Hủy tìm kiếm
           </Button>
         </div>

@@ -16,31 +16,36 @@ const getValue = obj =>
 @connect(({ internshipLeaveManagement, loading }) => ({
   internshipLeaveManagement,
   loading: loading.effects['internshipLeaveManagement/fetch'],
+  loadingUpdate: loading.effects['internshipLeaveManagement/update'],
   loadingToggle: loading.effects['internshipLeaveManagement/toggleStatus'],
   loadingDetail: loading.effects['internshipLeaveManagement/getDetail'],
 }))
 class InternCurrentList extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
     modalUpdateVisible: false,
   };
 
-  timer = null;
-
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
-      title: 'Họ và tên',
+      title: 'Mã thực tập sinh',
       sorter: true,
       align: 'center',
-      dataIndex: 'full_name',
+      dataIndex: 'username',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
         </Button>
       ),
+    },
+    {
+      title: 'Họ và tên',
+      sorter: true,
+      align: 'center',
+      dataIndex: 'full_name',
     },
     {
       title: 'Giới tính',
@@ -106,7 +111,7 @@ class InternCurrentList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -140,7 +145,7 @@ class InternCurrentList extends Component {
       payload: params,
       callback: () => {
         this.setState({
-          isReset: false,
+          isSearch: false,
         });
       },
     });
@@ -167,12 +172,12 @@ class InternCurrentList extends Component {
       callback: res => {
         if (res && res.status) {
           message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
+          if (!this.currentPage) {
             dispatch({
               type: 'internshipLeaveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -182,7 +187,7 @@ class InternCurrentList extends Component {
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
+      title: `Bạn có chắc muốn xóa thực tập sinh ${record.full_name} vĩnh viễn không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -200,13 +205,13 @@ class InternCurrentList extends Component {
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa thực tập sinh');
+          message.success('Xóa thành công');
           if (!this.currentPage) {
             dispatch({
               type: 'internshipLeaveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -218,7 +223,7 @@ class InternCurrentList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -228,7 +233,6 @@ class InternCurrentList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -246,7 +250,7 @@ class InternCurrentList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -286,11 +290,9 @@ class InternCurrentList extends Component {
               type: 'internshipLeaveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -300,6 +302,7 @@ class InternCurrentList extends Component {
     const {
       internshipLeaveManagement: { data, detail },
       loading,
+      loadingUpdate,
       loadingToggle,
       loadingDetail,
     } = this.props;
@@ -310,8 +313,7 @@ class InternCurrentList extends Component {
           <SearchForm
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
@@ -330,6 +332,7 @@ class InternCurrentList extends Component {
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
+            loading={loadingUpdate}
           />
         )}
       </PageHeaderWrapper>

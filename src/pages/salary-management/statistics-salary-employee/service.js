@@ -6,7 +6,7 @@ export async function queryList(params) {
     month: (params && params.month) || undefined,
     year: (params && params.year) || undefined,
   };
-  const response = await request('/api/cv-apply/statistics/cv-apply', {
+  const response = await request('/api/salary-employee/statistics-salary', {
     method: 'GET',
     params: requestParams,
   });
@@ -18,13 +18,15 @@ export async function queryList(params) {
       return {
         id: index,
         time_sheet: `Tháng ${item._id.month} năm ${item._id.year}`,
-        total_cv: item.total_cv,
+        total_salary: item.total_salary,
+        total_send_salary: item.total_send_salary,
       };
     }
     return {
       id: index,
       time_sheet: `Ngày ${item._id.day} tháng ${item._id.month}`,
-      total_cv: item.total_cv,
+      total_salary: item.total_salary,
+      total_send_salary: item.total_send_salary,
     };
   });
   return result;

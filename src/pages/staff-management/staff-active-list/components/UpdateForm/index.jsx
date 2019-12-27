@@ -2,6 +2,7 @@
 import { Form, Modal, Input, Select, DatePicker } from 'antd';
 import React from 'react';
 import moment from 'moment';
+import InputPhone from '@/components/PhoneInput';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -85,8 +86,12 @@ const CreateForm = props => {
               required: true,
               message: 'Vui lòng nhập Email',
             },
+            {
+              type: 'email',
+              message: 'Vui lòng nhập đúng định dạng email',
+            },
           ],
-        })(<Input disabled placeholder="Nhập Email" />)}
+        })(<Input disabled placeholder="Nhập email @..." />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Họ và tên">
         {form.getFieldDecorator('full_name', {
@@ -137,6 +142,10 @@ const CreateForm = props => {
               required: true,
               message: 'Vui lòng nhập địa chỉ!',
             },
+            {
+              whitespace: true,
+              message: 'Giá trị không hợp lệ!',
+            },
           ],
         })(<Input placeholder="Nhập địa chỉ" />)}
       </FormItem>
@@ -148,8 +157,16 @@ const CreateForm = props => {
               required: true,
               message: 'Vui lòng nhập số điện thoại!',
             },
+            {
+              whitespace: true,
+              message: 'Giá trị không hợp lệ!',
+            },
+            {
+              min: 9,
+              message: 'Tối thiểu 9 ký tự!',
+            },
           ],
-        })(<Input placeholder="Nhập số điện thoại" />)}
+        })(<InputPhone placeholder="Nhập số điện thoại" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Ngày sinh">
         {form.getFieldDecorator('birthday', {
@@ -157,13 +174,13 @@ const CreateForm = props => {
           rules: [
             {
               required: true,
-              message: 'Vui lòng chọn ngày nhận!',
+              message: 'Vui lòng chọn ngày sinh!',
             },
           ],
         })(
           <DatePicker
-            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
-            placeholder="Chọn ngày nhận"
+            disabledDate={currentDate => currentDate && currentDate > moment().startOf('day')}
+            placeholder="Chọn ngày sinh"
             style={{ width: '100%' }}
             format="DD/MM/YYYY"
           />,

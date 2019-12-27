@@ -2,6 +2,7 @@ import { Form, Input, Modal, DatePicker, Select } from 'antd';
 import React from 'react';
 import moment from 'moment';
 import InputPhone from '@/components/PhoneInput';
+import { MTTS_RULE } from '@/utils/regexValidation';
 
 const FormItem = Form.Item;
 
@@ -35,8 +36,16 @@ const positionList = [
     name: 'DevOps',
   },
   {
-    id: 6,
-    name: 'Microsoft ASP.NET',
+    id: 7,
+    name: 'React Native',
+  },
+  {
+    id: 8,
+    name: 'PHP',
+  },
+  {
+    id: 9,
+    name: 'Microsoft ASP.Net',
   },
 ];
 
@@ -44,6 +53,8 @@ const CreateForm = props => {
   const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
+      // hard code
+      const password = 'abcde12345-';
       const birthday = fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString();
       const startDate =
         (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
@@ -52,6 +63,7 @@ const CreateForm = props => {
       if (err) return;
       const value = {
         ...fieldsValue,
+        password,
         birthday,
         startDate,
         endDate,
@@ -103,15 +115,15 @@ const CreateForm = props => {
               message: 'Vui lòng nhập mã thực tập sinh!',
             },
             {
-              min: 4,
-              message: 'Tối thiểu 4 ký tự!',
+              pattern: MTTS_RULE,
+              message: 'Mã thực tập sinh phải là chuỗi gồm 3 chữ hoa TTS và 3 số!',
             },
             {
               whitespace: true,
               message: 'Giá trị không hợp lệ!',
             },
           ],
-        })(<Input maxLength={20} placeholder="Nhập mã thực tập sinh" />)}
+        })(<Input placeholder="Nhập mã thực tập sinh TTS001" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Email">
         {form.getFieldDecorator('email', {
@@ -126,24 +138,6 @@ const CreateForm = props => {
             },
           ],
         })(<Input style={{ width: '100%' }} placeholder="Nhập email @..." />)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Mật khẩu">
-        {form.getFieldDecorator('password', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập mật khẩu!',
-            },
-            {
-              min: 8,
-              message: 'Tối thiểu 8 ký tự!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input.Password placeholder="Nhập mật khẩu" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Họ và tên">
         {form.getFieldDecorator('full_name', {

@@ -1,9 +1,7 @@
 import {
   queryList,
-  toggleStatus,
   queryDetail,
   removeCV,
-  updateCV,
   queryPositionApply,
 } from './service';
 
@@ -31,16 +29,8 @@ const Model = {
         payload: response,
       });
     },
-    *update({ payload, callback }, { call }) {
-      const response = yield call(updateCV, payload);
-      if (callback) callback(response);
-    },
     *remove({ payload, callback }, { call }) {
       const response = yield call(removeCV, payload);
-      if (callback) callback(response);
-    },
-    *toggleStatus({ payload, callback }, { call }) {
-      const response = yield call(toggleStatus, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {

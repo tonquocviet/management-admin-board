@@ -1,11 +1,10 @@
-import { Button, Card, Form, Row, message, Modal, Icon, Tag, Typography } from 'antd';
+import { Button, Card, Form, message, Modal, Tag, Typography } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import moment from 'moment';
 import styles from './style.less';
 import StandardTable from './components/StandardTable';
-import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
 
@@ -19,18 +18,15 @@ const getValue = obj =>
 @connect(({ cvFailManagement, loading }) => ({
   cvFailManagement,
   loading: loading.effects['cvFailManagement/fetch'],
-  loadingToggle: loading.effects['cvFailManagement/toggleStatus'],
   loadingDetail: loading.effects['cvFailManagement/getDetail'],
 }))
 class CVFailList extends Component {
   state = {
     formValues: {},
-    isReset: false,
-    modalCreateVisible: false,
-    modalUpdateVisible: false,
+    isSearch: false,
   };
 
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -106,11 +102,6 @@ class CVFailList extends Component {
         <>
           <Button
             type="link"
-            icon="lock"
-            onClick={() => this.showConfirmToggleAccountStatus(record)}
-          />
-          <Button
-            type="link"
             style={{ color: 'red' }}
             icon="delete"
             onClick={() => this.showConfirmDeleteCVPass(record)}
@@ -131,7 +122,7 @@ class CVFailList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -163,45 +154,6 @@ class CVFailList extends Component {
     dispatch({
       type: 'cvFailManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
-    });
-  };
-
-  showConfirmToggleAccountStatus = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => {},
-    });
-  };
-
-  handleToggle = row => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvFailManagement/toggleStatus',
-      payload: row,
-      callback: res => {
-        if (res && res.status) {
-          message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
-            dispatch({
-              type: 'cvFailManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        }
-      },
     });
   };
 
@@ -231,7 +183,7 @@ class CVFailList extends Component {
               type: 'cvFailManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -243,7 +195,7 @@ class CVFailList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -253,7 +205,6 @@ class CVFailList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -271,7 +222,7 @@ class CVFailList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -280,16 +231,6 @@ class CVFailList extends Component {
       pagination.current = 1;
       this.handleListChange(pagination, filtersArg, sorter);
     }
-  };
-
-  showCreateForm = () => {
-    this.handleModalCreateVisible(true);
-  };
-
-  handleModalCreateVisible = value => {
-    this.setState({
-      modalCreateVisible: value,
-    });
   };
 
   showUpdateForm = id => {
@@ -307,73 +248,13 @@ class CVFailList extends Component {
     });
   };
 
-  handleCreate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvFailManagement/add',
-      payload: fields,
-      callback: res => {
-        if (res && res.status) {
-          this.handleModalCreateVisible(false);
-          message.success('Thêm mới thành công');
-          if (!this.currentPage) {
-            dispatch({
-              type: 'cvFailManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        } else {
-          message.error('Thêm mới thất bại, vui lòng thử lại sau');
-        }
-      },
-    });
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvFailManagement/update',
-      payload: fields,
-      callback: res => {
-        if (res && res.status) {
-          this.handleModalUpdateVisible(false);
-          message.success('Cập nhật thành công');
-          if (!this.currentPage) {
-            dispatch({
-              type: 'cvFailManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
-        }
-      },
-    });
-  };
-
-  renderCreateComp() {
-    return (
-      <Row type="flex" justify="space-between">
-        <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
-          <Icon type="plus" />
-          Thêm CV
-        </Button>
-      </Row>
-    );
-  }
-
   render() {
     const {
       cvFailManagement: { data, detail, PositionApplyList },
       loading,
-      loadingToggle,
       loadingDetail,
     } = this.props;
-    const { modalCreateVisible, modalUpdateVisible } = this.state;
+    const { modalUpdateVisible } = this.state;
     return (
       <PageHeaderWrapper>
         <Card className={styles.card} bordered={false}>
@@ -381,32 +262,22 @@ class CVFailList extends Component {
             dataApply={PositionApplyList || []}
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm} style={{ marginBottom: 20 }}>
-              {this.renderCreateComp()}
-            </div>
             <StandardTable
-              loading={loading || loadingDetail || loadingToggle}
+              loading={loading || loadingDetail}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
             />
           </div>
         </Card>
-        <CreateForm
-          handleModalVisible={this.handleModalCreateVisible}
-          modalVisible={modalCreateVisible}
-          handleAdd={this.handleCreate}
-        />
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}
-            handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
           />

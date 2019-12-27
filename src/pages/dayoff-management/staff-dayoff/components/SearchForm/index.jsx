@@ -13,7 +13,7 @@ for (let i = 2012; i <= new Date().getFullYear(); i++) {
 }
 
 const SearchForm = props => {
-  const { handleSearch, form, handleFormReset, isReset, loading } = props;
+  const { handleSearch, form, handleFormReset, loading } = props;
 
   const onSearch = e => {
     e.preventDefault();
@@ -49,6 +49,15 @@ const SearchForm = props => {
       };
       handleSearch(values);
     });
+  };
+
+  const disabledStartDate = startValue => {
+    const endDate = moment(form.getFieldValue('endDate')).startOf('day');
+    const startDate = moment(startValue).startOf('day');
+    if (!endDate || !startDate) {
+      return false;
+    }
+    return endDate <= startDate;
   };
 
   const disabledEndDate = endValue => {
@@ -115,6 +124,7 @@ const SearchForm = props => {
               {},
             )(
               <DatePicker
+                disabledDate={disabledStartDate}
                 placeholder="Chọn ngày bắt đầu"
                 format="DD/MM/YYYY"
                 style={{
@@ -196,7 +206,7 @@ const SearchForm = props => {
           <Button type="primary" htmlType="submit" loading={loading}>
             Tìm kết quả
           </Button>
-          <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
+          <Button className={styles.customButton} onClick={onReset}>
             Hủy tìm kiếm
           </Button>
         </div>

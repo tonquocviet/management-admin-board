@@ -15,7 +15,7 @@ for (let i = 2012; i <= new Date().getFullYear(); i++) {
 }
 
 const SearchForm = props => {
-  const { handleSearch, form, handleFormReset, isReset, loading } = props;
+  const { handleSearch, form, handleFormReset, loading } = props;
 
   const onSearch = e => {
     e.preventDefault();
@@ -136,7 +136,7 @@ const SearchForm = props => {
           <Button type="primary" htmlType="submit" loading={loading}>
             Tìm kết quả
           </Button>
-          <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
+          <Button className={styles.customButton} onClick={onReset}>
             Hủy tìm kiếm
           </Button>
         </div>

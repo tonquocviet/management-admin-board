@@ -140,7 +140,7 @@ const SearchForm = props => {
           <Button type="primary" htmlType="submit" loading={loading}>
             Tìm kết quả
           </Button>
-          <Button className={styles.customButton} loading={isReset && loading} onClick={onReset}>
+          <Button className={styles.customButton} onClick={onReset}>
             Hủy tìm kiếm
           </Button>
         </div>

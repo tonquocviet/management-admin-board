@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import request from '@/utils/request';
 
 export async function queryList(params = {}) {
@@ -27,7 +28,6 @@ export async function queryList(params = {}) {
     list: [],
   };
   result.list = (response.results || []).map(item => ({
-    // eslint-disable-next-line no-underscore-dangle
     id: item._id,
     ...item,
   }));

@@ -34,36 +34,11 @@ export async function queryList(params = {}) {
 
   return result;
 }
-export async function toggleStatus(params) {
-  const dataParams = {
-    blocked: true,
-  };
-  let result = {};
-  const res = await request(`/api/interShip/blocked/${params.id}`, {
-    method: 'PUT',
-    data: dataParams,
-  });
-  if (res.status) {
-    result = { ...res };
-  }
-  return result;
-}
 export async function queryDetail(params) {
   let result = {};
-  const res = await request(`/api/interShip/${params}`);
+  const res = await request(`/api/cv-apply/${params}`);
   if (res.status) {
     result = { ...res.result };
-  }
-  return result;
-}
-export async function addCV(params) {
-  let result = {};
-  const res = await request('/api/interShip/create', {
-    method: 'POST',
-    data: params,
-  });
-  if (res.status) {
-    result = { ...res };
   }
   return result;
 }
@@ -71,17 +46,6 @@ export async function removeCV(params) {
   let result = {};
   const res = await request(`/api/cv-apply/${params}`, {
     method: 'DELETE',
-  });
-  if (res.status) {
-    result = { ...res };
-  }
-  return result;
-}
-export async function updateCV(params) {
-  let result = {};
-  const res = await request(`/api/interShip/update/${params.id}`, {
-    method: 'PUT',
-    data: { ...params },
   });
   if (res.status) {
     result = { ...res };

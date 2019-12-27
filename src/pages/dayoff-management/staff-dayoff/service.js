@@ -29,10 +29,9 @@ export async function queryList(params = {}) {
     list: [],
   };
   result.list = (response.results || []).map(item => ({
-    // eslint-disable-next-line no-underscore-dangle
     id: item._id,
-    full_name: item.user.full_name,
-    idUser: item.user._id,
+    full_name: item.user ? item.user.full_name : 'Nhân viên không tồn tại',
+    idUser: item.user ? item.user._id : null,
     ...item,
   }));
   return result;
