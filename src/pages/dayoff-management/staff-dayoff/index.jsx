@@ -17,20 +17,20 @@ const getValue = obj =>
 @connect(({ dayoffListManagement, loading }) => ({
   dayoffListManagement,
   loading: loading.effects['dayoffListManagement/fetch'],
+  loadingAdd: loading.effects['dayoffListManagement/add'],
+  loadingUpdate: loading.effects['dayoffListManagement/update'],
   loadingDetail: loading.effects['dayoffListManagement/getDetail'],
   loadingEmployee: loading.effects['dayoffListManagement/getEmployee'],
 }))
 class DayOffList extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
     modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
-  timer = null;
-
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -47,6 +47,7 @@ class DayOffList extends Component {
       title: 'Số ngày nghỉ',
       dataIndex: 'total_absence',
       align: 'center',
+      render: sumdate => <span>{sumdate} ngày</span>,
     },
     {
       title: 'Ngày bắt đầu nghỉ',
@@ -89,7 +90,7 @@ class DayOffList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -121,17 +122,12 @@ class DayOffList extends Component {
     dispatch({
       type: 'dayoffListManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
     });
   };
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa tài khoản ${record.username} không?`,
+      title: `Bạn có chắc muốn xóa ngày nghỉ của nhân viên ${record.full_name} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -149,13 +145,13 @@ class DayOffList extends Component {
       payload: id,
       callback: res => {
         if (res && res.status) {
-          message.success('Xóa ngày nghỉ thành công');
+          message.success('Xóa thành công');
           if (!this.currentPage) {
             dispatch({
               type: 'dayoffListManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -167,7 +163,7 @@ class DayOffList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -177,7 +173,6 @@ class DayOffList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -195,7 +190,7 @@ class DayOffList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -245,11 +240,9 @@ class DayOffList extends Component {
               type: 'dayoffListManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Thêm mới thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -269,11 +262,9 @@ class DayOffList extends Component {
               type: 'dayoffListManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -294,6 +285,8 @@ class DayOffList extends Component {
     const {
       dayoffListManagement: { data, detail, employeeList },
       loading,
+      loadingAdd,
+      loadingUpdate,
       loadingDetail,
     } = this.props;
     const { modalCreateVisible, modalUpdateVisible } = this.state;
@@ -303,8 +296,7 @@ class DayOffList extends Component {
           <SearchForm
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
@@ -325,6 +317,7 @@ class DayOffList extends Component {
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
+          loading={loadingAdd}
         />
         {!loadingDetail && (
           <UpdateForm
@@ -332,6 +325,7 @@ class DayOffList extends Component {
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
+            loading={loadingUpdate}
           />
         )}
       </PageHeaderWrapper>

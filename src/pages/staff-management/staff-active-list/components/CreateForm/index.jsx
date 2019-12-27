@@ -2,6 +2,7 @@ import { Form, Input, Modal, DatePicker, Select } from 'antd';
 import React from 'react';
 import moment from 'moment';
 import InputPhone from '@/components/PhoneInput';
+import { MNV_RULE } from '@/utils/regexValidation';
 
 const FormItem = Form.Item;
 
@@ -61,7 +62,7 @@ const CreateForm = props => {
       width={550}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Tài khoản">
+      <FormItem {...formItemLayout} label="Mã nhân viên">
         {form.getFieldDecorator('username', {
           rules: [
             {
@@ -69,15 +70,15 @@ const CreateForm = props => {
               message: 'Vui lòng nhập mã nhân viên!',
             },
             {
-              min: 4,
-              message: 'Tối thiểu 4 ký tự!',
-            },
-            {
               whitespace: true,
               message: 'Giá trị không hợp lệ!',
             },
+            {
+              pattern: MNV_RULE,
+              message: 'Mã nhân viên phải là chuỗi gồm 2 chữ hoa NV và 3 số!',
+            },
           ],
-        })(<Input maxLength={20} placeholder="Nhập mã nhân viên" />)}
+        })(<Input maxLength={20} placeholder="Nhập mã nhân viên NV001" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Email">
         {form.getFieldDecorator('email', {

@@ -13,7 +13,7 @@ const serverErrorMessage = {
   406: 'Yêu cầu không được chấp nhận.',
   409: 'Xung đột dữ liệu',
   410: 'Tài nguyên không toàn vẹn.',
-  422: 'Không xử lí dữ liệu.',
+  422: 'Không xử lí dữ liệu. Một số trường dữ liệu đã trùng trong cơ sở dữ liệu',
   500: 'Lỗi máy chủ.',
   502: 'Không thể kết nối máy chủ.',
   503: 'Yêu cầu quá hạn.',

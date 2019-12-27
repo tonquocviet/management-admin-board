@@ -65,7 +65,7 @@ const CreateForm = props => {
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible(false)}
-      width={550}
+      width={650}
       maskClosable={false}
     >
       <FormItem {...formItemLayout} label="Họ và tên">

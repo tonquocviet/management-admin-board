@@ -18,20 +18,20 @@ const getValue = obj =>
 @connect(({ salaryManagement, loading }) => ({
   salaryManagement,
   loading: loading.effects['salaryManagement/fetch'],
+  loadingAdd: loading.effects['salaryManagement/add'],
+  loadingUpdate: loading.effects['salaryManagement/update'],
   loadingDetail: loading.effects['salaryManagement/getDetail'],
   loadingEmployee: loading.effects['salaryManagement/getEmployee'],
 }))
 class SalaryEmployeeList extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
     modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
-  timer = null;
-
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -91,7 +91,7 @@ class SalaryEmployeeList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -123,11 +123,6 @@ class SalaryEmployeeList extends Component {
     dispatch({
       type: 'salaryManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
     });
   };
 
@@ -157,7 +152,7 @@ class SalaryEmployeeList extends Component {
               type: 'salaryManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -169,7 +164,7 @@ class SalaryEmployeeList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -179,7 +174,6 @@ class SalaryEmployeeList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -197,7 +191,7 @@ class SalaryEmployeeList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -247,11 +241,9 @@ class SalaryEmployeeList extends Component {
               type: 'salaryManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Thêm mới thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -271,11 +263,9 @@ class SalaryEmployeeList extends Component {
               type: 'salaryManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -296,6 +286,8 @@ class SalaryEmployeeList extends Component {
     const {
       salaryManagement: { data, detail, employeeList },
       loading,
+      loadingAdd,
+      loadingUpdate,
       loadingDetail,
     } = this.props;
     const { modalCreateVisible, modalUpdateVisible } = this.state;
@@ -305,8 +297,7 @@ class SalaryEmployeeList extends Component {
           <SearchForm
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
@@ -327,6 +318,7 @@ class SalaryEmployeeList extends Component {
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
+          loading={loadingAdd}
         />
         {!loadingDetail && (
           <UpdateForm
@@ -334,6 +326,7 @@ class SalaryEmployeeList extends Component {
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
+            loading={loadingUpdate}
           />
         )}
       </PageHeaderWrapper>

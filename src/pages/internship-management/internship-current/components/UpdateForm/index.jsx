@@ -47,8 +47,16 @@ const positionList = [
     name: 'DevOps',
   },
   {
-    id: 6,
-    name: 'Microsoft ASP.NET',
+    id: 7,
+    name: 'React Native',
+  },
+  {
+    id: 8,
+    name: 'PHP',
+  },
+  {
+    id: 9,
+    name: 'Microsoft ASP.Net',
   },
 ];
 

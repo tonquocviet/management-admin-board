@@ -2,6 +2,7 @@
 import { Form, Modal, Input, Select, DatePicker } from 'antd';
 import React from 'react';
 import moment from 'moment';
+import InputPhone from '@/components/PhoneInput';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -58,7 +59,7 @@ const CreateForm = props => {
       destroyOnClose
       okText="Lưu"
       cancelText="Hủy"
-      title="Chỉnh sửa thông tin tài khoản"
+      title="Chỉnh sửa thông tin nhân viên"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible(false)}
@@ -66,13 +67,13 @@ const CreateForm = props => {
       style={{ top: 20 }}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Tên tài khoản">
+      <FormItem {...formItemLayout} label="Mã nhân viên">
         {form.getFieldDecorator('username', {
           initialValue: data.username,
           rules: [
             {
               required: true,
-              message: 'Không được để trống tên tài khoản!',
+              message: 'Mã nhân viên không được để trống!',
             },
           ],
         })(<Input disabled placeholder="Tên tài khoản" />)}
@@ -85,8 +86,12 @@ const CreateForm = props => {
               required: true,
               message: 'Vui lòng nhập Email',
             },
+            {
+              type: 'email',
+              message: 'Vui lòng nhập đúng định dạng email',
+            },
           ],
-        })(<Input disabled placeholder="Nhập Email" />)}
+        })(<Input disabled placeholder="Nhập email @..." />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Họ và tên">
         {form.getFieldDecorator('full_name', {
@@ -149,7 +154,7 @@ const CreateForm = props => {
               message: 'Vui lòng nhập số điện thoại!',
             },
           ],
-        })(<Input placeholder="Nhập số điện thoại" />)}
+        })(<InputPhone placeholder="Nhập số điện thoại" />)}
       </FormItem>
       <FormItem {...formItemLayout} label="Ngày sinh">
         {form.getFieldDecorator('birthday', {
@@ -161,7 +166,12 @@ const CreateForm = props => {
             },
           ],
         })(
-          <DatePicker placeholder="Chọn ngày nhận" style={{ width: '100%' }} format="DD/MM/YYYY" />,
+          <DatePicker
+            disabledDate={currentDate => currentDate && currentDate > moment().startOf('day')}
+            placeholder="Chọn ngày nhận"
+            style={{ width: '100%' }}
+            format="DD/MM/YYYY"
+          />,
         )}
       </FormItem>
     </Modal>

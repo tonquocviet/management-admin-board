@@ -18,17 +18,15 @@ const getValue = obj =>
 @connect(({ cvPassManagement, loading }) => ({
   cvPassManagement,
   loading: loading.effects['cvPassManagement/fetch'],
-  loadingToggle: loading.effects['cvPassManagement/toggleStatus'],
   loadingDetail: loading.effects['cvPassManagement/getDetail'],
 }))
 class CVPassList extends Component {
   state = {
     formValues: {},
-    isReset: false,
-    modalUpdateVisible: false,
+    isSearch: false,
   };
 
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -104,11 +102,6 @@ class CVPassList extends Component {
         <>
           <Button
             type="link"
-            icon="lock"
-            onClick={() => this.showConfirmToggleAccountStatus(record)}
-          />
-          <Button
-            type="link"
             style={{ color: 'red' }}
             icon="delete"
             onClick={() => this.showConfirmDeleteCVPass(record)}
@@ -129,7 +122,7 @@ class CVPassList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -161,45 +154,6 @@ class CVPassList extends Component {
     dispatch({
       type: 'cvPassManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
-    });
-  };
-
-  showConfirmToggleAccountStatus = record => {
-    Modal.confirm({
-      title: `Bạn có chắc muốn khóa thực tập sinh ${record.username} không?`,
-      content: '',
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: () => {
-        this.handleToggle(record);
-      },
-      onCancel: () => {},
-    });
-  };
-
-  handleToggle = row => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvPassManagement/toggleStatus',
-      payload: row,
-      callback: res => {
-        if (res && res.status) {
-          message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
-            dispatch({
-              type: 'cvPassManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        }
-      },
     });
   };
 
@@ -229,7 +183,7 @@ class CVPassList extends Component {
               type: 'cvPassManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -241,7 +195,7 @@ class CVPassList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -251,7 +205,6 @@ class CVPassList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -269,7 +222,7 @@ class CVPassList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -295,35 +248,10 @@ class CVPassList extends Component {
     });
   };
 
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'cvPassManagement/update',
-      payload: fields,
-      callback: res => {
-        if (res && res.status) {
-          this.handleModalUpdateVisible(false);
-          message.success('Cập nhật thành công');
-          if (!this.currentPage) {
-            dispatch({
-              type: 'cvPassManagement/fetch',
-            });
-          } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
-            this.handleListChange(pagination, filtersArg, sorter);
-          }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
-        }
-      },
-    });
-  };
-
   render() {
     const {
       cvPassManagement: { data, detail, PositionApplyList },
       loading,
-      loadingToggle,
       loadingDetail,
     } = this.props;
     const { modalUpdateVisible } = this.state;
@@ -334,14 +262,13 @@ class CVPassList extends Component {
             dataApply={PositionApplyList || []}
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
           <div className={styles.tableList}>
             <StandardTable
-              loading={loading || loadingDetail || loadingToggle}
+              loading={loading || loadingDetail}
               data={data}
               columns={this.columns}
               onChange={this.handleListChange}
@@ -351,7 +278,6 @@ class CVPassList extends Component {
         {!loadingDetail && (
           <UpdateForm
             handleModalVisible={this.handleModalUpdateVisible}
-            handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
           />

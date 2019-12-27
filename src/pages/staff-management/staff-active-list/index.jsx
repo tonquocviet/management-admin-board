@@ -16,20 +16,20 @@ const getValue = obj =>
 @connect(({ accountActiveManagement, loading }) => ({
   accountActiveManagement,
   loading: loading.effects['accountActiveManagement/fetch'],
+  loadingAdd: loading.effects['accountActiveManagement/add'],
+  loadingUpdate: loading.effects['accountActiveManagement/update'],
   loadingToggle: loading.effects['accountActiveManagement/toggleStatus'],
   loadingDetail: loading.effects['accountActiveManagement/getDetail'],
 }))
 class AccountActiveList extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
     modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
-  timer = null;
-
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -68,12 +68,6 @@ class AccountActiveList extends Component {
       align: 'center',
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status_account',
-      align: 'center',
-      render: status => <span>{status ? 'Đã khóa' : 'Đang hoạt động'}</span>,
-    },
-    {
       title: 'Hành động',
       render: record => (
         <>
@@ -101,7 +95,7 @@ class AccountActiveList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -133,17 +127,12 @@ class AccountActiveList extends Component {
     dispatch({
       type: 'accountActiveManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
     });
   };
 
   showConfirmToggleAccountStatus = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn khóa nhân viên ${record.username} không?`,
+      title: `Bạn có chắc muốn khóa nhân viên ${record.full_name} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -162,12 +151,12 @@ class AccountActiveList extends Component {
       callback: res => {
         if (res && res.status) {
           message.success('Chuyển đổi trạng thái thành công!');
-          if (!this.currentPager) {
+          if (!this.currentPage) {
             dispatch({
               type: 'accountActiveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -177,7 +166,7 @@ class AccountActiveList extends Component {
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa nhân viên ${record.username} không?`,
+      title: `Bạn có chắc muốn xóa nhân viên ${record.full_name} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -201,7 +190,7 @@ class AccountActiveList extends Component {
               type: 'accountActiveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -213,7 +202,7 @@ class AccountActiveList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -223,7 +212,6 @@ class AccountActiveList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -241,7 +229,7 @@ class AccountActiveList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -291,11 +279,9 @@ class AccountActiveList extends Component {
               type: 'accountActiveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.success('Thêm mới thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -315,11 +301,9 @@ class AccountActiveList extends Component {
               type: 'accountActiveManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.success('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -340,6 +324,8 @@ class AccountActiveList extends Component {
     const {
       accountActiveManagement: { data, detail },
       loading,
+      loadingAdd,
+      loadingUpdate,
       loadingToggle,
       loadingDetail,
     } = this.props;
@@ -350,8 +336,7 @@ class AccountActiveList extends Component {
           <SearchForm
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
@@ -371,6 +356,7 @@ class AccountActiveList extends Component {
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
+          loading={loadingAdd}
         />
         {!loadingDetail && (
           <UpdateForm
@@ -378,6 +364,7 @@ class AccountActiveList extends Component {
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
+            loading={loadingUpdate}
           />
         )}
       </PageHeaderWrapper>

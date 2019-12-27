@@ -19,17 +19,19 @@ const getValue = obj =>
 @connect(({ cvAllManagement, loading }) => ({
   cvAllManagement,
   loading: loading.effects['cvAllManagement/fetch'],
+  loadingAdd: loading.effects['cvAllManagement/add'],
+  loadingUpdate: loading.effects['cvAllManagement/update'],
   loadingDetail: loading.effects['cvAllManagement/getDetail'],
 }))
 class CVAllList extends Component {
   state = {
     formValues: {},
-    isReset: false,
+    isSearch: false,
     modalCreateVisible: false,
     modalUpdateVisible: false,
   };
 
-  currentPager = null;
+  currentPage = null;
 
   columns = [
     {
@@ -124,7 +126,7 @@ class CVAllList extends Component {
   }
 
   handleListChange = (pagination, filtersArg, sorter) => {
-    this.currentPager = { pagination, filtersArg, sorter };
+    this.currentPage = { pagination, filtersArg, sorter };
     const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -156,11 +158,6 @@ class CVAllList extends Component {
     dispatch({
       type: 'cvAllManagement/fetch',
       payload: params,
-      callback: () => {
-        this.setState({
-          isReset: false,
-        });
-      },
     });
   };
 
@@ -190,7 +187,7 @@ class CVAllList extends Component {
               type: 'cvAllManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
         }
@@ -202,7 +199,7 @@ class CVAllList extends Component {
     this.setState(
       {
         formValues: values,
-        isReset: false,
+        isSearch: true,
       },
       this.search,
     );
@@ -212,7 +209,6 @@ class CVAllList extends Component {
     this.setState(
       {
         formValues: {},
-        isReset: true,
       },
       this.search,
     );
@@ -230,7 +226,7 @@ class CVAllList extends Component {
         payload: dataValues,
         callback: () => {
           this.setState({
-            isReset: false,
+            isSearch: false,
           });
         },
       });
@@ -280,11 +276,9 @@ class CVAllList extends Component {
               type: 'cvAllManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Thêm mới thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -304,11 +298,9 @@ class CVAllList extends Component {
               type: 'cvAllManagement/fetch',
             });
           } else {
-            const { pagination, filtersArg, sorter } = this.currentPager;
+            const { pagination, filtersArg, sorter } = this.currentPage;
             this.handleListChange(pagination, filtersArg, sorter);
           }
-        } else {
-          message.error('Cập nhật thất bại, vui lòng thử lại sau');
         }
       },
     });
@@ -329,6 +321,8 @@ class CVAllList extends Component {
     const {
       cvAllManagement: { data, detail, PositionApplyList },
       loading,
+      loadingAdd,
+      loadingUpdate,
       loadingToggle,
       loadingDetail,
     } = this.props;
@@ -340,8 +334,7 @@ class CVAllList extends Component {
             dataApply={PositionApplyList || []}
             handleSearch={this.handleSearch}
             handleFormReset={this.handleFormReset}
-            isReset={this.state.isReset}
-            loading={loading}
+            loading={this.state.isSearch && loading}
           />
         </Card>
         <Card className={styles.card} bordered={false}>
@@ -362,6 +355,7 @@ class CVAllList extends Component {
           handleModalVisible={this.handleModalCreateVisible}
           modalVisible={modalCreateVisible}
           handleAdd={this.handleCreate}
+          loading={loadingAdd}
         />
         {!loadingDetail && (
           <UpdateForm
@@ -370,6 +364,7 @@ class CVAllList extends Component {
             handleAdd={this.handleUpdate}
             modalVisible={modalUpdateVisible}
             data={detail || {}}
+            loading={loadingUpdate}
           />
         )}
       </PageHeaderWrapper>

@@ -17,16 +17,14 @@ export async function queryList(params) {
     if (item._id.year) {
       return {
         id: index,
-        month: item._id.month,
-        year: item._id.year,
+        time_sheet: `Tháng ${item._id.month} năm ${item._id.year}`,
         total_date_absence: item.total_date_absence,
         total_request_absence: item.total_request_absence,
       };
     }
     return {
       id: index,
-      month: item._id.month,
-      day: item._id.day,
+      time_sheet: `Ngày ${item._id.day} tháng ${item._id.month}`,
       total_date_absence: item.total_date_absence,
       total_request_absence: item.total_request_absence,
     };

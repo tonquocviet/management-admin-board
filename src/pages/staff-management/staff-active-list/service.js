@@ -29,13 +29,7 @@ export async function queryList(params = {}) {
   result.list = (response.results || []).map(item => ({
     // eslint-disable-next-line no-underscore-dangle
     id: item._id,
-    username: item.username,
-    full_name: item.full_name,
-    sex_type: item.sex_type,
-    email: item.email,
-    phoneNumber: item.phoneNumber,
-    role: item.role,
-    status_account: item.blocked,
+    ...item,
   }));
 
   return result;
