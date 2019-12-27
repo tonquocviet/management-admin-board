@@ -167,10 +167,11 @@ const CreateForm = props => {
           ],
         })(
           <DatePicker
-          disabledDate={currentDate => currentDate && currentDate > moment().startOf('day')}
-          placeholder="Chọn ngày nhận"
-          style={{ width: '100%' }}
-          format="DD/MM/YYYY" />,
+            disabledDate={currentDate => currentDate && currentDate > moment().startOf('day')}
+            placeholder="Chọn ngày nhận"
+            style={{ width: '100%' }}
+            format="DD/MM/YYYY"
+          />,
         )}
       </FormItem>
     </Modal>

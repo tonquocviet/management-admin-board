@@ -118,10 +118,7 @@ const CreateForm = props => {
               message: 'Giá trị không hợp lệ!',
             },
           ],
-        })(<Input.TextArea
-          placeholder="Nhập lí do nghỉ"
-          autoSize={{ minRows: 3, maxRows: 5 }}
-        />)}
+        })(<Input.TextArea placeholder="Nhập lí do nghỉ" autoSize={{ minRows: 3, maxRows: 5 }} />)}
       </FormItem>
     </Modal>
   );

@@ -75,10 +75,10 @@ class CVPassList extends Component {
               Có
             </Text>
           ) : (
-              <Text type="danger" strong>
-                Không
+            <Text type="danger" strong>
+              Không
             </Text>
-            )}
+          )}
         </span>
       ),
     },
@@ -166,7 +166,7 @@ class CVPassList extends Component {
       onOk: () => {
         this.handleRemoveItem(record.id);
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 

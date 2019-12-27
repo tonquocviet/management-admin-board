@@ -1,9 +1,4 @@
-import {
-  queryList,
-  queryDetail,
-  removeCV,
-  queryPositionApply,
-} from './service';
+import { queryList, queryDetail, removeCV, queryPositionApply } from './service';
 
 const Model = {
   namespace: 'cvFailManagement',

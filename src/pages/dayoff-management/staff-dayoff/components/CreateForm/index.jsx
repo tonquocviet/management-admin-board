@@ -15,7 +15,7 @@ const CreateForm = props => {
     setDisableMorning(true);
     setDisableAfternoon(true);
     handleModalVisible(false);
-  }
+  };
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -29,8 +29,11 @@ const CreateForm = props => {
       const haftTimeStart = fieldsValue.timeStart;
       const haftTimeReturn = fieldsValue.timeReturn;
       const checkDetail = () => {
-        if ((haftTimeStart && !haftTimeReturn)
-          && (startDateConvert.getDate() === endDateConvert.getDate())) {
+        if (
+          haftTimeStart &&
+          !haftTimeReturn &&
+          startDateConvert.getDate() === endDateConvert.getDate()
+        ) {
           return (endDateConvert - startDateConvert) / (1000 * 3600 * 24) + 0.5;
         }
         if (haftTimeStart && !haftTimeReturn) {
@@ -45,8 +48,8 @@ const CreateForm = props => {
         if (!haftTimeStart && !haftTimeReturn) {
           return (endDateConvert - startDateConvert) / (1000 * 3600 * 24);
         }
-        return null
-      }
+        return null;
+      };
       const total_absence = checkDetail();
       if (err) return;
       const values = {
@@ -57,7 +60,7 @@ const CreateForm = props => {
       };
       ['timeStart', 'timeReturn'].forEach(key => {
         delete values[key];
-      })
+      });
       handleAdd(values);
     });
   };
@@ -72,7 +75,7 @@ const CreateForm = props => {
       setDisableMorning(false);
       setDisableAfternoon(false);
     }
-  }
+  };
 
   const disabledStartDate = startValue => {
     const endValue = form.getFieldValue('endDate');
@@ -170,8 +173,12 @@ const CreateForm = props => {
           ],
         })(
           <Radio.Group onChange={() => setChangeRadio(false)}>
-            <Radio value><Tag color="#f50">Buổi sáng</Tag></Radio>
-            <Radio value={false}><Tag color="#87d068">Buổi chiều</Tag></Radio>
+            <Radio value>
+              <Tag color="#f50">Buổi sáng</Tag>
+            </Radio>
+            <Radio value={false}>
+              <Tag color="#87d068">Buổi chiều</Tag>
+            </Radio>
           </Radio.Group>,
         )}
       </FormItem>
@@ -206,8 +213,12 @@ const CreateForm = props => {
           ],
         })(
           <Radio.Group>
-            <Radio disabled={isDisableMorning} value><Tag color="#f50">Buổi sáng</Tag></Radio>
-            <Radio disabled={isDisableAfternoon} value={false}><Tag color="#87d068">Buổi chiều</Tag></Radio>
+            <Radio disabled={isDisableMorning} value>
+              <Tag color="#f50">Buổi sáng</Tag>
+            </Radio>
+            <Radio disabled={isDisableAfternoon} value={false}>
+              <Tag color="#87d068">Buổi chiều</Tag>
+            </Radio>
           </Radio.Group>,
         )}
       </FormItem>
@@ -223,10 +234,7 @@ const CreateForm = props => {
               message: 'Giá trị không hợp lệ!',
             },
           ],
-        })(<Input.TextArea
-          placeholder="Nhập lí do nghỉ"
-          autoSize={{ minRows: 3, maxRows: 5 }}
-        />)}
+        })(<Input.TextArea placeholder="Nhập lí do nghỉ" autoSize={{ minRows: 3, maxRows: 5 }} />)}
       </FormItem>
     </Modal>
   );
