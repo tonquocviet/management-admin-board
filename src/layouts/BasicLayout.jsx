@@ -1,13 +1,8 @@
-/**
- * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
- * You can view component api by:
- * https://github.com/ant-design/ant-design-pro-layout
- */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
+import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -36,29 +31,7 @@ const menuDataRender = menuList =>
   });
 
 const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 HTACTIVE"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: <Icon type="facebook" />,
-        href: 'https://www.facebook.com/htactive/',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <Icon type="github" />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: <Icon type="linkedin" />,
-        href: 'https://www.linkedin.com/company/ht-active-software',
-        blankTarget: true,
-      },
-    ]}
-  />
+  <DefaultFooter links={[]} copyright={`${new Date().getFullYear()} HT Active`} />
 );
 
 const footerRender = () => {
@@ -146,7 +119,7 @@ const BasicLayout = props => {
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: 'Trang chủ',
+          breadcrumbName: 'Trang chủ',
         },
         ...routers,
       ]}
