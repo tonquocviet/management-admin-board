@@ -8,20 +8,21 @@ import StandardTable from './components/StandardTable';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import SearchForm from './components/SearchForm';
+import MoneySpan from '@/components/MoneySpan';
 
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
 
-@connect(({ laborContractListManagement, loading }) => ({
-  laborContractListManagement,
-  loading: loading.effects['laborContractListManagement/fetch'],
-  loadingAdd: loading.effects['laborContractListManagement/add'],
-  loadingUpdate: loading.effects['laborContractListManagement/update'],
-  loadingDetail: loading.effects['laborContractListManagement/getDetail'],
+@connect(({ billManagementList, loading }) => ({
+  billManagementList,
+  loading: loading.effects['billManagementList/fetch'],
+  loadingAdd: loading.effects['billManagementList/add'],
+  loadingUpdate: loading.effects['billManagementList/update'],
+  loadingDetail: loading.effects['billManagementList/getDetail'],
 }))
-class LaborContractsList extends Component {
+class BillManagementList extends Component {
   state = {
     formValues: {},
     isSearch: false,
@@ -33,11 +34,11 @@ class LaborContractsList extends Component {
 
   columns = [
     {
-      title: 'Họ và tên',
+      title: 'Mã hợp đồng',
       align: 'center',
-      sorter: true,
       fixed: 'left',
-      dataIndex: 'full_name',
+      sorter: true,
+      dataIndex: 'contract_code',
       render: (text, record) => (
         <Button type="link" onClick={() => this.showUpdateForm(record.id)}>
           {text}
@@ -45,105 +46,52 @@ class LaborContractsList extends Component {
       ),
     },
     {
-      title: <span style={{ color: 'red' }}>Thông tin cá nhân</span>,
-      children: [
-        {
-          title: 'Ngày sinh',
-          align: 'center',
-          key: 'birthday',
-          dataIndex: 'birthday',
-          render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-        },
-        {
-          title: 'Nơi sinh',
-          align: 'center',
-          key: 'city_birth',
-          dataIndex: 'city_birth',
-        },
-        {
-          title: 'Số điện thoại',
-          align: 'center',
-          sorter: true,
-          key: 'phoneNumber',
-          dataIndex: 'phoneNumber',
-        },
-        {
-          title: 'Địa chỉ thường trú',
-          align: 'center',
-          width: 400,
-          key: 'permanent_address',
-          dataIndex: 'permanent_address',
-        },
-        {
-          title: 'Địa chỉ tạm trú',
-          align: 'center',
-          width: 400,
-          key: 'temporary_address',
-          dataIndex: 'temporary_address',
-        },
-        {
-          title: 'Số CMND',
-          align: 'center',
-          key: 'identity_card',
-          dataIndex: 'identity_card',
-        },
-        {
-          title: 'Ngày cấp',
-          align: 'center',
-          key: 'date_of_issue',
-          dataIndex: 'date_of_issue',
-          render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-        },
-        {
-          title: 'Nơi cấp',
-          align: 'center',
-          key: 'place_of_issue',
-          dataIndex: 'place_of_issue',
-        },
-      ],
-    },
-    {
-      title: <span style={{ color: 'darkblue' }}>Thông tin hợp đồng</span>,
-      children: [
-        {
-          title: 'Từ ngày',
-          dataIndex: 'startDate',
-          key: 'startDate',
-          align: 'center',
-          render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-        },
-        {
-          title: 'Đến ngày',
-          dataIndex: 'endDate',
-          key: 'endDate',
-          align: 'center',
-          render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
-        },
-        {
-          title: 'Mã hợp đồng',
-          align: 'center',
-          key: 'contract_number',
-          dataIndex: 'contract_number',
-        },
-        {
-          title: 'Chức vụ/bộ phận',
-          align: 'center',
-          key: 'position',
-          dataIndex: 'position',
-        },
-      ],
-    },
-    {
-      title: 'Trạng thái',
+      title: 'Mã hóa đơn',
       align: 'center',
-      key: 'status',
-      dataIndex: 'status',
-      render: status => <span>{status ? <Tag color="green">Đang làm việc</Tag> : <Tag color="red">Đã nghỉ</Tag>}</span>,
+      sorter: true,
+      dataIndex: 'code_bill',
     },
     {
-      title: 'Ghi Chú',
+      title: 'Nội dung yêu cầu thanh toán',
       align: 'center',
-      key: 'notes',
+      dataIndex: 'content_requires_payment',
+    },
+    {
+      title: 'Người xuất hóa đơn',
+      align: 'center',
+      dataIndex: 'biller',
+    },
+    {
+      title: 'Ngày xuất hóa đơn',
+      align: 'center',
+      sorter: true,
+      dataIndex: 'date_export',
+      render: date => <span>{moment(date).format('DD/MM/YYYY')}</span>,
+    },
+    {
+      title: 'Số tiền',
+      align: 'center',
+      sorter: true,
+      dataIndex: 'amount',
+      render: money => <MoneySpan number={money} />,
+    },
+    {
+      title: 'Tình trạng hóa đơn',
+      align: 'center',
+      sorter: true,
+      dataIndex: 'status_bill',
+      render: statusBill => <span>{ statusBill ? <Tag color="green">Đã xuất</Tag> : <Tag color="red">Chưa xuất</Tag> }</span>,
+    },
+    {
+      title: 'Tình trạng hợp đồng',
+      align: 'center',
+      sorter: true,
+      dataIndex: 'contract_status',
+      render: statusContract => <span>{ statusContract ? <Tag color="green">Đã ký</Tag> : <Tag color="red">Chưa ký</Tag> }</span>,
+    },
+    {
+      title: 'Ghi chú',
+      align: 'center',
       dataIndex: 'notes',
     },
     {
@@ -166,7 +114,7 @@ class LaborContractsList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'laborContractListManagement/fetch',
+      type: 'billManagementList/fetch',
     });
   }
 
@@ -201,14 +149,14 @@ class LaborContractsList extends Component {
     }
 
     dispatch({
-      type: 'laborContractListManagement/fetch',
+      type: 'billManagementList/fetch',
       payload: params,
     });
   };
 
   showConfirmDeleteAccount = record => {
     Modal.confirm({
-      title: `Bạn có chắc muốn xóa hợp đồng của nhân viên ${record.full_name} không?`,
+      title: `Bạn có chắc muốn xóa hóa đơn ${record.contract_code} không?`,
       content: '',
       okText: 'Có',
       cancelText: 'Không',
@@ -222,14 +170,14 @@ class LaborContractsList extends Component {
   handleRemoveItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'laborContractListManagement/remove',
+      type: 'billManagementList/remove',
       payload: id,
       callback: res => {
         if (res && res.status) {
           message.success('Xóa thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'laborContractListManagement/fetch',
+              type: 'billManagementList/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPage;
@@ -267,7 +215,7 @@ class LaborContractsList extends Component {
         search,
       };
       dispatch({
-        type: 'laborContractListManagement/fetch',
+        type: 'billManagementList/fetch',
         payload: dataValues,
         callback: () => {
           this.setState({
@@ -295,7 +243,7 @@ class LaborContractsList extends Component {
   showUpdateForm = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'laborContractListManagement/getDetail',
+      type: 'billManagementList/getDetail',
       payload: id,
     });
     this.handleModalUpdateVisible(true);
@@ -310,7 +258,7 @@ class LaborContractsList extends Component {
   handleCreate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'laborContractListManagement/add',
+      type: 'billManagementList/add',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -318,7 +266,7 @@ class LaborContractsList extends Component {
           message.success('Thêm mới thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'laborContractListManagement/fetch',
+              type: 'billManagementList/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPage;
@@ -332,7 +280,7 @@ class LaborContractsList extends Component {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'laborContractListManagement/update',
+      type: 'billManagementList/update',
       payload: fields,
       callback: res => {
         if (res && res.status) {
@@ -340,7 +288,7 @@ class LaborContractsList extends Component {
           message.success('Cập nhật thành công');
           if (!this.currentPage) {
             dispatch({
-              type: 'laborContractListManagement/fetch',
+              type: 'billManagementList/fetch',
             });
           } else {
             const { pagination, filtersArg, sorter } = this.currentPage;
@@ -356,7 +304,7 @@ class LaborContractsList extends Component {
       <Row type="flex" justify="space-between">
         <Button type="primary" className={styles.customExportBtn} onClick={this.showCreateForm}>
           <Icon type="plus" />
-          Thêm hợp đồng
+          Thêm hóa đơn
         </Button>
       </Row>
     );
@@ -364,7 +312,7 @@ class LaborContractsList extends Component {
 
   render() {
     const {
-      laborContractListManagement: { data, detail },
+      billManagementList: { data, detail },
       loading,
       loadingAdd,
       loadingUpdate,
@@ -413,4 +361,4 @@ class LaborContractsList extends Component {
   }
 }
 
-export default Form.create()(LaborContractsList);
+export default Form.create()(BillManagementList);

@@ -1,96 +1,63 @@
-/* eslint-disable no-mixed-operators */
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable no-underscore-dangle */
-import { Form, Input, Modal, DatePicker, Select, Radio, Tag } from 'antd';
-import React, { useState } from 'react';
+import { Form, Input, Modal, DatePicker, Select, Card } from 'antd';
+import React from 'react';
 import moment from 'moment';
+import InputPhone from '@/components/PhoneInput';
+import CMNDInput from '@/components/CMNDInput';
 
 const FormItem = Form.Item;
+
+const positionLaborList = [
+  {
+    id: 1,
+    name: 'Co-Founder',
+  },
+  {
+    id: 3,
+    name: 'Developer',
+  },
+  {
+    id: 3,
+    name: 'Tester',
+  },
+];
 const CreateForm = props => {
-  const [isChangeRadio, setChangeRadio] = useState(true);
-  const [isDisableMorning, setDisableMorning] = useState(true);
-  const [isDisableAfternoon, setDisableAfternoon] = useState(true);
-  const { modalVisible, form, handleAdd, handleModalVisible, loading, dataEmployee } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
   const handleVisible = () => {
-    setDisableMorning(true);
-    setDisableAfternoon(true);
     handleModalVisible(false);
   };
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
+      const birthday =
+        (fieldsValue.birthday && fieldsValue.birthday.toDate().toISOString()) || undefined;
+      const date_of_issue =
+        (fieldsValue.date_of_issue && fieldsValue.date_of_issue.toDate().toISOString()) || undefined;
       const startDate =
         (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
       const endDate =
         (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
-      const startDateConvert = new Date(startDate.substring(0, 10));
-      const endDateConvert = new Date(endDate.substring(0, 10));
-      // sdsdsd
-      const haftTimeStart = fieldsValue.timeStart;
-      const haftTimeReturn = fieldsValue.timeReturn;
-      const checkDetail = () => {
-        if (
-          haftTimeStart &&
-          !haftTimeReturn &&
-          startDateConvert.getDate() === endDateConvert.getDate()
-        ) {
-          return (endDateConvert - startDateConvert) / (1000 * 3600 * 24) + 0.5;
-        }
-        if (haftTimeStart && !haftTimeReturn) {
-          return (endDateConvert - startDateConvert) / (1000 * 3600 * 24) + 0.5;
-        }
-        if (!haftTimeStart && haftTimeReturn) {
-          return (endDateConvert - startDateConvert) / (1000 * 3600 * 24) - 0.5;
-        }
-        if (haftTimeStart && haftTimeReturn) {
-          return (endDateConvert - startDateConvert) / (1000 * 3600 * 24);
-        }
-        if (!haftTimeStart && !haftTimeReturn) {
-          return (endDateConvert - startDateConvert) / (1000 * 3600 * 24);
-        }
-        return null;
-      };
-      const total_absence = checkDetail();
       if (err) return;
       const values = {
         ...fieldsValue,
+        birthday,
+        date_of_issue,
         startDate,
         endDate,
-        total_absence,
+        status: true,
       };
-      ['timeStart', 'timeReturn'].forEach(key => {
-        delete values[key];
-      });
       handleAdd(values);
     });
   };
 
-  const handleChangeDateReturn = endDate => {
-    const dateStart = moment(form.getFieldValue('startDate')).format('l');
-    const dateEnd = moment(endDate).format('l');
-    const haftTimeStart = form.getFieldValue('timeStart');
-    if (dateStart === dateEnd && haftTimeStart) {
-      setDisableAfternoon(false);
-    } else if (dateStart !== dateEnd) {
-      setDisableMorning(false);
-      setDisableAfternoon(false);
-    }
-  };
-
-  const disabledStartDate = startValue => {
-    const endValue = form.getFieldValue('endDate');
-    if (!startValue || !endValue) {
-      return false;
-    }
-    return startValue.valueOf() > endValue.valueOf();
-  };
-
   const disabledEndDate = endValue => {
-    const startValue = form.getFieldValue('startDate');
-    if (!endValue || !startValue) {
+    const startDate = moment(form.getFieldValue('startDate')).startOf('day');
+    const endDate = moment(endValue).startOf('day');
+    if (!endDate || !startDate) {
       return false;
     }
-    return endValue.valueOf() <= startValue.valueOf();
+    return endDate <= startDate;
   };
 
   const formItemLayout = {
@@ -112,130 +79,220 @@ const CreateForm = props => {
       destroyOnClose
       okText="Lưu"
       cancelText="Hủy"
-      title="Thêm mới ngày nghỉ"
+      title="Thêm mới hợp đồng"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={handleVisible}
       width={650}
       maskClosable={false}
     >
-      <FormItem {...formItemLayout} label="Nhân viên nghỉ">
-        {form.getFieldDecorator('user', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn người nghỉ',
-            },
-          ],
-        })(
-          <Select
-            showSearch
-            placeholder="Chọn nhân viên"
-            style={{ width: '100%' }}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {(dataEmployee || []).map(r => (
-              <Select.Option key={r._id} value={r._id}>
-                {r.full_name}
-              </Select.Option>
-            ))}
-          </Select>,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Ngày bắt đầu nghỉ">
-        {form.getFieldDecorator('startDate', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn ngày bắt đầu nghỉ !',
-            },
-          ],
-        })(
-          <DatePicker
-            disabledDate={disabledStartDate}
-            placeholder="Chọn ngày bắt đầu nghỉ"
+      <Card title="Thông tin cá nhân" bordered>
+        <FormItem {...formItemLayout} label="Họ và tên">
+          {form.getFieldDecorator('full_name', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập họ và tên!',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(
+            <Input placeholder="Nhập họ và tên" />,
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Ngày sinh">
+          {form.getFieldDecorator('birthday', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng chọn ngày sinh!',
+              },
+            ],
+          })(
+            <DatePicker
+              disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
+              placeholder="Chọn ngày sinh"
+              format="DD/MM/YYYY"
+              style={{
+                width: '100%',
+              }}
+            />,
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Nơi sinh">
+          {form.getFieldDecorator('city_birth', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập nơi sinh !',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(<Input placeholder="Nhập nơi sinh" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Số điện thoại">
+          {form.getFieldDecorator('phoneNumber', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập số điện thoại !',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+              {
+                min: 9,
+                message: 'Tối thiểu 9 ký tự!',
+              },
+            ],
+          })(<InputPhone style={{ width: '100%' }} placeholder="Nhập số điện thoại" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Địa chỉ thường trú">
+          {form.getFieldDecorator('permanent_address', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập địa chỉ thường trú !',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(<Input placeholder="Nhập địa chỉ thường trú" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Địa chỉ tạm trú">
+          {form.getFieldDecorator('temporary_address', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập địa chỉ tạm trú !',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(<Input placeholder="Nhập địa chỉ tạm trú" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Số CMND">
+          {form.getFieldDecorator('identity_card', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập số CMND !',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(<CMNDInput />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Ngày cấp">
+          {form.getFieldDecorator('date_of_issue', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng chọn ngày cấp !',
+              },
+            ],
+          })(<DatePicker
+            disabledDate={currentDate => currentDate && currentDate > moment().endOf('day')}
+            placeholder="Chọn ngày cấp"
             format="DD/MM/YYYY"
             style={{
               width: '100%',
             }}
-          />,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian cụ thể">
-        {form.getFieldDecorator('timeStart', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian cụ thể !',
-            },
-          ],
-        })(
-          <Radio.Group onChange={() => setChangeRadio(false)}>
-            <Radio value>
-              <Tag color="#f50">Buổi sáng</Tag>
-            </Radio>
-            <Radio value={false}>
-              <Tag color="#87d068">Buổi chiều</Tag>
-            </Radio>
-          </Radio.Group>,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Ngày trở lại làm việc">
-        {form.getFieldDecorator('endDate', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn ngày trở lại làm việc !',
-            },
-          ],
-        })(
-          <DatePicker
-            disabled={isChangeRadio}
-            onChange={handleChangeDateReturn}
-            placeholder="Chọn ngày trở lại làm việc"
+          />)}
+        </FormItem>
+      </Card>
+      <Card title="Thông tin hợp đồng" bordered style={{ marginTop: '20px' }}>
+        <FormItem {...formItemLayout} label="Mã hợp đồng lao động">
+          {form.getFieldDecorator('contract_number', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng nhập mã hợp động lao động!',
+              },
+              {
+                whitespace: true,
+                message: 'Giá trị không hợp lệ!',
+              },
+            ],
+          })(<Input placeholder="Nhập mã hợp đồng lao động" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Ngày bắt đầu hợp đồng">
+          {form.getFieldDecorator('startDate', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng chọn ngày bắt đầu hợp đồng !',
+              },
+            ],
+          })(<DatePicker
+            placeholder="Chọn ngày bắt đầu hợp đồng"
+            format="DD/MM/YYYY"
+            style={{
+              width: '100%',
+            }}
+          />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Ngày kết thúc hợp đồng">
+          {form.getFieldDecorator('endDate', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng chọn ngày kết thúc hợp đồng !',
+              },
+            ],
+          })(<DatePicker
+            placeholder="Chọn ngày kết thúc hợp đồng"
             disabledDate={disabledEndDate}
             format="DD/MM/YYYY"
             style={{
               width: '100%',
             }}
-          />,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Thời gian cụ thể">
-        {form.getFieldDecorator('timeReturn', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng chọn thời gian cụ thể !',
-            },
-          ],
-        })(
-          <Radio.Group>
-            <Radio disabled={isDisableMorning} value>
-              <Tag color="#f50">Buổi sáng</Tag>
-            </Radio>
-            <Radio disabled={isDisableAfternoon} value={false}>
-              <Tag color="#87d068">Buổi chiều</Tag>
-            </Radio>
-          </Radio.Group>,
-        )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="Lý do nghỉ">
-        {form.getFieldDecorator('reason', {
-          rules: [
-            {
-              required: true,
-              message: 'Vui lòng nhập lí do nghỉ!',
-            },
-            {
-              whitespace: true,
-              message: 'Giá trị không hợp lệ!',
-            },
-          ],
-        })(<Input.TextArea placeholder="Nhập lí do nghỉ" autoSize={{ minRows: 3, maxRows: 5 }} />)}
-      </FormItem>
+          />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Chức vụ/bộ phận">
+          {form.getFieldDecorator('position', {
+            rules: [
+              {
+                required: true,
+                message: 'Vui lòng chọn chức vụ/bộ phận !',
+              },
+            ],
+          })(
+            <Select
+              showSearch
+              placeholder="Chọn chức vụ/bộ phận"
+              style={{ width: '100%' }}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {(positionLaborList || []).map(r => (
+                <Select.Option key={r.id} value={r.name}>
+                  {r.name}
+                </Select.Option>
+              ))}
+            </Select>,
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Ghi chú">
+          {form.getFieldDecorator('notes')(
+            <Input.TextArea placeholder="Nhập ghi chú"
+              autoSize={{ minRows: 3, maxRows: 5 }} />)}
+        </FormItem>
+      </Card>
     </Modal>
   );
 };

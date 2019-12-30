@@ -68,10 +68,13 @@ request.interceptors.request.use((url, options) => {
       ...options.headers,
       ...{
         Authorization: `Bearer ${getAccessToken()}`,
+        'Accept-Language': 'vi',
+        'Content-Type': 'application/json',
       },
     },
   };
-  return { url, options: newOptions };
+  const baseUrl = `https://ht-management-tool-api.herokuapp.com${url}`;
+  return { url: baseUrl, options: newOptions };
 });
 
 request.interceptors.response.use((res, options) => {
@@ -79,20 +82,5 @@ request.interceptors.response.use((res, options) => {
     options.statusCallBack(res.status);
   }
   return res;
-});
-
-request.use(async (ctx, next) => {
-  const realApis = [
-    '/api/auth',
-    '/api/user',
-    '/api/interShip',
-    '/api/absence-employee',
-    '/api/cv-apply',
-    '/api/salary-employee',
-  ];
-  if (realApis.some(r => ctx.req.url.startsWith(r))) {
-    ctx.req.url = `https://ht-management-tool-api.herokuapp.com${ctx.req.url}`;
-  }
-  await next();
 });
 export default request;

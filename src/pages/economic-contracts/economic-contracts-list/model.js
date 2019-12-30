@@ -1,13 +1,13 @@
 import {
   queryList,
   queryDetail,
-  addLaborContract,
-  removeLaborContract,
+  addEconomicContract,
+  removeEconomicContract,
   updateLaborContract,
 } from './service';
 
 const Model = {
-  namespace: 'laborContractListManagement',
+  namespace: 'economicContractListManagement',
   state: {
     data: {
       list: [],
@@ -24,7 +24,7 @@ const Model = {
       if (callback) callback();
     },
     *add({ payload, callback }, { call }) {
-      const response = yield call(addLaborContract, payload);
+      const response = yield call(addEconomicContract, payload);
       if (callback) callback(response);
     },
     *update({ payload, callback }, { call }) {
@@ -32,7 +32,7 @@ const Model = {
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call }) {
-      const response = yield call(removeLaborContract, payload);
+      const response = yield call(removeEconomicContract, payload);
       if (callback) callback(response);
     },
     *getDetail({ payload }, { call, put }) {

@@ -3,49 +3,39 @@ import React from 'react';
 import { Button, Col, Form, Input, Row, DatePicker, Divider, Select } from 'antd';
 import moment from 'moment';
 import styles from '../../style.less';
+import InputPhone from '@/components/PhoneInput';
 
 const FormItem = Form.Item;
-
-const yearList = [];
-for (let i = 2012; i <= new Date().getFullYear(); i++) {
-  const Obj = { name: i };
-  yearList.push(Obj);
-}
+const positionLaborList = [
+  {
+    id: 1,
+    name: 'Co-Founder',
+  },
+  {
+    id: 3,
+    name: 'Developer',
+  },
+  {
+    id: 3,
+    name: 'Tester',
+  },
+];
 
 const SearchForm = props => {
   const { handleSearch, form, handleFormReset, loading } = props;
 
   const onSearch = e => {
     e.preventDefault();
-    // check lấy cả tháng và năm
-    const check = valueMonth => {
-      if (valueMonth) {
-        const convert = valueMonth.split('/');
-        const monthDirective = Number(convert[1]);
-        const yearDirective = Number(convert[2]);
-        return {
-          monthDirective,
-          yearDirective,
-        };
-      }
-      return undefined;
-    };
     form.validateFields((err, fieldsValue) => {
       const startDate =
         (fieldsValue.startDate && fieldsValue.startDate.toDate().toISOString()) || undefined;
       const endDate =
         (fieldsValue.endDate && fieldsValue.endDate.toDate().toISOString()) || undefined;
       if (err) return;
-      const valueMonth = (fieldsValue.month && fieldsValue.month.format('l')) || undefined;
-      const result = check(valueMonth);
-      const month = (result && result.monthDirective) || undefined;
-      const year = (result && result.yearDirective) || fieldsValue.year;
       const values = {
         ...fieldsValue,
         startDate,
         endDate,
-        month,
-        year,
       };
       handleSearch(values);
     });
@@ -74,27 +64,6 @@ const SearchForm = props => {
     handleFormReset();
   };
 
-  const onMonthChange = () => {
-    const year = form.getFieldValue('year');
-    if (year) {
-      form.setFields({
-        year: {
-          value: undefined,
-        },
-      });
-    }
-  };
-  const onYearChange = () => {
-    const month = form.getFieldValue('month');
-    if (month) {
-      form.setFields({
-        month: {
-          value: undefined,
-        },
-      });
-    }
-  };
-
   const { getFieldDecorator } = form;
 
   return (
@@ -107,7 +76,7 @@ const SearchForm = props => {
       <Row gutter={16}>
         <Col lg={8} md={12} sm={24}>
           <FormItem label="Họ và tên">
-            {getFieldDecorator('user', {
+            {getFieldDecorator('full_name', {
               rules: [
                 {
                   whitespace: true,
@@ -116,8 +85,32 @@ const SearchForm = props => {
               ],
             })(<Input placeholder="Nhập họ và tên cần tìm" />)}
           </FormItem>
+          <FormItem label="Mã hợp đồng lao động">
+            {getFieldDecorator('contract_number', {
+              rules: [
+                {
+                  whitespace: true,
+                  message: 'Giá trị không hợp lệ!',
+                },
+              ],
+            })(<Input placeholder="Nhập mã hợp đồng cấn tìm" />)}
+          </FormItem>
         </Col>
         <Col lg={8} md={12} sm={24}>
+          <FormItem label="Số điện thoại">
+            {form.getFieldDecorator('phoneNumber', {
+              rules: [
+                {
+                  whitespace: true,
+                  message: 'Giá trị không hợp lệ!',
+                },
+                {
+                  min: 9,
+                  message: 'Tối thiểu 9 ký tự!',
+                },
+              ],
+            })(<InputPhone style={{ width: '100%' }} placeholder="Nhập số điện thoại cần tìm" />)}
+          </FormItem>
           <FormItem label="Từ ngày">
             {getFieldDecorator(
               'startDate',
@@ -135,6 +128,24 @@ const SearchForm = props => {
           </FormItem>
         </Col>
         <Col lg={8} md={12} sm={24}>
+          <FormItem label="Chức vụ/bộ phận">
+            {form.getFieldDecorator('position')(
+              <Select
+                showSearch
+                placeholder="Chọn chức vụ/bộ phận cần tìm"
+                style={{ width: '100%' }}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {(positionLaborList || []).map(r => (
+                  <Select.Option key={r.id} value={r.name}>
+                    {r.name}
+                  </Select.Option>
+                ))}
+              </Select>,
+            )}
+          </FormItem>
           <FormItem label="Đến ngày">
             {getFieldDecorator(
               'endDate',
@@ -148,47 +159,6 @@ const SearchForm = props => {
                   width: '100%',
                 }}
               />,
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-      <Divider orientation="center">Lọc danh sách theo tháng/năm hoặc theo năm</Divider>
-      <Row type="flex" justify="center">
-        <Col lg={8} md={12} sm={24}>
-          <FormItem label="Chọn tháng / năm">
-            {getFieldDecorator('month')(
-              <DatePicker.MonthPicker
-                onChange={onMonthChange}
-                format="MM/YYYY"
-                placeholder="Chọn tháng / năm muốn tìm"
-                style={{
-                  width: '100%',
-                }}
-              />,
-            )}
-          </FormItem>
-        </Col>
-        <Col lg={8} md={12} sm={24}>
-          <FormItem label="Chọn năm">
-            {getFieldDecorator(
-              'year',
-              {},
-            )(
-              <Select
-                onChange={onYearChange}
-                showSearch
-                placeholder="Chọn năm muốn tìm"
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {(yearList || []).map(r => (
-                  <Select.Option key={r.index} value={r.name}>
-                    {r.name}
-                  </Select.Option>
-                ))}
-              </Select>,
             )}
           </FormItem>
         </Col>

@@ -123,21 +123,6 @@ export default {
               component: './Welcome',
             },
             {
-              path: '/role-management',
-              name: 'Quản lý quyền',
-              icon: 'setting',
-              routes: [
-                {
-                  path: '/role-management/role-list',
-                  name: 'Danh sách quyền trong hệ thống',
-                  component: './role-management/role-list',
-                },
-                {
-                  component: './404',
-                },
-              ],
-            },
-            {
               path: '/staff-management',
               name: 'Quản lý nhân viên',
               icon: 'user',
@@ -263,6 +248,36 @@ export default {
               ],
             },
             {
+              path: '/economic-contracts',
+              name: 'Quản lý hợp đồng kinh tế',
+              icon: 'qrcode',
+              routes: [
+                {
+                  path: '/economic-contracts/economic-contracts-list',
+                  name: 'Danh sách hợp đồng kinh tế',
+                  component: './economic-contracts/economic-contracts-list',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
+              path: '/bill-management',
+              name: 'Quản lý hóa đơn',
+              icon: 'container',
+              routes: [
+                {
+                  path: '/bill-management/bill-list',
+                  name: 'Danh sách hóa đơn',
+                  component: './bill-management/bill-list',
+                },
+                {
+                  component: './404',
+                },
+              ],
+            },
+            {
               path: '/money-management',
               name: 'Quản lý tiền thu chi',
               icon: 'area-chart',
@@ -276,13 +291,7 @@ export default {
                   component: './404',
                 },
               ],
-            }, // {
-            //   path: '/admin',
-            //   name: 'Admin',
-            //   icon: 'crown',
-            //   component: './Admin',
-            //   authority: ['admin'],
-            // },
+            },
             {
               component: './404',
             },

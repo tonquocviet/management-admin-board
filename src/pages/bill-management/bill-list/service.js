@@ -14,7 +14,7 @@ export async function queryList(params = {}) {
       page: params.currentPage || 1,
     },
   };
-  const response = await request('/api/labor-contracts/get', {
+  const response = await request('/api/bill/get', {
     method: 'POST',
     data: requestParams,
   });
@@ -34,15 +34,15 @@ export async function queryList(params = {}) {
 }
 export async function queryDetail(id) {
   let result = {};
-  const res = await request(`/api/labor-contracts/detail/${id}`);
+  const res = await request(`/api/bill/detail/${id}`);
   if (res.status) {
     result = { ...res.result };
   }
   return result;
 }
-export async function addLaborContract(params) {
+export async function addBill(params) {
   let result = {};
-  const res = await request('/api/labor-contracts/create', {
+  const res = await request('/api/bill/create', {
     method: 'POST',
     data: params,
   });
@@ -51,9 +51,9 @@ export async function addLaborContract(params) {
   }
   return result;
 }
-export async function removeLaborContract(params) {
+export async function removeBill(params) {
   let result = {};
-  const res = await request(`/api/labor-contracts/delete/${params}`, {
+  const res = await request(`/api/bill/delete/${params}`, {
     method: 'DELETE',
   });
   if (res.status) {
@@ -61,9 +61,9 @@ export async function removeLaborContract(params) {
   }
   return result;
 }
-export async function updateLaborContract(params) {
+export async function updateBill(params) {
   let result = {};
-  const res = await request(`/api/labor-contracts/update/${params.id}`, {
+  const res = await request(`/api/bill/update/${params.id}`, {
     method: 'PUT',
     data: { ...params.values },
   });
