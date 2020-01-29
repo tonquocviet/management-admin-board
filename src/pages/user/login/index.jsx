@@ -48,7 +48,7 @@ class Login extends Component {
         >
           <UserName
             name="email"
-            placeholder="Email"
+            placeholder="Email(viet@gmail.com)"
             rules={[
               {
                 required: true,
@@ -58,7 +58,7 @@ class Login extends Component {
           />
           <Password
             name="password"
-            placeholder="Mật khẩu"
+            placeholder="Mật khẩu(abcde12345-)"
             rules={[
               {
                 required: true,
